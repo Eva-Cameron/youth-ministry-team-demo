@@ -1,0 +1,25 @@
+<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 640 640'>
+<g fill='#E5DBBC'>
+  <path d='M120 120 L300 96 L302 112 Z'/>
+  <path d='M120 120 L290 170 L286 186 Z'/>
+  <path d='M120 120 L240 250 L228 260 Z'/>
+  <path d='M120 120 L150 300 L134 300 Z'/>
+  <path d='M520 520 L340 544 L338 528 Z'/>
+  <path d='M520 520 L350 470 L354 454 Z'/>
+  <path d='M520 520 L400 390 L412 380 Z'/>
+  <path d='M520 520 L490 340 L506 340 Z'/>
+</g>
+<g fill='none' stroke='#E5DBBC' stroke-width='10'>
+  <circle cx='120' cy='120' r='34'/>
+  <circle cx='520' cy='520' r='34'/>
+</g>
+<g fill='none' stroke='#E5DBBC' stroke-width='9' stroke-linecap='round'>
+  <path d='M120 104 l0 32 M104 120 l32 0'/>
+  <path d='M520 504 l0 32 M504 520 l32 0'/>
+</g>
+<g fill='#E5DBBC'>
+  <path d='M520 90 l10 24 24 10 -24 10 -10 24 -10 -24 -24 -10 24 -10 Z'/>
+  <path d='M90 520 l10 24 24 10 -24 10 -10 24 -10 -24 -24 -10 24 -10 Z'/>
+  <path d='M320 620 l7 17 17 7 -17 7 -7 17 -7 -17 -17 -7 17 -7 Z' transform='translate(0 -60)'/>
+</g>
+</svg>

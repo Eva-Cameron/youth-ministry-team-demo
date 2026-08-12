@@ -1,0 +1,20 @@
+<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 640 640'>
+<g fill='none' stroke='#E5DBBC' stroke-width='10' stroke-linecap='round'>
+  <path d='M40 340 L40 250 C 40 200, 70 170, 120 150 C 170 170, 200 200, 200 250 L200 340'/>
+  <path d='M200 340 L200 250 C 200 200, 230 170, 280 150 C 330 170, 360 200, 360 250 L360 340'/>
+  <path d='M360 340 L360 250 C 360 200, 390 170, 440 150 C 490 170, 520 200, 520 250 L520 340'/>
+  <path d='M520 340 L520 250 C 520 200, 550 170, 600 150'/>
+  <path d='M40 340 L40 250 C 40 233, 37 217, 30 202'/>
+  <circle cx='120' cy='250' r='22'/><circle cx='280' cy='250' r='22'/><circle cx='440' cy='250' r='22'/>
+</g>
+<g fill='none' stroke='#E5DBBC' stroke-width='10'>
+  <circle cx='160' cy='500' r='26'/><circle cx='200' cy='500' r='26'/>
+  <circle cx='180' cy='480' r='26'/><circle cx='180' cy='520' r='26'/>
+  <circle cx='460' cy='60' r='26'/><circle cx='500' cy='60' r='26'/>
+  <circle cx='480' cy='40' r='26'/><circle cx='480' cy='80' r='26'/>
+</g>
+<g fill='#E5DBBC'>
+  <circle cx='560' cy='520' r='9'/><circle cx='600' cy='560' r='9'/><circle cx='560' cy='560' r='9'/><circle cx='600' cy='520' r='9'/>
+  <circle cx='60' cy='60' r='9'/><circle cx='100' cy='100' r='9'/><circle cx='60' cy='100' r='9'/><circle cx='100' cy='60' r='9'/>
+</g>
+</svg>
