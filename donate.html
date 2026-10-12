@@ -1,133 +1,294 @@
-<!DOCTYPE html>
-<html lang="en-GB">
+<!doctype html>
+<html lang="en-GB" class="no-js">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Donate | Youth Ministry Team</title>
-<meta name="description" content="Support the Youth Ministry Team — sponsor an intern, give a one-off gift, or set up regular giving.">
-<link rel="icon" type="image/png" href="assets/images/logo.png">
-<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Passion+One:wght@400;700;900&family=Figtree:ital,wght@0,300..900;1,300..900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/main.css?v=11">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#120d18">
+  <title>Donate | Youth Ministry Team</title>
+  <meta name="description" content="Support the Youth Ministry Team — sponsor an intern, give a one-off gift, or set up regular giving.">
+  <link rel="icon" type="image/png" href="assets/images/logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=DM+Mono:wght@300;400;500&family=Figtree:ital,wght@0,400;0,500;0,600;0,700;1,500&display=swap" rel="stylesheet">
+  <script>document.documentElement.classList.remove('no-js');document.documentElement.classList.add('js');</script>
+  <link rel="stylesheet" href="css/main.css?v=12">
 </head>
 <body>
-<header class="topbar">
-  <div class="wrap bar">
-    <a class="brand" href="index.html" aria-label="Youth Ministry Team home"><img src="assets/images/logo-white.png" alt="Youth Ministry Team"></a>
-    <nav class="nav" aria-label="Main">
-      <a class="navlink" href="youth-village.html">The Village</a>
-      <div class="navdrop">
-        <button class="navlink drop-btn" type="button" aria-expanded="false" aria-haspopup="true">What's on <span class="caret">▾</span></button>
-        <div class="dropdown">
-          <a href="retreats.html">School Retreats</a>
-          <a href="festival.html">Festival</a>
-          <a href="lourdes.html">Lourdes</a>
-          <a href="the-source.html">The Source</a>
-        </div>
-      </div>
-      <div class="navdrop here">
-        <button class="navlink drop-btn" type="button" aria-expanded="false" aria-haspopup="true">Get involved <span class="caret">▾</span></button>
-        <div class="dropdown">
-          <a href="internship.html">The Internship</a>
-          <a href="youth-council.html">Youth Council</a>
-          <a href="donate.html" aria-current="page">Donate</a>
-        </div>
-      </div>
+  <a class="skip-link" href="#main-content">Skip to content</a>
+
+  <header class="site-header" data-header>
+    <a class="site-brand" href="index.html" aria-label="Youth Ministry Team home">
+      <img src="assets/images/logo-white.png" alt="">
+      <span>Youth Ministry Team</span>
+    </a>
+
+    <nav class="desktop-nav" aria-label="Primary">
+      <a href="#ways">Ways to give</a>
+      <a href="#give">Give now</a>
+      <a href="#other">Other ways</a>
     </nav>
-    <a class="donate-btn desk" href="donate.html">Donate ♥</a>
-    <button class="navtoggle" aria-label="Menu" aria-expanded="false" aria-controls="mobilemenu"><span></span><span></span><span></span></button>
-  </div>
-  <div class="mobilemenu" id="mobilemenu">
-    <a href="youth-village.html">The Village</a>
-    <a href="retreats.html">School Retreats</a>
-    <a href="festival.html">Festival</a>
-    <a href="lourdes.html">Lourdes</a>
-    <a href="the-source.html">The Source</a>
-    <a href="internship.html">The Internship</a>
-    <a href="youth-council.html">Youth Council</a>
-    <a class="donate-btn" href="donate.html">Donate ♥</a>
-  </div>
-</header>
 
-<section class="pagehero">
-  <img class="ph-bg" src="assets/images/hope-letters.jpg" alt="">
-  <div class="wrap">
-    <div class="breadcrumb"><a href="index.html">Home</a> / Donate</div>
-    <div class="ph-stickers">
-      <span class="spill g" style="--r:-3deg">100% to the mission</span>
-      <span class="spill c" style="--r:2deg">Gift Aid +25%</span>
-    </div>
-    <h1><span class="hl">Donate</span> to the mission</h1>
-    <p>Every retreat, every pilgrimage, every intern's year is powered by people who give. Your gift funds everything you've seen across this site.</p>
-    <div class="hero-ctas mt"><a class="btn" href="#give">Give now</a><a class="btn btn-ghost" href="#ways">Ways to give</a></div>
-  </div>
-</section>
+    <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="site-menu" data-menu-toggle>
+      <span data-menu-label>Menu</span>
+      <span class="menu-toggle__icon" aria-hidden="true"><i></i><i></i></span>
+    </button>
+  </header>
 
-<!-- WAYS TO GIVE -->
-<section class="section" id="ways">
-  <div class="wrap">
-    <span class="kicker">your gift, at work…</span>
-    <h2 class="section-title">Ways to <span class="hl">give</span></h2>
-    <p class="lede">However you give, 100% goes into youth ministry across the diocese.</p>
-    <div class="tiles">
-      <div class="tile t5"><div><h4>Sponsor an intern</h4><p>Fund a young adult's year of formation and ministry at the Village.</p></div><span class="tgo">From £20/month</span></div>
-      <div class="tile t3"><div><h4>One-off gift</h4><p>Any amount, straight into retreats, Festival and outreach.</p></div><span class="tgo">Any amount</span></div>
-      <div class="tile t1"><div><h4>Regular giving</h4><p>Monthly support that lets us plan ahead with confidence.</p></div><span class="tgo">Monthly</span></div>
+  <div class="menu-panel" id="site-menu" aria-hidden="true" data-menu-panel>
+    <div class="menu-panel__wash" aria-hidden="true"></div>
+    <div class="menu-panel__inner">
+      <div class="menu-panel__top">
+        <a class="menu-brand" href="index.html" aria-label="Youth Ministry Team home">
+          <img src="assets/images/logo.png" alt="">
+          <span>Youth Ministry Team</span>
+        </a>
+      </div>
+
+      <nav class="menu-nav" aria-label="Site menu">
+        <a href="youth-village.html"><span>01</span>The Village</a>
+        <a href="retreats.html"><span>02</span>School Retreats</a>
+        <a href="festival.html"><span>03</span>Festival</a>
+        <a href="lourdes.html"><span>04</span>Lourdes</a>
+        <a href="the-source.html"><span>05</span>The Source</a>
+        <a href="internship.html"><span>06</span>Internship</a>
+        <a href="youth-council.html"><span>07</span>Youth Council</a>
+      </nav>
+
+      <div class="menu-panel__foot">
+        <p>Emmaus Village · Consett · County Durham</p>
+        <div>
+          <a href="mailto:admin@ymt.org">admin@ymt.org</a>
+          <a href="donate.html" aria-current="page">Support YMT ↗</a>
+          <a href="safeguarding.html">Safeguarding</a>
+        </div>
+      </div>
     </div>
   </div>
-</section>
 
-<!-- GIVE -->
-<section class="section band-paper" id="give">
-  <div class="wrap split" style="align-items:start">
-    <div class="prose">
-      <span class="eyebrow">make a gift</span>
-      <h2 class="section-title">Give <span class="hl">now</span></h2>
-      <p>Choose an amount and whether it's one-off or monthly. In production this connects to secure online giving (for example CAF Donate or the diocesan giving page) — we never ask for card or bank details on the page itself.</p>
-      <ul>
-        <li><b>£10</b> — resources for a class before &amp; after a retreat</li>
-        <li><b>£25</b> — a young person's place at a worship night</li>
-        <li><b>£50</b> — helps send a youth helper to Lourdes</li>
-        <li><b>£20/month</b> — sponsors an intern across the year</li>
-      </ul>
-      <p class="formnote">UK taxpayer? Adding Gift Aid makes your gift worth 25% more, at no cost to you.</p>
+  <main id="main-content">
+    <section class="hero" id="top" aria-labelledby="hero-title">
+      <div class="hero__media" aria-hidden="true" data-hero-media>
+        <img class="hero__scene is-active" src="assets/images/hope-letters.jpg" alt="">
+      </div>
+      <div class="hero__scrim" aria-hidden="true"></div>
+      <div class="hero__grain" aria-hidden="true"></div>
+
+      <h1 class="hero__wordmark" id="hero-title" aria-label="Donate">
+        <span>DONATE</span>
+      </h1>
+
+      <div class="hero__subnav" aria-label="Page sections">
+        <a href="#ways">Ways to give</a>
+        <a href="#give">Give now</a>
+        <a href="#other">Other ways to help</a>
+      </div>
+
+      <div class="hero__bottom">
+        <div class="hero__caption">
+          <span class="hero__count">100% to the mission</span>
+          <p class="hero__caption-title">Powered by people who give</p>
+          <p>Every retreat, every pilgrimage, every intern's year.</p>
+        </div>
+
+        <a class="hero__open magnetic" href="#ways">
+          <span>Explore</span>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6"/></svg>
+        </a>
+      </div>
+    </section>
+
+    <section class="statement section-shell" id="ways">
+      <div class="section-label reveal">
+        <span>01</span>
+        <span>Ways to give</span>
+        <span>Gift Aid +25%</span>
+      </div>
+
+      <div class="statement__grid">
+        <h2 class="display-copy reveal">Your gift funds <em>everything on this site.</em></h2>
+        <div class="statement__body reveal">
+          <p>Every retreat, every pilgrimage, every intern's year is powered by people who give. However you give, 100% goes into youth ministry across the diocese.</p>
+          <a class="text-link" href="#give">Give now <span>↘</span></a>
+        </div>
+      </div>
+
+      <div class="statement__columns">
+        <div class="prose reveal">
+          <h3>What a gift does</h3>
+          <ul>
+            <li>£10 — resources for a class before and after a retreat</li>
+            <li>£25 — a young person's place at a worship night</li>
+            <li>£50 — helps send a youth helper to Lourdes</li>
+            <li>£20 a month — sponsors an intern across the year</li>
+          </ul>
+          <p>UK taxpayer? Adding Gift Aid makes your gift worth 25% more, at no cost to you.</p>
+        </div>
+        <div class="reveal">
+          <dl class="facts">
+            <div><dt>Sponsor an intern</dt><dd>From £20 a month</dd></div>
+            <div><dt>One-off gift</dt><dd>Any amount</dd></div>
+            <div><dt>Regular giving</dt><dd>Monthly</dd></div>
+            <div><dt>Gift Aid</dt><dd>+25%</dd></div>
+          </dl>
+          <a class="pill-button magnetic" href="#give">Give now <span>↗</span></a>
+        </div>
+      </div>
+    </section>
+
+    <div class="marquee" aria-hidden="true">
+      <div class="marquee__track">
+        <span>GIVE</span><i>✦</i><span>PRAY</span><i>✦</i><span>SHARE</span><i>✦</i><span>FUNDRAISE</span><i>✦</i>
+        <span>GIVE</span><i>✦</i><span>PRAY</span><i>✦</i><span>SHARE</span><i>✦</i><span>FUNDRAISE</span><i>✦</i>
+      </div>
     </div>
-    <form class="formcard" data-demo aria-label="Donation">
-      <h4 class="formhead">Your gift</h4>
-      <div class="frow two"><div><label>Amount (£)</label><input type="number" min="1" placeholder="e.g. 25" required></div>
-        <div><label>Frequency</label><select><option>One-off</option><option>Monthly</option></select></div></div>
-      <div class="frow two"><div><label>Designation</label><select><option>Where it's most needed</option><option>Sponsor an intern</option><option>Festival</option><option>School retreats</option><option>Lourdes bursary</option></select></div>
-        <div><label>Your name</label><input required></div></div>
-      <div class="frow"><div><label>Email (for your receipt)</label><input type="email" required></div></div>
-      <label style="display:flex;gap:10px;align-items:flex-start;text-transform:none;letter-spacing:normal;color:var(--muted);font-family:var(--body);font-size:.9rem"><input type="checkbox" style="width:auto;margin-top:3px"> Yes, add Gift Aid to my donation (I'm a UK taxpayer).</label>
-      <button class="btn btn-orange mt" type="submit">Continue to secure giving</button>
-      <p class="formnote">You'll be taken to our secure giving partner to finish. This draft doesn't process real payments.</p>
-    </form>
-  </div>
-</section>
 
-<!-- OTHER WAYS -->
-<section class="section" id="other">
-  <div class="wrap center">
-    <h2 class="section-title">Other ways to <span class="hl">help</span></h2>
-    <div class="involve" style="text-align:left">
-      <div class="icard"><h4>Fundraise</h4><p>Run, bake, walk or organise a parish event — we'll cheer you on and send materials.</p><a href="mailto:admin@ymt.org">Tell us your idea →</a></div>
-      <div class="icard"><h4>Leave a gift in your will</h4><p>Help form the next generation long after us. We can point you to guidance.</p><a href="mailto:admin@ymt.org">Ask about legacies →</a></div>
-      <div class="icard"><h4>Pray &amp; share</h4><p>Pray for our young people, and share the mission with your parish or school.</p><a href="index.html">Explore our work →</a></div>
+    <section class="rsvp" id="give">
+      <div class="rsvp__panel">
+        <div class="rsvp__head reveal">
+          <img src="assets/images/logo.png" alt="">
+          <span>Your gift</span>
+          <span>Give.</span>
+        </div>
+
+        <div class="rsvp__grid">
+          <div class="rsvp__intro reveal">
+            <span class="mono-label">Make a gift</span>
+            <h2>Choose an amount.<br>We'll do the rest.</h2>
+            <p>Choose an amount and whether it's one-off or monthly. In production this connects to secure online giving — we never ask for card or bank details on the page itself.</p>
+            <div class="rsvp__assurance">
+              <span>Secure giving</span>
+              <p>You'll be taken to our secure giving partner to finish. This draft doesn't process real payments.</p>
+            </div>
+          </div>
+
+          <form class="rsvp-form reveal" data-demo-form aria-label="Donation">
+            <div class="field-grid">
+              <div class="field">
+                <label for="d-amount">Amount (£)</label>
+                <input id="d-amount" name="amount" type="number" min="1" placeholder="For example: 25" required>
+              </div>
+              <div class="field">
+                <label for="d-frequency">Frequency</label>
+                <select id="d-frequency" name="frequency">
+                  <option>One-off</option>
+                  <option>Monthly</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="d-designation">Designation</label>
+                <select id="d-designation" name="designation">
+                  <option>Where it's most needed</option>
+                  <option>Sponsor an intern</option>
+                  <option>Festival</option>
+                  <option>School retreats</option>
+                  <option>Lourdes bursary</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="d-name">Your name</label>
+                <input id="d-name" name="name" autocomplete="name" required>
+              </div>
+              <div class="field field--wide">
+                <label for="d-email">Email (for your receipt)</label>
+                <input id="d-email" name="email" type="email" autocomplete="email" required>
+              </div>
+            </div>
+
+            <label class="consent">
+              <input type="checkbox" name="gift-aid">
+              <span>Yes, add Gift Aid to my donation (I'm a UK taxpayer).</span>
+            </label>
+
+            <div class="form-actions">
+              <button class="pill-button magnetic" type="submit">Continue to secure giving <span>↗</span></button>
+              <p class="form-status" data-form-status aria-live="polite"></p>
+            </div>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <section class="updates section-shell" id="other">
+      <div class="section-label reveal">
+        <span>02</span>
+        <span>Other ways to help</span>
+        <span>Fundraise · Legacies · Prayer</span>
+      </div>
+
+      <div class="updates__heading">
+        <h2 class="display-copy reveal">Not every gift <em>is money.</em></h2>
+        <p class="reveal">Run, bake, walk, pray, share — we'll cheer you on and send materials.</p>
+      </div>
+
+      <div class="updates__grid">
+        <a class="update-card reveal" href="mailto:admin@ymt.org">
+          <span class="update-card__meta">Fundraise</span>
+          <h3>Run, bake, walk or organise a parish event.</h3>
+          <span class="update-card__link">Tell us your idea ↗</span>
+        </a>
+        <a class="update-card reveal" href="mailto:admin@ymt.org">
+          <span class="update-card__meta">Leave a gift in your will</span>
+          <h3>Help form the next generation long after us.</h3>
+          <span class="update-card__link">Ask about legacies ↗</span>
+        </a>
+        <a class="update-card reveal" href="index.html">
+          <span class="update-card__meta">Pray &amp; share</span>
+          <h3>Pray for our young people and share the mission with your parish or school.</h3>
+          <span class="update-card__link">Explore our work ↗</span>
+        </a>
+      </div>
+    </section>
+
+    <section class="closing" aria-label="Give now">
+      <img src="assets/images/hope.jpg" alt="" data-parallax>
+      <div class="closing__scrim" aria-hidden="true"></div>
+      <div class="closing__content section-shell">
+        <span class="mono-label reveal">Back the mission</span>
+        <h2 class="reveal">Every gift<br>goes <em>further.</em></h2>
+        <a class="pill-button pill-button--light magnetic reveal" href="#give">Give now <span>↗</span></a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="site-footer__top section-shell">
+      <div class="site-footer__wordmark" aria-label="Youth Ministry Team">
+        <span>YOUTH</span>
+        <span>MINISTRY</span>
+        <span>TEAM</span>
+      </div>
+      <a class="footer-mark" href="#top" aria-label="Back to top"><img src="assets/images/logo-white.png" alt=""></a>
     </div>
-  </div>
-</section>
 
-<footer class="foot"><div class="wrap">
-  <div class="fgrid">
-    <div><div class="fbrand"><img src="assets/images/logo-white.png" alt="Youth Ministry Team"></div><p class="fmission">“We aim to encourage young people into a relationship with Christ and fully into the life of the Church.”</p>
-      <div class="socials"><a href="https://facebook.com/youthministryteam/" target="_blank" rel="noopener">Facebook</a><a href="https://instagram.com/youthministryteam/" target="_blank" rel="noopener">Instagram</a><a href="https://www.youtube.com/channel/UCVlOoCyoxRWub3zoPJorMhQ" target="_blank" rel="noopener">YouTube</a></div></div>
-    <div><h5>Explore</h5><a href="youth-village.html">The Village</a><a href="retreats.html">Retreats</a><a href="lourdes.html">Lourdes</a><a href="festival.html">Festival</a></div>
-    <div><h5>Get involved</h5><a href="internship.html">Internship</a><a href="youth-council.html">Youth Council</a><a href="donate.html">Donate</a></div>
-    <div><h5>Get in touch</h5><a href="mailto:admin@ymt.org">admin@ymt.org</a><a href="#">Emmaus Village, Pemberton Road,<br>Allensford, Consett, DH8 9BA</a><a href="safeguarding.html">Safeguarding</a></div>
-  </div>
-  <div class="legal"><span>© Youth Ministry Trust · Diocese of Hexham &amp; Newcastle.</span><span>Committed to the safeguarding policies of the Catholic Church in England &amp; Wales.</span></div>
-</div></footer>
-<script src="js/main.js" defer></script>
+    <div class="site-footer__grid section-shell">
+      <div>
+        <span class="footer-label">Visit</span>
+        <p>Emmaus Village<br>Pemberton Road<br>Allensford, Consett<br>DH8 9BA</p>
+      </div>
+      <div>
+        <span class="footer-label">Talk to us</span>
+        <a href="mailto:admin@ymt.org">admin@ymt.org</a>
+        <a href="safeguarding.html">Safeguarding</a>
+      </div>
+      <div>
+        <span class="footer-label">Follow</span>
+        <a href="https://instagram.com/youthministryteam/" target="_blank" rel="noopener">Instagram ↗</a>
+        <a href="https://facebook.com/youthministryteam/" target="_blank" rel="noopener">Facebook ↗</a>
+        <a href="https://www.youtube.com/channel/UCVlOoCyoxRWub3zoPJorMhQ" target="_blank" rel="noopener">YouTube ↗</a>
+      </div>
+      <div>
+        <span class="footer-label">Support</span>
+        <a class="footer-donate" href="donate.html">Donate to YMT ↗</a>
+      </div>
+    </div>
+
+    <div class="site-footer__legal section-shell">
+      <span>© <span data-year></span> Youth Ministry Trust · Diocese of Hexham &amp; Newcastle</span>
+      <span>Committed to the safeguarding policies of the Catholic Church in England &amp; Wales.</span>
+    </div>
+  </footer>
+
+  <div class="cursor" aria-hidden="true"><span></span></div>
+  <script src="js/main.js" defer></script>
 </body>
 </html>
