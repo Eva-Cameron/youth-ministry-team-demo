@@ -2,29 +2,155 @@
   "title": "YMT review – 2026-11-02",
   "source": "https://claude.ai/artifact/6EH6MLrH7ecfBfVtt6vfw1",
   "collected": "2026-11-02",
-  "generated": "2026-11-02T13:13:21.557Z",
+  "generated": "2026-11-02T13:18:12.401Z",
+  "widths": [
+    1440,
+    390
+  ],
+  "includeResolved": false,
   "counts": {
     "threads": 6,
-    "open": 1
+    "open": 1,
+    "pinned": 1
   },
+  "threads": [
+    {
+      "n": 1,
+      "id": "1e99db09-d56b-4b6c-9ab7-dc90deb5ae93",
+      "page": "index.html",
+      "status": "open",
+      "sentToClaude": true,
+      "location": "YMT › link \"Explore\"",
+      "comments": [
+        {
+          "role": "owner",
+          "date": "2026-10-28T19:04",
+          "text": "might be pointless until we get the flow sorted"
+        },
+        {
+          "role": "claude",
+          "date": "2026-10-28T19:04",
+          "text": "Agreed, I've left it alone for now. You said the hero was spot on, so I haven't touched it. Right now Explore jumps down to \"Who we are\", which skips most of the page. Once we've agreed the order of sections, I'll point it at whichever section comes first, or take it out if the scroll does the job by itself."
+        }
+      ]
+    },
+    {
+      "n": 2,
+      "id": "ffd606c1-028b-4a43-a191-c1ca2427d297",
+      "page": "index.html",
+      "status": "resolved",
+      "sentToClaude": true,
+      "location": null,
+      "comments": [
+        {
+          "role": "owner",
+          "date": "2026-10-28T19:04",
+          "text": "do a white background on this and have the pictures fade in opacity"
+        },
+        {
+          "role": "claude",
+          "date": "2026-10-28T19:14",
+          "text": "Done. The pinned \"Come away feeling…\" frame is now white. The photos fade out the further they are from the middle, so only the centre one is at full strength. Each programme's colour now sits only on the changing word, as a block behind it: pink for curious, red for joyful, candle-dark with a gold serif for still, green for rested."
+        }
+      ]
+    },
+    {
+      "n": 3,
+      "id": "df4ab96c-364a-4ba6-b1ef-da59fe3b7535",
+      "page": "index.html",
+      "status": "resolved",
+      "sentToClaude": true,
+      "location": "What's on at YMT › text \"What's on, scroll sideways\"",
+      "comments": [
+        {
+          "role": "owner",
+          "date": "2026-10-28T19:05",
+          "text": "look at the Latest wins on tiny wins thats how i want the whats on formatted"
+        },
+        {
+          "role": "claude",
+          "date": "2026-10-28T19:14",
+          "text": "Done, in the Latest Wins format. What's on is now a stack of cards. Each has a square thumbnail, a short headline, a tag in its audience colour and a date. There's also a white \"what's on\" button in the header, with a red dot like theirs. It blurs the page and drops the same cards in one by one from a panel on the right; Esc or × closes it.\n\nTwo items are real, taken from YMT's TikTok: The Source in Hartlepool on Tue 10 Nov, and Flame 2027 at Wembley on Sat 6 Mar. The rest are placeholders worded from what each page already says (retreat booking, Lourdes, the Internship, the Festival, the Youth Council, the Village), so dates need confirming."
+        }
+      ]
+    },
+    {
+      "n": 4,
+      "id": "b06629e7-8b13-4ced-997a-b75f0fd31832",
+      "page": "index.html",
+      "status": "resolved",
+      "sentToClaude": true,
+      "location": "The Year 6 class getting ready for big school › image",
+      "comments": [
+        {
+          "role": "owner",
+          "date": "2026-10-28T19:06",
+          "text": "can we make all these images pointalism like dot-pattern"
+        },
+        {
+          "role": "claude",
+          "date": "2026-10-28T19:14",
+          "text": "Done. All six card pictures are now dot patterns, like a newspaper halftone. Bigger dots show the image's darker or lighter areas, so the photo still reads. The dots are drawn in each card's accent colour:\n- ink on the pink Primary card\n- white on blue\n- butter on The Source's red\n- gold on the candle-dark Lourdes card\n- lilac on purple\n- mint on green\n\nThey're small files, about 25–30KB each. If you'd prefer finer or chunkier dots, I can change the spacing."
+        }
+      ]
+    },
+    {
+      "n": 5,
+      "id": "02ef61df-3c78-41e6-bf9e-4ed3b426f9ce",
+      "page": "index.html",
+      "status": "resolved",
+      "sentToClaude": true,
+      "location": "The Year 6 class getting ready for big school",
+      "comments": [
+        {
+          "role": "owner",
+          "date": "2026-10-28T19:06",
+          "text": "i want font similar to on tiny wins and ad a bit more detail here"
+        },
+        {
+          "role": "claude",
+          "date": "2026-10-28T19:14",
+          "text": "Done. The fonts now match TinyWins' pairing on their approach page:\n- Card headlines use Inter Tight, a free font close to their Suisse Intl: medium weight, sentence case, tight spacing.\n- Card paragraphs use Newsreader, a book serif close to their Gramercy.\n- The Lourdes title keeps its italic serif for weight.\n\nEvery card now has a fuller paragraph (four or five sentences), e.g. the Year 6 card covers moving up, what happens on the day, the team leading every session and groups leaving braver. Please check the facts in the Lourdes and Village copy.\n\nFor now this only affects these cards and the What's on cards. Say if you want the same fonts across the whole site."
+        }
+      ]
+    },
+    {
+      "n": 6,
+      "id": "4df5641c-0e4c-406e-ad4e-7e5ec128deaa",
+      "page": "index.html",
+      "status": "resolved",
+      "sentToClaude": true,
+      "location": "Watch us on TikTok › text \"We love all retreats The Source is comi…\"",
+      "comments": [
+        {
+          "role": "owner",
+          "date": "2026-10-28T19:07",
+          "text": "look at tiny wins see how theyve done the scrolling"
+        },
+        {
+          "role": "claude",
+          "date": "2026-10-28T19:15",
+          "text": "Done, following their careers-page collage. On desktop the YMDunk video stays pinned in the middle while you scroll through the section. The other six windows sit around it at different sizes and shapes (portrait, square, landscape) and scroll past at their own speeds, so they drift by like the video-call windows on TinyWins. On phones it stays a swipeable row, which works better on a small screen."
+        }
+      ]
+    }
+  ],
   "pages": [
     {
       "page": "index.html",
       "title": "Youth Ministry Team · Diocese of Hexham & Newcastle",
       "frames": {
-        "desktop": {
-          "width": 1440,
-          "height": 9835,
-          "fullHeight": 9835,
-          "png": "index-desktop.png",
-          "jpg": "index-desktop.jpg"
-        },
-        "mobile": {
+        "390": {
           "width": 390,
-          "height": 9731,
-          "fullHeight": 9731,
-          "png": "index-mobile.png",
-          "jpg": "index-mobile.jpg"
+          "height": 9723,
+          "fullHeight": 9723,
+          "png": "index-390.png"
+        },
+        "1440": {
+          "width": 1440,
+          "height": 9628,
+          "fullHeight": 9628,
+          "png": "index-1440.png"
         }
       },
       "pins": [
@@ -49,24 +175,10 @@
           ],
           "override": {
             "selector": ".hero__open",
-            "reason": "The hero \"Explore\" link is now the \"Who it's for\" link at the bottom of the hero."
+            "reason": "The hero \"Explore\" link is now the \"Who it's for\" button at the bottom of the hero."
           },
           "at": {
-            "desktop": {
-              "n": 1,
-              "match": "override",
-              "drift": true,
-              "box": {
-                "x": 642,
-                "y": 758,
-                "w": 155,
-                "h": 48
-              },
-              "x": 670,
-              "y": 782,
-              "clamped": false
-            },
-            "mobile": {
+            "390": {
               "n": 1,
               "match": "override",
               "drift": true,
@@ -79,265 +191,19 @@
               "x": 48,
               "y": 796,
               "clamped": false
-            }
-          }
-        },
-        {
-          "n": 2,
-          "id": "ffd606c1-028b-4a43-a191-c1ca2427d297",
-          "status": "resolved",
-          "location": null,
-          "quote": null,
-          "anchor": "body:nth-of-type(1)",
-          "comments": [
-            {
-              "role": "owner",
-              "date": "2026-10-28T19:04",
-              "text": "do a white background on this and have the pictures fade in opacity"
             },
-            {
-              "role": "claude",
-              "date": "2026-10-28T19:14",
-              "text": "Done. The pinned \"Come away feeling…\" frame is now white. The photos fade out the further they are from the middle, so only the centre one is at full strength. Each programme's colour now sits only on the changing word, as a block behind it: pink for curious, red for joyful, candle-dark with a gold serif for still, green for rested."
-            }
-          ],
-          "override": {
-            "selector": ".feel",
-            "reason": "Placed on the whole page; the reply in the thread names the \"Come away feeling…\" frame."
-          },
-          "at": {
-            "desktop": {
-              "n": 2,
-              "match": "override",
-              "drift": false,
-              "box": {
-                "x": 0,
-                "y": 1762,
-                "w": 1440,
-                "h": 747
-              },
-              "x": 28,
-              "y": 1790,
-              "clamped": false
-            },
-            "mobile": {
-              "n": 2,
-              "match": "override",
-              "drift": false,
-              "box": {
-                "x": 0,
-                "y": 1659,
-                "w": 390,
-                "h": 547
-              },
-              "x": 28,
-              "y": 1687,
-              "clamped": false
-            }
-          }
-        },
-        {
-          "n": 3,
-          "id": "df4ab96c-364a-4ba6-b1ef-da59fe3b7535",
-          "status": "resolved",
-          "location": "What's on at YMT › text \"What's on, scroll sideways\"",
-          "quote": null,
-          "anchor": "#whatson > div:nth-of-type(3)",
-          "comments": [
-            {
-              "role": "owner",
-              "date": "2026-10-28T19:05",
-              "text": "look at the Latest wins on tiny wins thats how i want the whats on formatted"
-            },
-            {
-              "role": "claude",
-              "date": "2026-10-28T19:14",
-              "text": "Done, in the Latest Wins format. What's on is now a stack of cards. Each has a square thumbnail, a short headline, a tag in its audience colour and a date. There's also a white \"what's on\" button in the header, with a red dot like theirs. It blurs the page and drops the same cards in one by one from a panel on the right; Esc or × closes it.\n\nTwo items are real, taken from YMT's TikTok: The Source in Hartlepool on Tue 10 Nov, and Flame 2027 at Wembley on Sat 6 Mar. The rest are placeholders worded from what each page already says (retreat booking, Lourdes, the Internship, the Festival, the Youth Council, the Village), so dates need confirming."
-            }
-          ],
-          "override": {
-            "selector": ".nav__latest",
-            "reason": "What's on moved into the header \"Latest\" button and panel."
-          },
-          "at": {
-            "desktop": {
-              "n": 3,
+            "1440": {
+              "n": 1,
               "match": "override",
               "drift": true,
               "box": {
-                "x": 1268,
-                "y": 18,
-                "w": 70,
-                "h": 44
+                "x": 642,
+                "y": 758,
+                "w": 155,
+                "h": 48
               },
-              "x": 1296,
-              "y": 40,
-              "clamped": false
-            },
-            "mobile": {
-              "n": 3,
-              "match": "override",
-              "drift": true,
-              "box": {
-                "x": 258,
-                "y": 18,
-                "w": 64,
-                "h": 44
-              },
-              "x": 286,
-              "y": 40,
-              "clamped": false
-            }
-          }
-        },
-        {
-          "n": 4,
-          "id": "b06629e7-8b13-4ced-997a-b75f0fd31832",
-          "status": "resolved",
-          "location": "The Year 6 class getting ready for big school › image",
-          "quote": null,
-          "anchor": "#main > section:nth-of-type(4) > div:nth-of-type(2) > article:nth-of-type(1) > img:nth-of-type(1)",
-          "comments": [
-            {
-              "role": "owner",
-              "date": "2026-10-28T19:06",
-              "text": "can we make all these images pointalism like dot-pattern"
-            },
-            {
-              "role": "claude",
-              "date": "2026-10-28T19:14",
-              "text": "Done. All six card pictures are now dot patterns, like a newspaper halftone. Bigger dots show the image's darker or lighter areas, so the photo still reads. The dots are drawn in each card's accent colour:\n- ink on the pink Primary card\n- white on blue\n- butter on The Source's red\n- gold on the candle-dark Lourdes card\n- lilac on purple\n- mint on green\n\nThey're small files, about 25–30KB each. If you'd prefer finer or chunkier dots, I can change the spacing."
-            }
-          ],
-          "override": {
-            "selector": ".who__card[href=\"primary.html\"] .who__art",
-            "reason": "The Year 6 card is now the Primary card under \"Who is it for?\"; this is its picture."
-          },
-          "at": {
-            "desktop": {
-              "n": 4,
-              "match": "override",
-              "drift": true,
-              "box": {
-                "x": 337,
-                "y": 5940,
-                "w": 460,
-                "h": 345
-              },
-              "x": 365,
-              "y": 5968,
-              "clamped": false
-            },
-            "mobile": {
-              "n": 4,
-              "match": "override",
-              "drift": true,
-              "box": {
-                "x": 42,
-                "y": 5213,
-                "w": 306,
-                "h": 230
-              },
-              "x": 70,
-              "y": 5241,
-              "clamped": false
-            }
-          }
-        },
-        {
-          "n": 5,
-          "id": "02ef61df-3c78-41e6-bf9e-4ed3b426f9ce",
-          "status": "resolved",
-          "location": "The Year 6 class getting ready for big school",
-          "quote": "A day or two at the Village with games, quiet time and a chance to talk about change, friendship and faith before secondary school.",
-          "anchor": null,
-          "comments": [
-            {
-              "role": "owner",
-              "date": "2026-10-28T19:06",
-              "text": "i want font similar to on tiny wins and ad a bit more detail here"
-            },
-            {
-              "role": "claude",
-              "date": "2026-10-28T19:14",
-              "text": "Done. The fonts now match TinyWins' pairing on their approach page:\n- Card headlines use Inter Tight, a free font close to their Suisse Intl: medium weight, sentence case, tight spacing.\n- Card paragraphs use Newsreader, a book serif close to their Gramercy.\n- The Lourdes title keeps its italic serif for weight.\n\nEvery card now has a fuller paragraph (four or five sentences), e.g. the Year 6 card covers moving up, what happens on the day, the team leading every session and groups leaving braver. Please check the facts in the Lourdes and Village copy.\n\nFor now this only affects these cards and the What's on cards. Say if you want the same fonts across the whole site."
-            }
-          ],
-          "override": {
-            "selector": ".who__card[href=\"primary.html\"] .who__body",
-            "reason": "The Year 6 card is now the Primary card under \"Who is it for?\"; this is its text."
-          },
-          "at": {
-            "desktop": {
-              "n": 5,
-              "match": "override",
-              "drift": false,
-              "box": {
-                "x": 934,
-                "y": 5676,
-                "w": 426,
-                "h": 51
-              },
-              "x": 962,
-              "y": 5702,
-              "clamped": false
-            },
-            "mobile": {
-              "n": 5,
-              "match": "override",
-              "drift": false,
-              "box": {
-                "x": 42,
-                "y": 5074,
-                "w": 306,
-                "h": 77
-              },
-              "x": 70,
-              "y": 5102,
-              "clamped": false
-            }
-          }
-        },
-        {
-          "n": 6,
-          "id": "4df5641c-0e4c-406e-ad4e-7e5ec128deaa",
-          "status": "resolved",
-          "location": "Watch us on TikTok › text \"We love all retreats The Source is comi…\"",
-          "quote": null,
-          "anchor": "#main > section:nth-of-type(5) > div:nth-of-type(3)",
-          "comments": [
-            {
-              "role": "owner",
-              "date": "2026-10-28T19:07",
-              "text": "look at tiny wins see how theyve done the scrolling"
-            },
-            {
-              "role": "claude",
-              "date": "2026-10-28T19:15",
-              "text": "Done, following their careers-page collage. On desktop the YMDunk video stays pinned in the middle while you scroll through the section. The other six windows sit around it at different sizes and shapes (portrait, square, landscape) and scroll past at their own speeds, so they drift by like the video-call windows on TinyWins. On phones it stays a swipeable row, which works better on a small screen."
-            }
-          ],
-          "override": {
-            "selector": null,
-            "reason": "The \"Watch us on TikTok\" section is no longer on the home page."
-          },
-          "at": {
-            "desktop": {
-              "n": 6,
-              "match": "removed",
-              "drift": true,
-              "box": null,
-              "x": null,
-              "y": null,
-              "clamped": false
-            },
-            "mobile": {
-              "n": 6,
-              "match": "removed",
-              "drift": true,
-              "box": null,
-              "x": null,
-              "y": null,
+              "x": 670,
+              "y": 782,
               "clamped": false
             }
           }
