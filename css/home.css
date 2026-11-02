@@ -75,6 +75,7 @@
 .chapter { min-height: 72vh; display: grid; align-content: center; gap: 18px; padding-block: 10vh; }
 .chapter:first-child { padding-top: 0; min-height: 60vh; align-content: start; }
 .chapter .kicker { opacity: .7; }
+.chapter__img { display: none; }
 .chapter p { font: 400 clamp(20px, 1.6vw, 24px)/1.55 var(--sans); max-width: 36ch; }
 .chapter blockquote p { font: 400 clamp(32px, 3.4vw, 54px)/1.12 var(--sans); letter-spacing: -.015em; max-width: 20ch; }
 .chapter blockquote .sw { opacity: var(--so, 1); transition: opacity .2s linear; }
@@ -114,8 +115,10 @@
   .ethos__pillars { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .ethos__pillars li:nth-child(3) { padding-left: 0; border-left: 0; }
   .story__grid { grid-template-columns: minmax(0, 1fr); }
-  .story__frame { position: sticky; top: 76px; height: 44svh; order: -1; z-index: 1; }
-  .chapter { min-height: 60svh; }
+  /* Phones: each chapter carries its own photo, so text never scrolls under a pinned frame. */
+  .story__frame { display: none; }
+  .chapter, .chapter:first-child { min-height: 0; padding-block: 0 var(--sp-8); }
+  .chapter__img { display: block; width: 100%; aspect-ratio: 4 / 3; object-fit: cover; }
 }
 @media (max-width: 680px) {
   .label { grid-template-columns: 38px minmax(0, 1fr) auto; gap: 10px; font-size: 11px; }
