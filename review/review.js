@@ -1,7 +1,21 @@
 /* Review mode for the client preview on claude.ai. Not part of the live site:
    outside the claude.ai viewer the comments capability is absent and nothing renders. */
 (async () => {
-  if (!window.claude || typeof window.claude.use !== 'function') return;
+  const REVIEW_COPY_URL = 'https://claude.ai/artifact/6EH6MLrH7ecfBfVtt6vfw1';
+  const STAGING_HOSTS = ['github.io', 'pages.dev', 'localhost', '127.0.0.1'];
+
+  if (!window.claude || typeof window.claude.use !== 'function') {
+    // Staging copy outside claude.ai: point reviewers at the commentable copy. Never shows on ymt.org.
+    if (!STAGING_HOSTS.some((host) => location.hostname === host || location.hostname.endsWith('.' + host))) return;
+    const link = document.createElement('a');
+    link.href = REVIEW_COPY_URL;
+    link.target = '_blank';
+    link.rel = 'noopener';
+    link.textContent = 'Preview site · Leave feedback';
+    link.setAttribute('style', 'position:fixed;z-index:2147483000;right:calc(16px + env(safe-area-inset-right,0px));bottom:calc(16px + env(safe-area-inset-bottom,0px));display:inline-flex;align-items:center;min-height:48px;padding:0 20px;border-radius:999px;background:#fff;color:#100c15;font:600 14px/1.2 "Inter Tight",system-ui,sans-serif;text-decoration:none;box-shadow:0 6px 24px rgba(16,12,21,.35),0 0 0 1px rgba(16,12,21,.12)');
+    document.body.appendChild(link);
+    return;
+  }
   const comments = await window.claude.use('comments');
   if (!comments || typeof comments.openComposer !== 'function') return;
 

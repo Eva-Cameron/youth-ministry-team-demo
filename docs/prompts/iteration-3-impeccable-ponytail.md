@@ -132,13 +132,20 @@ Mary reviews the site in a claude.ai artifact, and every page there has a **Comm
 7. **Repeat.** Write `review/README.md` covering how to re-run the tool after each round of comments.
 8. **Close the loop.** After each fix lands, reply in the matching thread saying what changed, and resolve it. Only resolve threads Eva has sent to Claude; list the others for her.
 
-## 5. Ship to the review copy
+## 5. Ship it: the staging site and the review copy
 
-When A–D are merged into `review/iteration-3`, republish the review artifact (same URL) so Mary sees the new build:
-- every page includes `<script src="js/review.js" defer>`, copied from `review/review.js`
-- capabilities stay `{comments: {composer_only: true}}`
+Both links go to Mary and the team, so both must show the new build.
 
-The review script stays out of the GitHub pages themselves.
+When A–D are merged into `review/iteration-3`, peer-reviewed, and `impeccable detect` is clean:
+1. **Staging site (GitHub Pages).**
+   - Fast-forward `main` to `review/iteration-3` (`git checkout main && git merge --ff-only review/iteration-3 && git push origin main`). GitHub Pages serves `main` at https://eva-cameron.github.io/youth-ministry-team-demo/.
+   - Every page keeps its `noindex` meta and its `review/review.js` tag, both marked "staging only: remove at launch". On github.io, that script shows a "Preview site · Leave feedback" pill linking to the review copy. On ymt.org it does nothing.
+   - If the merge isn't a fast-forward, stop and ask Eva. Never force-push `main`.
+   - Then load the Pages URL and check that the home page and the four routes render.
+2. **Review copy (artifact).**
+   - Republish https://claude.ai/artifact/6EH6MLrH7ecfBfVtt6vfw1 (read it first, same URL) with the new build. Every page includes `<script src="js/review.js" defer>`, copied from `review/review.js`.
+   - Capabilities stay `{comments: {composer_only: true}}`, and existing comment threads carry over.
+3. **Report.** Tell Eva both links are live, and list anything that differs between them.
 
 ## 6. Done means
 - `impeccable detect` shows zero failures, apart from the font waiver.

@@ -78,6 +78,16 @@ It must be repeatable after every round of comments, by Eva or by an agent, with
 - After a fix for a thread lands on the iteration branch, reply in that thread in one plain sentence saying what changed, then resolve it.
 - Only resolve threads that are marked as sent to Claude. List the other open threads for Eva, so she can send them to Claude or resolve them herself.
 
+### 7 · Make it live for Mary and the team
+- When parts 1–6 are reviewed and merged into `feat/review-board`, merge `feat/review-board` into the iteration branch it came from. Then fast-forward `main` to that branch and push it (`git merge --ff-only`; if it isn't a fast-forward, stop and ask Eva, and never force-push).
+- GitHub Pages serves `main` at https://eva-cameron.github.io/youth-ministry-team-demo/. Every page there shows a "Preview site · Leave feedback" pill linking to the review copy where Mary comments.
+- Republish the review artifact (read it first, same URL) so its pages match `main`, with `js/review.js` copied from `review/review.js` and capabilities `{comments: {composer_only: true}}`.
+- Give Eva the four links to send:
+  - the site
+  - the review copy
+  - the review board
+  - the Figma file
+
 ## Done means
 - A real run on the current threads produces a Figma file, a board link, an MP4 and a GIF.
 - Every pin lands on its element at both widths. Spot-check five.
