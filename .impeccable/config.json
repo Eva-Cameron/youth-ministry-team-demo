@@ -4,12 +4,6 @@
     "ignoreFiles": [],
     "ignoreValues": [
       {
-        "rule": "overused-font",
-        "value": "space grotesk",
-        "createdAt": "2026-11-02T12:06:16.302Z",
-        "reason": "client: fonts pinned in the iteration-3 brief (Space Grotesk, Satoshi, Space Mono); Eva confirmed 2 Nov 2026"
-      },
-      {
         "rule": "cramped-padding",
         "value": "*",
         "files": [
