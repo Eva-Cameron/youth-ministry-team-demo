@@ -1,13 +1,13 @@
 #!/usr/bin/env bash
-# Starts Claude Code with the ponytail team on the YMT comment system.
-# Run from anywhere: bash tools/dispatch-comment-system.sh
+# Starts Claude Code with the ponytail team on YMT iteration 3 (design, forms, content, comment system).
+# Run from anywhere: bash tools/dispatch-iteration-3.sh
 
 # ---- config ---------------------------------------------------------------
 REPO_DIR="$HOME/code/youth-ministry-team-demo"   # your local clone
 REPO_URL="https://github.com/Eva-Cameron/youth-ministry-team-demo"
-BASE_BRANCHES="review/iteration-3 review/iteration-2"   # first one that exists is used
-WORK_BRANCH="feat/review-board"
-PROMPT_FILE="docs/prompts/ponytail-comment-system.md"
+BASE_BRANCHES="main"                                  # iteration 3 is cut from main
+WORK_BRANCH="review/iteration-3"
+PROMPT_FILE="docs/prompts/iteration-3-impeccable-ponytail.md"
 DISPATCH_COMMAND="/ponytail"                       # or /dev-teams
 CLAUDE_BIN="claude"
 # ---------------------------------------------------------------------------
@@ -48,11 +48,12 @@ fi
 [ -f "$PROMPT_FILE" ] || { echo "Prompt not found: $PROMPT_FILE (is $base up to date?)"; exit 1; }
 
 if [ ! -f node_modules/playwright/package.json ]; then
-  echo "Installing Playwright for the board recorder"
+  echo "Installing Playwright (review board) and Wrangler (Cloudflare Pages Functions)"
   [ -f package.json ] || npm init -y >/dev/null
-  npm install --save-dev --silent playwright
+  npm install --save-dev --silent playwright wrangler
   npx --yes playwright install chromium
 fi
+python3 -c "import PIL, numpy" 2>/dev/null || echo "Note: the photo colour-pop tool needs Pillow and numpy (pip install pillow numpy)."
 command -v ffmpeg >/dev/null || echo "Note: ffmpeg isn't installed; the agents will need it for the MP4 (sudo dnf install ffmpeg / brew install ffmpeg)."
 
 echo "Starting Claude Code with $DISPATCH_COMMAND on $WORK_BRANCH"

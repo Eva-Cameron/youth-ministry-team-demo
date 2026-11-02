@@ -1,12 +1,13 @@
 /* Review mode for the client preview on claude.ai. Not part of the live site:
    outside the claude.ai viewer the comments capability is absent and nothing renders. */
 (async () => {
-  const REVIEW_COPY_URL = 'https://claude.ai/artifact/6EH6MLrH7ecfBfVtt6vfw1';
+  // Set to the Cloudflare staging URL once the comment system (workstream G) is live.
+  const REVIEW_COPY_URL = '';
   const STAGING_HOSTS = ['github.io', 'pages.dev', 'localhost', '127.0.0.1'];
 
   if (!window.claude || typeof window.claude.use !== 'function') {
     // Staging copy outside claude.ai: point reviewers at the commentable copy. Never shows on ymt.org.
-    if (!STAGING_HOSTS.some((host) => location.hostname === host || location.hostname.endsWith('.' + host))) return;
+    if (!REVIEW_COPY_URL || !STAGING_HOSTS.some((host) => location.hostname === host || location.hostname.endsWith('.' + host))) return;
     const link = document.createElement('a');
     link.href = REVIEW_COPY_URL;
     link.target = '_blank';
