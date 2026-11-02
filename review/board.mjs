@@ -63,12 +63,14 @@ const MIME = {
 };
 
 const commentsDoc = JSON.parse(await readFile(join(ROOT, 'review/comments.json'), 'utf8'));
+// Page names come from viewer comment metadata: only plain site page file names are captured.
 const threads = commentsDoc.threads
   .map((thread) => ({ ...thread, page: thread.page || 'index.html' }))
+  .filter((thread) => { const ok = /^[\w-]+\.html$/.test(thread.page); if (!ok) console.warn(`skipped thread with unexpected page name: ${JSON.stringify(thread.page)}`); return ok; })
   .sort((one, two) => (one.comments[0]?.date || '').localeCompare(two.comments[0]?.date || ''));
 threads.forEach((thread, index) => { thread.n = index + 1; });
 const pinned = threads.filter((thread) => INCLUDE_RESOLVED || thread.status === 'open');
-const pageFiles = [...new Set(threads.map((thread) => thread.page))];
+const pageFiles = [...new Set(pinned.map((thread) => thread.page))];
 await mkdir(OUT, { recursive: true });
 
 const server = createServer(async (request, response) => {
@@ -173,7 +175,7 @@ for (const pageFile of pageFiles) {
         const [match, el] = found;
         const rect = el.getBoundingClientRect();
         const box = { x: Math.round(rect.left + scrollX), y: Math.round(rect.top + scrollY), w: Math.round(rect.width), h: Math.round(rect.height) };
-        return { n: pin.n, match, drift, box, x: Math.round(box.x + Math.min(box.w / 2, 28)), y: Math.round(box.y + Math.min(box.h / 2, 28)) };
+        return { n: pin.n, match, drift, box, x: Math.round(box.x + box.w / 2), y: Math.round(box.y + box.h / 2) };
       });
     }, entry.pins.map((pin) => ({ n: pin.n, anchor: pin.anchor, location: pin.location, quote: pin.quote, override: pin.override })));
 

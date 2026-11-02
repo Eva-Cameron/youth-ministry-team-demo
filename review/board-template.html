@@ -340,9 +340,12 @@ body.is-recording, body.is-recording .stage { cursor: none; }
       const moved = spot.x === null;
       const pinX = moved ? gutterX + GUTTER_W / 2 : sectionX + spot.x;
       const pinY = moved ? FRAME_Y + 110 + movedIndex++ * 120 : FRAME_Y + spot.y;
-      const place = moved || spot.x + 470 < main.width ? 'right' : 'left';
+      // Callouts sit clear of the element they comment on, not on top of it.
+      const edgeR = moved ? pinX : sectionX + spot.box.x + spot.box.w;
+      const edgeL = moved ? pinX : sectionX + spot.box.x;
+      const place = moved || spot.box.x + spot.box.w + 470 < main.width ? 'right' : 'left';
       const view = makeCallout(pin, place);
-      view.box.style.left = (place === 'right' ? pinX + 40 : pinX - 40 - 420) + 'px';
+      view.box.style.left = (place === 'right' ? edgeR + 24 : edgeL - 24 - 420) + 'px';
       view.box.style.top = (pinY - 36) + 'px';
       const dot = makePin(pin, false);
       dot.style.left = pinX + 'px'; dot.style.top = pinY + 'px';

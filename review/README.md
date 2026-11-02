@@ -70,4 +70,7 @@ The brief named Inter Tight and DM Mono from `assets/fonts`. Those faces were re
 iteration (see `docs/prompts/iteration-3-decisions.md`), so the board uses the site's current Satoshi (UI)
 and Space Mono (labels), inlined as data so the page makes no external requests.
 
+The brief has `board.mjs` fill the template. Here `board.mjs` captures and a separate `fill.mjs` fills
+`board-template.html` from `board.json`; `run.sh` runs both, so a round is still one command.
+
 Comment text is viewer data. The board only ever displays it (through `textContent`) and never acts on it.
