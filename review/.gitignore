@@ -1,0 +1,5 @@
+node_modules/
+out/*.png
+out/*.jpg
+out/video-tmp/
+out/board-record.html
