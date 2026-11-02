@@ -315,46 +315,36 @@
     parts.forEach((el) => { if (!el.matches('.words, .shot')) el.classList.add('rise'); io.observe(el); });
   } else parts.forEach((el) => el.classList.add('in'));
 
-  // Videos load and play only while on screen. Under reduced motion they show their posters and
+  // Videos load and play only while on screen, every clip at once (Eva, 2 Nov). Under reduced motion they show their posters and
   // load nothing; one toggle pauses every clip (WCAG 2.2.2).
   const vids = $$('video[data-src]');
   const clipsBtn = $('[data-clips-toggle]');
   let clipsPaused = reduce;
   const onScreen = new Set();
-  // Only the lead clip (the pinned one in the TikTok stage) autoplays.
-  const lead = (v) => !v.closest('.phone') || !!v.closest('.phone--hero');
   if (vids.length && !reduce && 'IntersectionObserver' in window) {
     const vio = new IntersectionObserver((es) => es.forEach((x) => {
       const v = x.target;
-      if (x.isIntersecting) { onScreen.add(v); if (!v.src) { v.src = v.dataset.src; v.load(); } if (!clipsPaused && lead(v)) v.play().catch(() => {}); }
+      if (x.isIntersecting) { onScreen.add(v); if (!v.src) { v.src = v.dataset.src; v.load(); } if (!clipsPaused) v.play().catch(() => {}); }
       else { onScreen.delete(v); if (!v.paused) v.pause(); }
     }), { rootMargin: '200px 0px' });
     vids.forEach((v) => vio.observe(v));
-    // The rest play while pointed at or focused, so the page never decodes every clip at once.
-    vids.filter((v) => !lead(v)).forEach((v) => {
-      const host = v.closest('a') || v;
-      const play = () => { if (!clipsPaused) v.play().catch(() => {}); };
-      host.addEventListener('pointerenter', play); host.addEventListener('focusin', play);
-      host.addEventListener('pointerleave', () => v.pause()); host.addEventListener('focusout', () => v.pause());
-    });
   }
   if (clipsBtn) {
     const setClips = () => { clipsBtn.setAttribute('aria-pressed', String(clipsPaused)); clipsBtn.textContent = clipsPaused ? 'Play clips' : 'Pause clips'; };
     clipsBtn.hidden = reduce;
     clipsBtn.addEventListener('click', () => {
       clipsPaused = !clipsPaused;
-      vids.forEach((v) => { if (clipsPaused) v.pause(); else if (onScreen.has(v) && lead(v)) v.play().catch(() => {}); });
+      vids.forEach((v) => { if (clipsPaused) v.pause(); else if (onScreen.has(v)) v.play().catch(() => {}); });
       setClips();
     });
     setClips();
   }
 
-  // TikTok stage (wide screens): the side windows scroll past the pinned one at their own speeds, and the
-  // pinned one changes clip as you go, so the long scroll isn't spent on one video.
+  // TikTok stage (wide screens): every window drifts at its own speed and zooms in as it nears the middle.
   const stage = $('[data-phones]');
   if (stage && !reduce) {
     const wide = matchMedia('(min-width: 1051px)');
-    const phones = $$('.phone[data-speed]', stage);
+    const phones = $$('.phone', stage);
     let ticking = false;
     const move = () => {
       ticking = false;
@@ -363,37 +353,16 @@
       const vh = innerHeight;
       if (r.bottom < 0 || r.top > vh) return;
       const p = (vh - r.top) / (vh + r.height);
-      phones.forEach((ph) => ph.style.setProperty('--py', ((.5 - p) * parseFloat(ph.dataset.speed) * vh * .9).toFixed(1) + 'px'));
-      // While it's pinned, the middle phone moves on to the next clip at each stage of the scroll.
-      const q = Math.min(.999, Math.max(0, -r.top / Math.max(1, r.height - vh)));
-      show(Math.floor(q * reel.length));
+      phones.forEach((ph) => ph.style.setProperty('--py', ((.5 - p) * parseFloat(ph.dataset.speed || .3) * vh * .9).toFixed(1) + 'px'));
+      // Zoom: full size and on top at the middle of the screen, smaller towards the edges.
+      phones.forEach((ph) => {
+        const b = ph.getBoundingClientRect();
+        const near = Math.max(0, 1 - Math.abs((b.top + b.height / 2) / vh - .5) * 1.6);
+        const z = .76 + .38 * near * near * (3 - 2 * near);
+        ph.style.setProperty('--z', z.toFixed(3));
+        ph.style.zIndex = String(Math.round(z * 10));
+      });
     };
-    // The clips the middle phone plays in turn: its own first, then three of the windows around it.
-    const hero = $('.phone--hero', stage);
-    const heroVid = hero && $('video', hero);
-    const clipOf = (ph) => ({ ph, href: ph.href, label: ph.getAttribute('aria-label'), cap: $('.phone__cap', ph).textContent, poster: $('video', ph).poster, src: $('video', ph).dataset.src });
-    const reel = hero ? ['.phone--hero', '.phone--4', '.phone--1', '.phone--5'].map((s) => $(s, stage)).filter(Boolean).map(clipOf) : [];
-    let showing = 0;
-    const steps = document.createElement('span');
-    steps.className = 'phone__steps';
-    steps.setAttribute('aria-hidden', 'true');
-    steps.innerHTML = reel.map(() => '<i></i>').join('');
-    if (hero) hero.prepend(steps);
-    const show = (k) => {
-      if (!hero || !wide.matches || k === showing) return;
-      showing = k;
-      const c = reel[k];
-      hero.href = c.href;
-      hero.setAttribute('aria-label', c.label);
-      $('.phone__cap', hero).textContent = c.cap;
-      heroVid.poster = c.poster;
-      heroVid.dataset.src = c.src;
-      if (heroVid.src) { heroVid.src = c.src; heroVid.load(); if (!clipsPaused) heroVid.play().catch(() => {}); }
-      reel.forEach((r, i) => { if (r.ph !== hero) r.ph.classList.toggle('is-on-stage', i === k); });
-      [...steps.children].forEach((s, i) => s.classList.toggle('is-on', i === k));
-      hero.classList.remove('is-swap'); void hero.offsetWidth; hero.classList.add('is-swap');
-    };
-    steps.firstChild?.classList.add('is-on');
     addEventListener('scroll', () => { if (!ticking) { ticking = true; requestAnimationFrame(move); } }, { passive: true });
     move();
   }

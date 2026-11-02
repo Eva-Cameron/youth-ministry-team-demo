@@ -71,4 +71,4 @@ Eva's answers on the v2 brief (`docs/prompts/iteration-3-round-2.md` and the v2 
 
 ### Bookings form and TikTok (Eva, 2 November)
 - Bookings now go through an internal form on enquire.html, which emails the bookings team or the office (functions/api/enquire.js, Resend). Every booking button opens it with its topic chosen; the mailto links stay as a fallback. Routing and setup are in docs/forms-routing.md. This lifts the "no forms" rule from the first brief, as the v2 brief allowed.
-- TikTok (volunteer page): the pinned phone moves through four clips as you scroll, with progress bars along its top, instead of one clip the whole way down.
+- TikTok (volunteer page): nothing is pinned any more. Every clip plays at once while on screen, and each window zooms in as it nears the middle of the screen and back out as it leaves (Eva, 2 November). The Pause clips button still stops them all.

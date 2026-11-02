@@ -476,32 +476,23 @@ body[data-aud] .tl__item.is-next::before { background: var(--acc-on-dark); color
 .photo-band__bg { position: absolute; inset: 0; z-index: -1; }
 .photo-band__bg img { width: 100%; height: 100%; object-fit: cover; filter: brightness(.5); }
 
-/* TikTok windows: one pinned, the rest scroll past at their own speeds (wide screens). */
+/* TikTok windows: all playing, drifting past at their own speeds and zooming in near the middle (wide screens). */
 .tiktok { padding-top: var(--section); overflow: clip; }
 .phones { display: flex; gap: 14px; overflow-x: auto; padding: 0 var(--gutter) var(--sp-8); scroll-snap-type: x mandatory; scrollbar-width: none; }
 .phone { position: relative; flex: 0 0 min(56vw, 260px); aspect-ratio: 9 / 16; overflow: hidden; background: #000; box-shadow: 0 0 0 1px var(--line); text-decoration: none; scroll-snap-align: center; border-radius: var(--r-md); }
 .phone video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
-/* Which of the pinned phone's clips is playing: short bars along its top edge. */
-.phone__steps { display: none; }
-@media (min-width: 1051px) {
-  .phone__steps { position: absolute; z-index: 2; left: var(--sp-3); right: var(--sp-3); top: var(--sp-3); display: flex; gap: 5px; }
-  .phone__steps i { flex: 1; height: 3px; border-radius: 2px; background: rgba(255, 255, 255, .35); transition: background-color .3s var(--ease); }
-  .phone__steps i.is-on { background: var(--white); }
-}
-@keyframes clip-in { from { opacity: .4; transform: scale(.96); } }
 .phone__cap { --glass-fill: rgba(16, 12, 21, .7); position: absolute; left: var(--sp-2); right: var(--sp-2); bottom: var(--sp-2); padding: 9px var(--sp-3); font: 400 11px/1.3 var(--mono); text-transform: uppercase; border-radius: var(--r-sm); }
 @media (min-width: 1051px) {
-  .phones { position: relative; display: block; height: 280vh; padding: 0; overflow: visible; }
-  .phone { position: absolute; transform: translate3d(0, var(--py, 0px), 0); will-change: transform; }
-  .phone--hero { position: sticky; top: 14vh; display: block; width: calc(72vh * 9 / 16); height: 72vh; margin: 0 auto; transform: none; z-index: 2; }
-  .phone--hero.is-swap { animation: clip-in .55s cubic-bezier(.22, 1, .36, 1); }
-  .phone.is-on-stage { opacity: .3; transition: opacity .4s var(--ease); }
-  .phone--1 { left: 4%; top: 4%; width: 15vw; aspect-ratio: 4 / 3; }
-  .phone--2 { left: 20%; top: 30%; width: 9vw; }
-  .phone--3 { left: 6%; top: 56%; width: 12vw; aspect-ratio: 1; }
-  .phone--4 { left: 71%; top: 8%; width: 10vw; }
-  .phone--5 { left: 76%; top: 38%; width: 15vw; aspect-ratio: 4 / 3; }
-  .phone--6 { left: 68%; top: 62%; width: 9vw; }
+  .phones { position: relative; display: block; height: 150vh; padding: 0; overflow: visible; }
+  /* Every window plays; each zooms in as it nears the middle of the screen and back out as it leaves. */
+  .phone { position: absolute; transform: translate3d(0, var(--py, 0px), 0) scale(var(--z, 1)); will-change: transform; }
+  .phone--hero { left: calc(50% - 60vh * 9 / 32); top: 14%; width: calc(60vh * 9 / 16); }
+  .phone--1 { left: 3%; top: 4%; width: 17vw; aspect-ratio: 4 / 3; }
+  .phone--2 { left: 23%; top: 38%; width: 11vw; }
+  .phone--3 { left: 5%; top: 64%; width: 14vw; aspect-ratio: 1; }
+  .phone--4 { left: 70%; top: 3%; width: 12vw; }
+  .phone--5 { left: 77%; top: 36%; width: 17vw; aspect-ratio: 4 / 3; }
+  .phone--6 { left: 66%; top: 66%; width: 11vw; }
 }
 
 /* Globe (internship): dark ground, purple only on the routes and the selected tag. */
