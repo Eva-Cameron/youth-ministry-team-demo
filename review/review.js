@@ -2,6 +2,8 @@
    any element (an inspector labels it), and leave a thread pinned to it. Threads are shared through
    /api/review/* (Cloudflare Pages Functions + D1). Production ymt.org never shows it. */
 (async () => {
+  // Where this script lives (read before anything waits), so the preview's comment tool loads beside it.
+  const HERE = document.currentScript?.src || location.href;
   // ---- Settings ----
   // The Cloudflare staging site where comments live. The GitHub Pages mirror links here.
   const STAGING_URL = 'PLACEHOLDER_STAGING_URL';
@@ -73,7 +75,15 @@
 
   /* ---------- GitHub Pages mirror: point to the staging site ---------- */
   if (isMirror) {
-    if (STAGING_URL.startsWith('PLACEHOLDER')) return;
+    // Until the Cloudflare comment site exists, the preview keeps comments in each reviewer's browser.
+    if (STAGING_URL.startsWith('PLACEHOLDER')) {
+      box.remove();
+      const local = document.createElement('script');
+      local.src = new URL('review-local.js?v=1', HERE).href;
+      local.defer = true;
+      document.head.append(local);
+      return;
+    }
     const link = make('a', 'rv__btn');
     link.href = STAGING_URL.replace(/\/$/, '') + '/' + here;
     link.innerHTML = icon + '<span>Leave feedback</span>';
