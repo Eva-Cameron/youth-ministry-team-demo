@@ -1,11 +1,13 @@
 /* Colour-pop photos: at rest a photo is greyscale with one colour family left in (pre-rendered into
-   assets/web/pop by tools/colour_pop.py). Hovering it, or the card it sits in, eases it to full colour;
+   assets/web/pop by tools/colour_pop.py), or a fine halftone on the home route cards (assets/web/dots,
+   tools/halftone.py). Hovering it, or the card it sits in, eases it to full colour;
    a tap or click (or Enter / Space on a photo that isn't inside a link) holds it in colour, and a second tap,
    Escape or picking another photo puts it back. The full-colour copy loads only when it's first wanted. */
 (() => {
   'use strict';
-  const POP = '/assets/web/pop/';
-  const isPop = (img) => img.currentSrc.includes(POP) || img.src.includes(POP);
+  const POP = /\/assets\/web\/(pop|dots)\//;
+  // The home story frame crossfades its own stack of photos, so it is left as it is.
+  const isPop = (img) => POP.test(img.currentSrc || img.src) && !img.closest('.story__frame');
   let held = null;
 
   // Wrap a pop photo in a frame holding its full-colour twin, laid exactly over it.

@@ -58,3 +58,11 @@ Eva's answers on the v2 brief (`docs/prompts/iteration-3-round-2.md` and the v2 
 - The pop-up confetti bursts on Primary are removed (`js/confetti.js` deleted). The Memphis shapes are now quieter: tints of the hero pink at partial opacity, fewer and smaller.
 - The contour lines are thicker.
 - Photos: colour-pop is live. Every photo except posters and TikTok frames loads in greyscale with one colour kept, from `assets/web/pop/` (made by `tools/colour_pop.py`). Hovering it, or the card it's in, turns it full colour; a tap holds it in colour. The route duotone is gone.
+
+### Staging comments, round 2 (Eva, 2 November)
+- Home title: the YMT mark (vector, from the intro) replaces the "YMT" text; the h1 keeps "Youth Ministry Team" for screen readers.
+- "Come away feeling …": the changing word sits on a marker swash in its feeling's colour, with a hand-drawn squiggle (a zigzag for the joyful words) under it.
+- The feel strip is bigger and quicker to scroll through, with grain on the white. Its photos are re-cut from the best sources at higher resolution, with no duplicates. Youth Council now uses the field photo.
+- The story frame shows every photo again: the colour-pop wrapper was breaking its crossfade, so it's left out of it.
+- Route cards on home: a fine halftone in each route's colours (`tools/halftone.py`), filling the card under the words, with full colour on hover. This reverses the earlier "no dots" for these four frames only.
+- Under every hero, the bands now step down in solid tints from the hero colour into the page, instead of translucent grey.

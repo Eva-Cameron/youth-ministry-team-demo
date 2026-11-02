@@ -142,7 +142,11 @@
     const svg = document.createElementNS(NS, 'svg');
     svg.setAttribute('viewBox', '0 0 1440 100');
     svg.setAttribute('preserveAspectRatio', 'none');
-    const layers = fromHero ? [['--acc', 1], ...o.layers] : o.layers;
+    // After a hero the bands step down in solid tints from the hero colour to the section's ground, so the hero
+    // settles cleanly into the page instead of fading through translucent grey.
+    const ground = getComputedStyle(section).backgroundColor;
+    const base = ground && ground !== 'rgba(0, 0, 0, 0)' ? ground : tok('--ink');
+    const layers = fromHero ? [['--acc', 1], [`color-mix(in oklab, ${tok('--acc')} 62%, ${base})`, 1], [`color-mix(in oklab, ${tok('--acc')} 28%, ${base})`, 1]] : o.layers;
     const n = layers.length;
     const seed = section.offsetTop * .01;
     // Band k lies between edge k and edge k + 1. After a hero the top edge is the hero's own flat foot,
@@ -152,7 +156,7 @@
     layers.forEach(([c, a], k) => {
       const path = document.createElementNS(NS, 'path');
       path.setAttribute('d', `M${edges[k].join('L')}L${[...edges[k + 1]].reverse().join('L')}Z`);
-      path.setAttribute('fill', tok(c));
+      if (c.startsWith('--')) path.setAttribute('fill', tok(c)); else path.style.fill = c;
       path.setAttribute('fill-opacity', String(a));
       svg.append(path);
     });

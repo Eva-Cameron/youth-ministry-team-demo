@@ -233,6 +233,9 @@
     bottom: 82px;
   }
 }
+/* The home title is the YMT mark itself, sized from the wordmark's font size so every breakpoint carries over. */
+.hero__logo { display: block; height: 1.45em; width: auto; fill: currentColor; filter: drop-shadow(0 4px 30px rgba(0, 0, 0, .18)); }
+.hero__wordmark--logo { justify-content: flex-start; line-height: 1; }
 .hero__wordmark--long {
   font-size: clamp(2.8rem, 9.2vw, 9.6rem);
 }
