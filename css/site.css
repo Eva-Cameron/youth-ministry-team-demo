@@ -98,7 +98,10 @@
   --r-lg: 28px;
   --shadow-1: inset 0 1px 0 rgba(255, 255, 255, .07), 0 12px 32px -14px rgba(0, 0, 0, .6);
   --shadow-2: 0 34px 80px -28px rgba(0, 0, 0, .75), 0 10px 24px -10px rgba(0, 0, 0, .45);
-  /* Texture: a fine grain (SVG noise, blended). */
+  /* Texture: --noise is the fine grain blended into heroes and strata. */
+  /* --grain: the site-wide paper grain, sparse white specks at most 5% alpha, tiled under everything on the dark
+     ground (a body background, so it is never over text). Measured weight about 1% of full scale; keep it under 3%. */
+  --grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 .14 0 0 0 -.045'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E");
   --noise: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='.33 .33 .33 0 0 .33 .33 .33 0 0 .33 .33 .33 0 0 0 0 0 0 .3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 
   /* Page accent; audience and programme pages override it. */
@@ -118,7 +121,7 @@ body[data-aud="everyone"] { --acc: var(--mint); --acc-ink: var(--ink); --acc-2: 
 /* 3 Base */
 *, *::before, *::after { box-sizing: border-box; }
 html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; background: var(--ink); }
-body { margin: 0; background: var(--ink); color: var(--white); font: 400 var(--fs-base)/var(--lh-body) var(--sans); -webkit-font-smoothing: antialiased; overflow-x: clip; }
+body { margin: 0; background: var(--grain) var(--ink); color: var(--white); font: 400 var(--fs-base)/var(--lh-body) var(--sans); -webkit-font-smoothing: antialiased; overflow-x: clip; }
 img, video { display: block; max-width: 100%; height: auto; }
 a { color: inherit; text-underline-offset: .18em; }
 h1, h2, h3, h4, p, ul, ol, figure, blockquote, dl, dd { margin: 0; }
