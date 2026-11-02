@@ -174,6 +174,7 @@
     if (!e) return;
     const image = $('img', fig);
     image.src = img(e.img);
+    fig.classList.toggle('is-poster', e.img.startsWith('ph-poster'));
     $('figcaption', fig).innerHTML = `<small>Next${e.sample ? ' · to be confirmed' : ''}</small><b>${esc(e.title)}</b><span>${esc(when(e))} · ${esc(e.place)}</span>`;
   });
 
