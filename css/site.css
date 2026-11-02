@@ -329,6 +329,11 @@ a.tag::after { content: ""; position: absolute; inset: -13px -4px; }
 .strata svg { display: block; width: 100%; height: 100%; } /* translucent fills: the body grain shows through */
 @media (max-width: 900px) { .phero .terrain { -webkit-mask: linear-gradient(#000 18%, transparent 52%); mask: linear-gradient(#000 18%, transparent 52%); } }
 
+/* Confetti (js/confetti.js, primary only): never takes a tap. Still pieces sit in the downloads' texture,
+   behind the cards; the burst layer floats over the page but under the nav and every overlay. */
+.confetti { position: absolute; left: 0; top: 0; z-index: -1; width: 100%; height: 100%; pointer-events: none; }
+body > .confetti { position: fixed; z-index: 100; }
+
 /* 11 Content blocks */
 /* Work grid: rows of mixed widths; each row shares one height. */
 .work { display: grid; gap: clamp(var(--sp-6), 4vw, var(--sp-8)); }

@@ -18,7 +18,7 @@
   const LIGHT = { lines: { gap: 40, amp: 16, color: '--acc-ink', alpha: .09 }, bands: { depth: .62, layers: [['--acc-on-dark', .1], ['--acc-on-dark', .05]] } };
   const ROUTES = {
     index: { who: { gap: 44, amp: 16, color: '--white', alpha: .07 } },
-    primary: { lines: { gap: 36, amp: 16, color: '--acc-ink', alpha: .1 }, bands: { depth: .7, layers: [['--acc-on-dark', .16], ['--butter', .1], ['--acc-on-dark', .05]] } },
+    primary: { lines: { gap: 36, amp: 16, color: '--acc-ink', alpha: .1 }, bands: { depth: .7, layers: [['--acc-on-dark', .22], ['--lilac', .2], ['--acc-on-dark', .08]] } },
     secondary: { lines: { gap: 17, amp: 20, color: '--sky', alpha: .24, drift: true }, bands: { depth: .72, layers: [['--blue-light', .2], ['--blue', .32], ['--blue-light', .07]] } },
     volunteer: { lines: { gap: 24, amp: 20, color: '--plum', alpha: .24, drift: true }, bands: { depth: .9, layers: [['--purple-text', .3], ['--purple', .42], ['--purple-text', .14], ['--plum', .9]] } },
     everyone: { lines: { gap: 40, amp: 16, color: '--acc-ink', alpha: .1, drift: true }, bands: { depth: .6, layers: [['--acc-on-dark', .1], ['--stone', .05]] } },
