@@ -1,190 +1,89 @@
 <!doctype html>
-<html lang="en-GB" class="no-js">
+<html lang="en-GB">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#120d18">
-  <title>Safeguarding | Youth Ministry Team</title>
-  <meta name="description" content="The Youth Ministry Team's commitment to safeguarding children, young people and vulnerable adults.">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <title>Safeguarding · Youth Ministry Team</title>
+  <meta name="description" content="How the Youth Ministry Team keeps children, young people and vulnerable adults safe, and how to raise a concern.">
+  <link rel="canonical" href="https://www.ymt.org/safeguarding.html">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Youth Ministry Team">
+  <meta property="og:title" content="Safeguarding · Youth Ministry Team">
+  <meta property="og:description" content="How the Youth Ministry Team keeps children, young people and vulnerable adults safe, and how to raise a concern.">
+  <meta property="og:image" content="https://www.ymt.org/assets/web/ph-village-aerial-1600.webp">
+  <meta name="theme-color" content="#100c15">
   <link rel="icon" type="image/png" href="assets/images/logo.png">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=DM+Mono:wght@300;400;500&family=Figtree:ital,wght@0,400;0,500;0,600;0,700;1,500&display=swap" rel="stylesheet">
-  <script>document.documentElement.classList.remove('no-js');document.documentElement.classList.add('js');</script>
-  <link rel="stylesheet" href="css/main.css?v=12">
+  <link rel="preload" href="assets/fonts/archivo-black.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="assets/fonts/inter-tight.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="css/site.css?v=9">
+  <script src="js/boot.js?v=9"></script>
 </head>
 <body>
-  <a class="skip-link" href="#main-content">Skip to content</a>
+  <a class="skip" href="#main">Skip to content</a>
 
-  <header class="site-header" data-header>
-    <a class="site-brand" href="index.html" aria-label="Youth Ministry Team home">
-      <img src="assets/images/logo-white.png" alt="">
-      <span>Youth Ministry Team</span>
-    </a>
-
-    <nav class="desktop-nav" aria-label="Primary">
-      <a href="#about">Our commitment</a>
-      <a href="#concerns">Concerns</a>
+  <header class="nav">
+    <a class="nav__brand" href="./" aria-label="Youth Ministry Team home"><img src="assets/images/logo-white.png" alt="" width="64" height="49"><span>Youth Ministry<br>Team</span></a>
+    <nav class="nav__links" aria-label="Main">
+      <div class="nav__drop">
+        <button type="button" aria-expanded="false" aria-controls="aud-menu">Who it's for <svg viewBox="0 0 12 12" aria-hidden="true"><path d="M2 4l4 4 4-4"/></svg></button>
+        <div class="nav__menu" id="aud-menu"><a href="primary.html"><span class="dot dot--primary"></span><span><b>Primary</b><small>Residential retreats, the Year 6 Festival and classroom resources.</small></span></a><a href="secondary.html"><span class="dot dot--secondary"></span><span><b>Secondary</b><small>Retreats, The Source, Flame and the Youth Council.</small></span></a><a href="volunteer.html"><span class="dot dot--volunteer"></span><span><b>16+ and volunteers</b><small>Festival crew, Lourdes, retreat teams and the Internship.</small></span></a><a href="everyone.html"><span class="dot dot--everyone"></span><span><b>Everyone else</b><small>Parishes, families and groups staying at the Village.</small></span></a></div>
+      </div>
+      <a href="about.html">About us</a>
+      <a href="resources.html">Resources</a>
     </nav>
-
-    <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="site-menu" data-menu-toggle>
-      <span data-menu-label>Menu</span>
-      <span class="menu-toggle__icon" aria-hidden="true"><i></i><i></i></span>
-    </button>
-  </header>
-
-  <div class="menu-panel" id="site-menu" aria-hidden="true" data-menu-panel>
-    <div class="menu-panel__wash" aria-hidden="true"></div>
-    <div class="menu-panel__inner">
-      <div class="menu-panel__top">
-        <a class="menu-brand" href="index.html" aria-label="Youth Ministry Team home">
-          <img src="assets/images/logo.png" alt="">
-          <span>Youth Ministry Team</span>
-        </a>
-      </div>
-
-      <nav class="menu-nav" aria-label="Site menu">
-        <a href="youth-village.html"><span>01</span>The Village</a>
-        <a href="retreats.html"><span>02</span>School Retreats</a>
-        <a href="festival.html"><span>03</span>Festival</a>
-        <a href="lourdes.html"><span>04</span>Lourdes</a>
-        <a href="the-source.html"><span>05</span>The Source</a>
-        <a href="internship.html"><span>06</span>Internship</a>
-        <a href="youth-council.html"><span>07</span>Youth Council</a>
-      </nav>
-
-      <div class="menu-panel__foot">
-        <p>Emmaus Village · Consett · County Durham</p>
-        <div>
-          <a href="mailto:admin@ymt.org">admin@ymt.org</a>
-          <a href="donate.html">Support YMT ↗</a>
-          <a href="safeguarding.html" aria-current="page">Safeguarding</a>
-        </div>
-      </div>
+    <div class="nav__end">
+      <button class="nav__latest" type="button" aria-expanded="false" aria-controls="latest" data-latest-open>Latest <i aria-hidden="true"></i></button>
+      <a class="nav__donate" href="donate.html">Donate</a>
+      <button class="nav__burger" type="button" aria-expanded="false" aria-controls="sheet" aria-label="Menu"><span></span></button>
     </div>
+  </header>
+  <nav class="sheet" id="sheet" aria-label="Menu">
+    <h2>Who it's for</h2><a href="primary.html"><span class="dot dot--primary"></span>Primary</a><a href="secondary.html"><span class="dot dot--secondary"></span>Secondary</a><a href="volunteer.html"><span class="dot dot--volunteer"></span>16+ and volunteers</a><a href="everyone.html"><span class="dot dot--everyone"></span>Everyone else</a>
+    <h2>YMT</h2><a href="about.html">About us</a><a href="resources.html">Resources</a><a href="enquire.html">Enquire</a><a href="donate.html">Donate</a>
+  </nav>
+  <div class="latest" id="latest" data-latest hidden>
+    <div class="latest__veil" data-latest-close></div>
+    <section class="latest__panel" role="dialog" aria-modal="true" aria-labelledby="latest-title">
+      <h2 id="latest-title">Coming up</h2>
+      <ul class="latest__list" role="list"></ul>
+      <a class="latest__all" href="enquire.html">Ask about any of these ↳</a>
+    </section>
+    <button class="latest__close" type="button" aria-label="Close" data-latest-close>×</button>
   </div>
 
-  <main id="main-content">
-    <section class="hero" id="top" aria-labelledby="hero-title">
-      <div class="hero__media" aria-hidden="true" data-hero-media>
-        <img class="hero__scene is-active" src="assets/images/village-aerial.jpg" alt="">
-      </div>
-      <div class="hero__scrim" aria-hidden="true"></div>
-      <div class="hero__grain" aria-hidden="true"></div>
-
-      <h1 class="hero__wordmark hero__wordmark--long" id="hero-title" aria-label="Safeguarding">
-        <span>SAFEGUARDING</span>
-      </h1>
-
-      <div class="hero__subnav" aria-label="Page sections">
-        <a href="#about">Our commitment</a>
-        <a href="#concerns">Concerns</a>
-      </div>
-
-      <div class="hero__bottom">
-        <div class="hero__caption">
-          <span class="hero__count">Children · Young people · Vulnerable adults</span>
-          <p class="hero__caption-title">At the heart of everything</p>
-          <p>Trained, DBS-checked and accountable.</p>
+  <main id="main">
+    <section class="section section--page" aria-labelledby="page-title">
+      <div class="wrap split">
+        <div class="split__aside">
+          <div class="label" aria-hidden="true"><span>YMT</span><span>Safeguarding</span><span>Children · Young people · Vulnerable adults</span></div>
+          <h1 class="h1" id="page-title" data-words>Safeguarding</h1>
+          <p class="lede muted">The Youth Ministry Team follows the safeguarding policies and procedures of the Catholic Church in England and Wales and of the Diocese of Hexham and Newcastle.</p>
         </div>
-
-        <a class="hero__open magnetic" href="#about">
-          <span>Read on</span>
-          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6"/></svg>
-        </a>
-      </div>
-    </section>
-
-    <section class="statement section-shell" id="about">
-      <div class="section-label reveal">
-        <span>01</span>
-        <span>Our commitment</span>
-        <span>Diocese of Hexham &amp; Newcastle</span>
-      </div>
-
-      <div class="statement__grid">
-        <h2 class="display-copy reveal">Care and protection, <em>at the heart of everything.</em></h2>
-        <div class="statement__body reveal">
-          <p>The Youth Ministry Team is committed to the safeguarding policies and procedures of the Catholic Church in England &amp; Wales and of the Diocese of Hexham &amp; Newcastle. Every member of our team is trained and DBS-checked, and we work closely with schools, parishes and the diocesan safeguarding office.</p>
-          <a class="text-link" href="#concerns">If you have a concern <span>↘</span></a>
+        <div class="stack stack--lg">
+          <section class="panel glass stack" aria-labelledby="commit-title"><h2 class="h3" id="commit-title">Our commitments</h2><ul class="ticks" role="list"><li>Safer recruitment, training and DBS checks for all staff and volunteers</li><li>Codes of conduct and supervision ratios for every activity</li><li>Risk assessments for retreats, events and the Festival</li><li>A named safeguarding lead and clear reporting routes</li></ul></section>
+          <section class="panel glass stack" aria-labelledby="concern-title"><h2 class="h3" id="concern-title">If you have a concern</h2><p class="lede">In an emergency, call 999. Otherwise, contact the diocesan safeguarding office, or email <a href="mailto:admin@ymt.org">admin@ymt.org</a> and we will help you reach the right person.</p></section>
+          <dl class="facts"><div><dt>Emergency</dt><dd>Call 999</dd></div><div><dt>Email</dt><dd><a href="mailto:admin@ymt.org">admin@ymt.org</a></dd></div><div><dt>Team</dt><dd>Trained and DBS-checked</dd></div></dl>
         </div>
-      </div>
-
-      <div class="statement__columns">
-        <div class="prose reveal">
-          <h3>Our commitments</h3>
-          <ul>
-            <li>Safer recruitment, training and DBS checks for all staff and volunteers</li>
-            <li>Clear codes of conduct and supervision ratios on every activity</li>
-            <li>Risk assessments for retreats, events and the Festival</li>
-            <li>A named safeguarding lead and clear reporting routes</li>
-          </ul>
-          <h3 id="concerns">Concerns</h3>
-          <p>If you have a safeguarding concern about a child or vulnerable adult, please contact the diocesan safeguarding office or, in an emergency, the police on 999. You can also reach us at <a href="mailto:admin@ymt.org">admin@ymt.org</a> and we will help you reach the right person.</p>
-          <p>This page summarises our commitment — the full diocesan safeguarding policy and current contact details are linked here in production.</p>
-        </div>
-        <div class="reveal">
-          <dl class="facts">
-            <div><dt>Emergency</dt><dd>Call 999</dd></div>
-            <div><dt>Diocesan safeguarding office</dt><dd>Linked in production</dd></div>
-            <div><dt>Email</dt><dd>admin@ymt.org</dd></div>
-            <div><dt>Team</dt><dd>Trained &amp; DBS-checked</dd></div>
-          </dl>
-          <a class="pill-button magnetic" href="mailto:admin@ymt.org">Email the team <span>↗</span></a>
-        </div>
-      </div>
-    </section>
-
-    <section class="closing" aria-label="Raise a concern">
-      <img src="assets/images/valley.jpg" alt="" data-parallax>
-      <div class="closing__scrim" aria-hidden="true"></div>
-      <div class="closing__content section-shell">
-        <span class="mono-label reveal">In an emergency, call 999</span>
-        <h2 class="reveal">Worried about<br>someone? <em>Tell us.</em></h2>
-        <a class="pill-button pill-button--light magnetic reveal" href="mailto:admin@ymt.org">Email admin@ymt.org <span>↗</span></a>
       </div>
     </section>
   </main>
 
-  <footer class="site-footer">
-    <div class="site-footer__top section-shell">
-      <div class="site-footer__wordmark" aria-label="Youth Ministry Team">
-        <span>YOUTH</span>
-        <span>MINISTRY</span>
-        <span>TEAM</span>
+  <footer class="foot">
+    <div class="wrap">
+      <p class="foot__name" aria-hidden="true">YMT</p>
+      <div class="foot__grid">
+        <section><h2>Visit</h2><address>Emmaus Youth Village<br>Pemberton Road<br>Allensford, Consett<br>DH8 9BA</address></section>
+        <section><h2>Who it's for</h2><ul role="list"><li><a href="primary.html">Primary</a></li><li><a href="secondary.html">Secondary</a></li><li><a href="volunteer.html">16+ and volunteers</a></li><li><a href="everyone.html">Everyone else</a></li></ul></section>
+        <section><h2>YMT</h2><ul role="list"><li><a href="about.html">About us</a></li><li><a href="resources.html">Resources</a></li><li><a href="internship.html">The Internship</a></li><li><a href="safeguarding.html">Safeguarding</a></li></ul></section>
+        <section><h2>Contact</h2><ul role="list"><li><a href="enquire.html">Send an enquiry</a></li><li><a href="mailto:admin@ymt.org">admin@ymt.org</a></li><li><a href="mailto:bookings@ymt.org">bookings@ymt.org</a></li></ul></section>
+        <section><h2>Follow</h2><ul role="list"><li><a href="https://www.tiktok.com/@ymttiktok" target="_blank" rel="noopener noreferrer">TikTok</a></li><li><a href="https://instagram.com/youthministryteam/" target="_blank" rel="noopener noreferrer">Instagram</a></li><li><a href="https://facebook.com/youthministryteam/" target="_blank" rel="noopener noreferrer">Facebook</a></li><li><a href="https://www.youtube.com/channel/UCVlOoCyoxRWub3zoPJorMhQ" target="_blank" rel="noopener noreferrer">YouTube</a></li></ul></section>
       </div>
-      <a class="footer-mark" href="#top" aria-label="Back to top"><img src="assets/images/logo-white.png" alt=""></a>
-    </div>
-
-    <div class="site-footer__grid section-shell">
-      <div>
-        <span class="footer-label">Visit</span>
-        <p>Emmaus Village<br>Pemberton Road<br>Allensford, Consett<br>DH8 9BA</p>
-      </div>
-      <div>
-        <span class="footer-label">Talk to us</span>
-        <a href="mailto:admin@ymt.org">admin@ymt.org</a>
-        <a href="safeguarding.html">Safeguarding</a>
-      </div>
-      <div>
-        <span class="footer-label">Follow</span>
-        <a href="https://instagram.com/youthministryteam/" target="_blank" rel="noopener">Instagram ↗</a>
-        <a href="https://facebook.com/youthministryteam/" target="_blank" rel="noopener">Facebook ↗</a>
-        <a href="https://www.youtube.com/channel/UCVlOoCyoxRWub3zoPJorMhQ" target="_blank" rel="noopener">YouTube ↗</a>
-      </div>
-      <div>
-        <span class="footer-label">Support</span>
-        <a class="footer-donate" href="donate.html">Donate to YMT ↗</a>
-      </div>
-    </div>
-
-    <div class="site-footer__legal section-shell">
-      <span>© <span data-year></span> Youth Ministry Trust · Diocese of Hexham &amp; Newcastle</span>
-      <span>Committed to the safeguarding policies of the Catholic Church in England &amp; Wales.</span>
+      <p class="foot__legal"><span>© <span data-year>2026</span> Youth Ministry Team · Diocese of Hexham &amp; Newcastle</span><a href="donate.html">Give to YMT</a></p>
     </div>
   </footer>
-
-  <div class="cursor" aria-hidden="true"><span></span></div>
-  <script src="js/main.js" defer></script>
+  <script src="js/config.js?v=9" defer></script>
+  <script src="js/data.js?v=9" defer></script>
+  <script src="js/site.js?v=9" defer></script>
 </body>
 </html>

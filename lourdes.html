@@ -1,308 +1,117 @@
 <!doctype html>
-<html lang="en-GB" class="no-js">
+<html lang="en-GB">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#120d18">
-  <title>Lourdes | Youth Ministry Team</title>
-  <meta name="description" content="Be a youth helper on the Diocesan Lourdes Pilgrimage — information and how to apply.">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <title>Lourdes · Youth Ministry Team</title>
+  <meta name="description" content="Serve as a youth helper on the Diocese of Hexham and Newcastle pilgrimage to Lourdes.">
+  <link rel="canonical" href="https://www.ymt.org/lourdes.html">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Youth Ministry Team">
+  <meta property="og:title" content="Lourdes · Youth Ministry Team">
+  <meta property="og:description" content="Serve as a youth helper on the Diocese of Hexham and Newcastle pilgrimage to Lourdes.">
+  <meta property="og:image" content="https://www.ymt.org/assets/web/ph-sacraments-1600.webp">
+  <meta name="theme-color" content="#100c15">
   <link rel="icon" type="image/png" href="assets/images/logo.png">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=DM+Mono:wght@300;400;500&family=Figtree:ital,wght@0,400;0,500;0,600;0,700;1,500&display=swap" rel="stylesheet">
-  <script>document.documentElement.classList.remove('no-js');document.documentElement.classList.add('js');</script>
-  <link rel="stylesheet" href="css/main.css?v=12">
+  <link rel="preload" href="assets/fonts/archivo-black.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="assets/fonts/inter-tight.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="css/site.css?v=9">
+  <script src="js/boot.js?v=9"></script>
 </head>
-<body>
-  <a class="skip-link" href="#main-content">Skip to content</a>
+<body data-aud="volunteer" data-feel="grave">
+  <a class="skip" href="#main">Skip to content</a>
 
-  <header class="site-header" data-header>
-    <a class="site-brand" href="index.html" aria-label="Youth Ministry Team home">
-      <img src="assets/images/logo-white.png" alt="">
-      <span>Youth Ministry Team</span>
-    </a>
-
-    <nav class="desktop-nav" aria-label="Primary">
-      <a href="#about">Information</a>
-      <a href="#downloads">Booklet</a>
-      <a href="#apply">Apply</a>
+  <header class="nav">
+    <a class="nav__brand" href="./" aria-label="Youth Ministry Team home"><img src="assets/images/logo-white.png" alt="" width="64" height="49"><span>Youth Ministry<br>Team</span></a>
+    <nav class="nav__links" aria-label="Main">
+      <div class="nav__drop">
+        <button type="button" aria-expanded="false" aria-controls="aud-menu">Who it's for <svg viewBox="0 0 12 12" aria-hidden="true"><path d="M2 4l4 4 4-4"/></svg></button>
+        <div class="nav__menu" id="aud-menu"><a href="primary.html"><span class="dot dot--primary"></span><span><b>Primary</b><small>Residential retreats, the Year 6 Festival and classroom resources.</small></span></a><a href="secondary.html"><span class="dot dot--secondary"></span><span><b>Secondary</b><small>Retreats, The Source, Flame and the Youth Council.</small></span></a><a href="volunteer.html"><span class="dot dot--volunteer"></span><span><b>16+ and volunteers</b><small>Festival crew, Lourdes, retreat teams and the Internship.</small></span></a><a href="everyone.html"><span class="dot dot--everyone"></span><span><b>Everyone else</b><small>Parishes, families and groups staying at the Village.</small></span></a></div>
+      </div>
+      <a href="about.html">About us</a>
+      <a href="resources.html">Resources</a>
     </nav>
-
-    <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="site-menu" data-menu-toggle>
-      <span data-menu-label>Menu</span>
-      <span class="menu-toggle__icon" aria-hidden="true"><i></i><i></i></span>
-    </button>
-  </header>
-
-  <div class="menu-panel" id="site-menu" aria-hidden="true" data-menu-panel>
-    <div class="menu-panel__wash" aria-hidden="true"></div>
-    <div class="menu-panel__inner">
-      <div class="menu-panel__top">
-        <a class="menu-brand" href="index.html" aria-label="Youth Ministry Team home">
-          <img src="assets/images/logo.png" alt="">
-          <span>Youth Ministry Team</span>
-        </a>
-      </div>
-
-      <nav class="menu-nav" aria-label="Site menu">
-        <a href="youth-village.html"><span>01</span>The Village</a>
-        <a href="retreats.html"><span>02</span>School Retreats</a>
-        <a href="festival.html"><span>03</span>Festival</a>
-        <a href="lourdes.html" aria-current="page"><span>04</span>Lourdes</a>
-        <a href="the-source.html"><span>05</span>The Source</a>
-        <a href="internship.html"><span>06</span>Internship</a>
-        <a href="youth-council.html"><span>07</span>Youth Council</a>
-      </nav>
-
-      <div class="menu-panel__foot">
-        <p>Emmaus Village · Consett · County Durham</p>
-        <div>
-          <a href="mailto:admin@ymt.org">admin@ymt.org</a>
-          <a href="donate.html">Support YMT ↗</a>
-          <a href="safeguarding.html">Safeguarding</a>
-        </div>
-      </div>
+    <div class="nav__end">
+      <button class="nav__latest" type="button" aria-expanded="false" aria-controls="latest" data-latest-open>Latest <i aria-hidden="true"></i></button>
+      <a class="nav__donate" href="donate.html">Donate</a>
+      <button class="nav__burger" type="button" aria-expanded="false" aria-controls="sheet" aria-label="Menu"><span></span></button>
     </div>
+  </header>
+  <nav class="sheet" id="sheet" aria-label="Menu">
+    <h2>Who it's for</h2><a href="primary.html"><span class="dot dot--primary"></span>Primary</a><a href="secondary.html"><span class="dot dot--secondary"></span>Secondary</a><a href="volunteer.html"><span class="dot dot--volunteer"></span>16+ and volunteers</a><a href="everyone.html"><span class="dot dot--everyone"></span>Everyone else</a>
+    <h2>YMT</h2><a href="about.html">About us</a><a href="resources.html">Resources</a><a href="enquire.html">Enquire</a><a href="donate.html">Donate</a>
+  </nav>
+  <div class="latest" id="latest" data-latest hidden>
+    <div class="latest__veil" data-latest-close></div>
+    <section class="latest__panel" role="dialog" aria-modal="true" aria-labelledby="latest-title">
+      <h2 id="latest-title">Coming up</h2>
+      <ul class="latest__list" role="list"></ul>
+      <a class="latest__all" href="enquire.html">Ask about any of these ↳</a>
+    </section>
+    <button class="latest__close" type="button" aria-label="Close" data-latest-close>×</button>
   </div>
 
-  <main id="main-content">
-    <section class="hero" id="top" aria-labelledby="hero-title">
-      <div class="hero__media" aria-hidden="true" data-hero-media>
-        <img class="hero__scene is-active" src="assets/images/sacraments.jpg" alt="">
-      </div>
-      <div class="hero__scrim" aria-hidden="true"></div>
-      <div class="hero__grain" aria-hidden="true"></div>
-
-      <h1 class="hero__wordmark" id="hero-title" aria-label="Lourdes">
-        <span>LOURDES</span>
-      </h1>
-
-      <div class="hero__subnav" aria-label="Page sections">
-        <a href="#about">Information</a>
-        <a href="#downloads">Booklet &amp; forms</a>
-        <a href="#apply">Apply as a helper</a>
-      </div>
-
-      <div class="hero__bottom">
-        <div class="hero__caption">
-          <span class="hero__count">Diocesan Pilgrimage · One week</span>
-          <p class="hero__caption-title">Be a youth helper</p>
-          <p>A week of service and community you genuinely never forget.</p>
+  <main id="main">
+    <section class="phero phero--photo" aria-labelledby="page-title">
+      <div class="phero__bg"><img src="assets/web/ph-sacraments-1600.webp" alt="" fetchpriority="high"></div>
+      <div class="wrap phero__grid">
+        <div>
+          <p class="phero__kicker"><span>Diocesan pilgrimage</span><span>One week</span></p>
+          <h1 class="h1" id="page-title">Lourdes</h1>
+          <p class="phero__meta">Every summer · Youth helpers</p>
+          <p class="phero__lede">Each year young people from across the diocese travel to Lourdes to serve assisted pilgrims, and share a week of prayer and community.</p>
+          <p class="phero__actions"><a class="btn btn--main" href="enquire.html?topic=volunteer">Apply as a helper <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6"/></svg></a><a class="btn btn--glass" href="learn-lourdes.html">Why Lourdes?</a></p>
         </div>
-
-        <a class="hero__open magnetic" href="#about">
-          <span>Explore</span>
-          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6"/></svg>
-        </a>
+        
       </div>
     </section>
-
-    <section class="statement section-shell" id="about">
-      <div class="section-label reveal">
-        <span>01</span>
-        <span>Information</span>
-        <span>First-timers welcome</span>
-      </div>
-
-      <div class="statement__grid">
-        <h2 class="display-copy reveal">Part of something <em>far bigger than yourself.</em></h2>
-        <div class="statement__body reveal">
-          <p>Each year young people from across the diocese travel to Lourdes to serve as youth helpers on the Diocesan Pilgrimage. You'll support assisted pilgrims, join a full week of liturgies and socials, and be part of something far bigger than yourself.</p>
-          <a class="text-link" href="#apply">Apply as a helper <span>↘</span></a>
-        </div>
-      </div>
-
-      <div class="statement__columns">
-        <div class="prose reveal">
-          <p>First-timers and returning helpers are both welcome. You don't need any experience — just a willingness to serve and to be changed by the week.</p>
-          <h3>What you'll do</h3>
-          <ul>
-            <li>Serve assisted pilgrims alongside young people from across the diocese</li>
-            <li>Take part in a full week of liturgies, prayer and socials</li>
-            <li>Share community life — meals, downtime and lifelong friendships</li>
-            <li>Be supported by a trained, DBS-checked team throughout</li>
-          </ul>
-          <h3>Good to know</h3>
-          <ul>
-            <li>Open to young people (age band confirmed each year on application)</li>
-            <li>Costs, travel and dates are set out in the info booklet</li>
-            <li>Fundraising support and bursaries may be available — just ask</li>
-          </ul>
-        </div>
-        <div class="reveal">
-          <dl class="facts">
-            <div><dt>What</dt><dd>Diocesan Pilgrimage</dd></div>
-            <div><dt>Role</dt><dd>Youth helper</dd></div>
-            <div><dt>Length</dt><dd>One week</dd></div>
-            <div><dt>When</dt><dd>Summer</dd></div>
-            <div><dt>Applications</dt><dd>Open now</dd></div>
-          </dl>
-          <a class="pill-button magnetic" href="#apply">Apply as a helper <span>↗</span></a>
-        </div>
-      </div>
+    <section class="section" id="about" aria-labelledby="about-title">
+      <div class="wrap">
+        <div class="label" aria-hidden="true"><span>01</span><span>Youth helpers</span><span>At a glance</span></div>
+        <div class="section-head"><h2 class="h2" id="about-title">Part of something larger than yourself</h2><p class="lede muted">First-timers and returning helpers are both welcome. No experience is needed.</p></div>
+        <div class="split">
+          <div class="stack stack--lg"><p class="lede">Youth helpers support assisted pilgrims alongside young people from across the diocese, take part in the liturgies, and share meals and downtime. A trained, DBS-checked team supports you throughout.</p><ul class="ticks" role="list"><li>Serve assisted pilgrims</li><li>A week of liturgies, prayer and socials</li><li>Community life with other young people</li><li>Costs, travel and dates are in the info booklet</li><li>Fundraising support and bursaries may be available</li></ul></div>
+          <dl class="facts"><div><dt>What</dt><dd>Diocesan pilgrimage</dd></div><div><dt>Role</dt><dd>Youth helper</dd></div><div><dt>Length</dt><dd>One week</dd></div><div><dt>When</dt><dd>Summer</dd></div></dl>
+        </div></div>
     </section>
-
-    <div class="marquee" aria-hidden="true">
-      <div class="marquee__track">
-        <span>SERVE</span><i>✦</i><span>PRAY</span><i>✦</i><span>WALK</span><i>✦</i><span>SING</span><i>✦</i>
-        <span>SERVE</span><i>✦</i><span>PRAY</span><i>✦</i><span>WALK</span><i>✦</i><span>SING</span><i>✦</i>
-      </div>
-    </div>
-
-    <section class="dates" id="downloads">
-      <div class="section-shell">
-        <div class="section-label section-label--light reveal">
-          <span>02</span>
-          <span>Booklet &amp; forms</span>
-          <span>Everything in one place</span>
-        </div>
-
-        <div class="dates__heading">
-          <h2 class="display-copy reveal">Dates, costs <em>and what to expect.</em></h2>
-          <p class="reveal">Links are placeholders in this draft — the current booklet is sent when you register your interest below.</p>
-        </div>
-
-        <div class="event-list">
-          <article class="event-row reveal">
-            <a href="#" download aria-label="Download: Info booklet (PDF)">
-              <span class="event-row__number">01</span>
-              <span class="event-row__tag">PDF</span>
-              <h3>Info booklet</h3>
-              <p>Dates, costs, what to expect</p>
-              <span class="event-row__arrow" aria-hidden="true">↓</span>
-            </a>
-          </article>
-          <article class="event-row reveal">
-            <a href="#apply" aria-label="Application form">
-              <span class="event-row__number">02</span>
-              <span class="event-row__tag">Form</span>
-              <h3>Application form</h3>
-              <p>Register your interest below</p>
-              <span class="event-row__arrow" aria-hidden="true">↓</span>
-            </a>
-          </article>
-        </div>
-      </div>
+    <section class="section" id="downloads" aria-labelledby="downloads-title">
+      <div class="wrap">
+        <div class="label" aria-hidden="true"><span>02</span><span>Downloads</span><span>Free to print and use</span></div>
+        <div class="section-head"><h2 class="h2" id="downloads-title">Before you go</h2><p class="lede muted">Read this before your first pilgrimage.</p></div>
+        <div class="bite-grid" data-resources="prog:lourdes"></div></div>
     </section>
-
-    <section class="rsvp" id="apply">
-      <div class="rsvp__panel">
-        <div class="rsvp__head reveal">
-          <img src="assets/images/logo.png" alt="">
-          <span>Youth helpers</span>
-          <span>Apply.</span>
-        </div>
-
-        <div class="rsvp__grid">
-          <div class="rsvp__intro reveal">
-            <span class="mono-label">Apply as a helper</span>
-            <h2>Count<br>me in.</h2>
-            <p>Fill this in to register your interest — we'll send the info booklet and next steps. Under-18s will need parent or carer consent, which we'll arrange with you.</p>
-            <div class="rsvp__assurance">
-              <span>Safeguarding first</span>
-              <p>Our team is trained and DBS-checked. We follow the safeguarding policies of the Catholic Church in England and Wales.</p>
-              <a href="safeguarding.html">Read our safeguarding information ↗</a>
-            </div>
-          </div>
-
-          <form class="rsvp-form reveal" data-demo-form aria-label="Lourdes helper application">
-            <div class="field-grid">
-              <div class="field">
-                <label for="l-name">Your name</label>
-                <input id="l-name" name="name" autocomplete="name" required>
-              </div>
-              <div class="field">
-                <label for="l-age">Age</label>
-                <input id="l-age" name="age" type="number" min="14">
-              </div>
-              <div class="field">
-                <label for="l-email">Email address</label>
-                <input id="l-email" name="email" type="email" autocomplete="email" required>
-              </div>
-              <div class="field">
-                <label for="l-mobile">Mobile number</label>
-                <input id="l-mobile" name="mobile" type="tel" autocomplete="tel">
-              </div>
-              <div class="field">
-                <label for="l-parish">Parish / school</label>
-                <input id="l-parish" name="parish">
-              </div>
-              <div class="field">
-                <label for="l-returning">First-timer or returning?</label>
-                <select id="l-returning" name="returning">
-                  <option>First-timer</option>
-                  <option>Returning helper</option>
-                </select>
-              </div>
-              <div class="field field--wide">
-                <label for="l-why">Why do you want to come?</label>
-                <textarea id="l-why" name="why" rows="3"></textarea>
-              </div>
-              <div class="field field--wide">
-                <label for="l-needs">Any access or medical needs?</label>
-                <input id="l-needs" name="needs">
-              </div>
-            </div>
-
-            <div class="form-actions">
-              <button class="pill-button magnetic" type="submit">Send my application <span>↗</span></button>
-              <p class="form-status" data-form-status aria-live="polite"></p>
-            </div>
-          </form>
-        </div>
-      </div>
+    <section class="section section--tight" id="coming-up" aria-labelledby="coming-up-title">
+      <div class="wrap">
+        <div class="label" aria-hidden="true"><span>03</span><span>Coming up</span><span>Upcoming dates only</span></div>
+        <div class="section-head"><h2 class="h2" id="coming-up-title">Next pilgrimage</h2><p class="lede muted">Dates are confirmed with the diocese each year.</p></div>
+        <ul class="tl" role="list" data-timeline="prog:lourdes"></ul></div>
     </section>
-
-    <section class="closing" aria-label="Apply as a helper">
-      <img src="assets/images/worship-uplight.jpg" alt="" data-parallax>
-      <div class="closing__scrim" aria-hidden="true"></div>
-      <div class="closing__content section-shell">
-        <span class="mono-label reveal">Go further</span>
-        <h2 class="reveal">One week you<br>never <em>forget.</em></h2>
-        <a class="pill-button pill-button--light magnetic reveal" href="#apply">Apply as a helper <span>↗</span></a>
-      </div>
+    <section class="section section--tight" id="cta" aria-labelledby="cta-title">
+      <div class="wrap">
+        <div class="label" aria-hidden="true"><span>04</span><span>Apply</span><span>One form, one contact</span></div>
+        <div class="split panel glass">
+          <h2 class="h2" id="cta-title">Apply as a youth helper</h2>
+          <div class="stack"><p class="lede">Register your interest and we will send the info booklet and next steps. Under-18s need consent from a parent or carer.</p><p><a class="btn btn--acc" href="enquire.html?topic=volunteer">Register interest <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6"/></svg></a></p></div>
+        </div></div>
     </section>
   </main>
 
-  <footer class="site-footer">
-    <div class="site-footer__top section-shell">
-      <div class="site-footer__wordmark" aria-label="Youth Ministry Team">
-        <span>YOUTH</span>
-        <span>MINISTRY</span>
-        <span>TEAM</span>
+  <footer class="foot">
+    <div class="wrap">
+      <p class="foot__name" aria-hidden="true">YMT</p>
+      <div class="foot__grid">
+        <section><h2>Visit</h2><address>Emmaus Youth Village<br>Pemberton Road<br>Allensford, Consett<br>DH8 9BA</address></section>
+        <section><h2>Who it's for</h2><ul role="list"><li><a href="primary.html">Primary</a></li><li><a href="secondary.html">Secondary</a></li><li><a href="volunteer.html">16+ and volunteers</a></li><li><a href="everyone.html">Everyone else</a></li></ul></section>
+        <section><h2>YMT</h2><ul role="list"><li><a href="about.html">About us</a></li><li><a href="resources.html">Resources</a></li><li><a href="internship.html">The Internship</a></li><li><a href="safeguarding.html">Safeguarding</a></li></ul></section>
+        <section><h2>Contact</h2><ul role="list"><li><a href="enquire.html">Send an enquiry</a></li><li><a href="mailto:admin@ymt.org">admin@ymt.org</a></li><li><a href="mailto:bookings@ymt.org">bookings@ymt.org</a></li></ul></section>
+        <section><h2>Follow</h2><ul role="list"><li><a href="https://www.tiktok.com/@ymttiktok" target="_blank" rel="noopener noreferrer">TikTok</a></li><li><a href="https://instagram.com/youthministryteam/" target="_blank" rel="noopener noreferrer">Instagram</a></li><li><a href="https://facebook.com/youthministryteam/" target="_blank" rel="noopener noreferrer">Facebook</a></li><li><a href="https://www.youtube.com/channel/UCVlOoCyoxRWub3zoPJorMhQ" target="_blank" rel="noopener noreferrer">YouTube</a></li></ul></section>
       </div>
-      <a class="footer-mark" href="#top" aria-label="Back to top"><img src="assets/images/logo-white.png" alt=""></a>
-    </div>
-
-    <div class="site-footer__grid section-shell">
-      <div>
-        <span class="footer-label">Visit</span>
-        <p>Emmaus Village<br>Pemberton Road<br>Allensford, Consett<br>DH8 9BA</p>
-      </div>
-      <div>
-        <span class="footer-label">Talk to us</span>
-        <a href="mailto:admin@ymt.org">admin@ymt.org</a>
-        <a href="safeguarding.html">Safeguarding</a>
-      </div>
-      <div>
-        <span class="footer-label">Follow</span>
-        <a href="https://instagram.com/youthministryteam/" target="_blank" rel="noopener">Instagram ↗</a>
-        <a href="https://facebook.com/youthministryteam/" target="_blank" rel="noopener">Facebook ↗</a>
-        <a href="https://www.youtube.com/channel/UCVlOoCyoxRWub3zoPJorMhQ" target="_blank" rel="noopener">YouTube ↗</a>
-      </div>
-      <div>
-        <span class="footer-label">Support</span>
-        <a class="footer-donate" href="donate.html">Donate to YMT ↗</a>
-      </div>
-    </div>
-
-    <div class="site-footer__legal section-shell">
-      <span>© <span data-year></span> Youth Ministry Trust · Diocese of Hexham &amp; Newcastle</span>
-      <span>Committed to the safeguarding policies of the Catholic Church in England &amp; Wales.</span>
+      <p class="foot__legal"><span>© <span data-year>2026</span> Youth Ministry Team · Diocese of Hexham &amp; Newcastle</span><a href="donate.html">Give to YMT</a></p>
     </div>
   </footer>
-
-  <div class="cursor" aria-hidden="true"><span></span></div>
-  <script src="js/main.js" defer></script>
+  <script src="js/config.js?v=9" defer></script>
+  <script src="js/data.js?v=9" defer></script>
+  <script src="js/site.js?v=9" defer></script>
 </body>
 </html>

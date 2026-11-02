@@ -1,0 +1,132 @@
+/* Home only. Shared parts (nav, footer, buttons, glass, reveals) live in site.css; the hero is hero.css. */
+
+/* Title card shown while the page loads */
+.intro { display: none; }
+.js .intro { position: fixed; inset: 0; z-index: 280; display: flex; align-items: center; justify-content: center; overflow: hidden; background: var(--ink); color: var(--white); pointer-events: none; transition: transform .95s var(--ease), border-radius .95s var(--ease); animation: intro-failsafe 0s 5s forwards; }
+.intro.is-leaving { border-radius: 0 0 50% 50%; transform: translateY(-105%); }
+.intro__word { display: flex; gap: .025em; overflow: hidden; font-family: var(--display); font-size: clamp(7rem, 25vw, 24rem); letter-spacing: -.12em; line-height: .72; }
+.intro__word span { display: inline-block; transform: translateY(110%); animation: intro-letter .72s var(--ease) forwards; }
+.intro__word span:nth-child(2) { animation-delay: .07s; }
+.intro__word span:nth-child(3) { animation-delay: .14s; }
+.intro__meta { position: absolute; right: var(--gutter); bottom: max(24px, env(safe-area-inset-bottom)); left: var(--gutter); display: flex; justify-content: space-between; border-top: 1px solid var(--line); padding-top: 10px; font-family: var(--mono); font-size: .72rem; text-transform: uppercase; }
+@keyframes intro-letter { to { transform: translateY(0); } }
+@keyframes intro-failsafe { to { visibility: hidden; } }
+/* The hero sits under the glass nav now, so its own sub-links step down a little. */
+.hero .hero__subnav a { text-decoration: none; }
+
+/* Feel registers. Each kind of event moves at its own pace:
+   gentle  Primary: soft pink, a small bounce, nothing sudden.
+   open    Secondary retreats, Youth Council: blue, clean and steady.
+   joy     The Source, Festival: red, quick and springy.
+   grave   Lourdes, adoration: candle-dark, gold, serif, slow fades, no bounce.
+   serve   Volunteers: dark, purple only as a thread, a steady wipe.
+   home    Everyone else, the Village: mint, slow drift. */
+[data-feel="gentle"] { --f-bg: var(--pink); --f-fg: var(--ink); --f-acc: var(--ink); --f-dur: .7s; --f-anim: f-gentle .8s cubic-bezier(.34, 1.4, .64, 1) both; --f-img: none; }
+[data-feel="open"] { --f-bg: var(--blue); --f-fg: var(--white); --f-acc: var(--white); --f-dur: .6s; --f-anim: word .7s var(--ease) both; --f-img: none; }
+[data-feel="joy"] { --f-bg: var(--red); --f-fg: var(--white); --f-acc: var(--butter); --f-dur: .3s; --f-anim: f-joy .55s cubic-bezier(.3, 1.6, .5, 1) both; --f-img: saturate(1.15); }
+[data-feel="grave"] { --f-bg: #120c1c; --f-fg: #efe6d2; --f-acc: var(--gold); --f-dur: 1.6s; --f-anim: f-grave 1.8s cubic-bezier(.25, .1, .25, 1) both; --f-img: grayscale(.55) sepia(.3) brightness(.85); }
+[data-feel="serve"] { --f-bg: #0d0a12; --f-fg: var(--white); --f-acc: var(--purple-text); --f-dur: .9s; --f-anim: f-given 1s cubic-bezier(.65, 0, .35, 1) both; --f-img: none; }
+[data-feel="home"] { --f-bg: var(--mint); --f-fg: var(--ink); --f-acc: var(--ink); --f-dur: 1.3s; --f-anim: f-rest 1.5s cubic-bezier(.2, .7, .2, 1) both; --f-img: none; }
+@keyframes f-gentle { from { transform: translateY(100%); } }
+@keyframes f-joy { from { transform: translateY(80%) rotate(-9deg) scale(.6); } }
+@keyframes f-grave { from { opacity: 0; filter: blur(10px); } }
+@keyframes f-given { from { clip-path: inset(0 100% 0 0); } }
+@keyframes f-rest { from { opacity: 0; transform: translateY(28%); } }
+@keyframes f-wiggle { 0%, 100% { transform: rotate(0); } 30% { transform: rotate(-3deg) scale(1.03); } 65% { transform: rotate(2deg); } }
+@keyframes f-bob { 50% { transform: translateY(-8px) rotate(-1deg); } }
+
+/* 01 Ethos: the statement, four words, then the photos of it. */
+.ethos { padding-block: clamp(96px, 11vw, 170px) clamp(40px, 5vw, 72px); }
+.ethos__lead { font: 400 clamp(34px, 4.2vw, 72px)/1.02 var(--book); letter-spacing: -.02em; max-width: 22ch; }
+.ethos__lead em { font-family: var(--serif); }
+.ethos__pillars { list-style: none; padding: 0; margin-top: clamp(40px, 5vw, 72px); display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); border-top: 1px solid var(--line); }
+.ethos__pillars li { display: grid; gap: 10px; align-content: start; padding: 20px 20px 4px 0; }
+.ethos__pillars li + li { padding-left: 20px; border-left: 1px solid var(--line); }
+.ethos__pillars b { font: 500 26px/1.05 var(--sans); letter-spacing: -.02em; }
+.ethos__pillars p { font: 400 16px/1.45 var(--book); color: rgba(255, 255, 255, .72); }
+.ethos__pillars small { font: 400 11px var(--mono); text-transform: uppercase; opacity: .6; }
+
+/* The pinned row of photos: white frame, the middle photo names the feeling, the rest fade. */
+.feel { position: relative; height: 320vh; }
+.feel__stick { position: sticky; top: 0; height: 100vh; height: 100svh; overflow: hidden; display: grid; grid-template-rows: auto minmax(0, 1fr) auto; padding: clamp(100px, 13vh, 150px) 0 clamp(28px, 5vh, 56px); background: var(--white); color: var(--ink); }
+.feel__line { text-align: center; font: 400 clamp(24px, 2.6vw, 40px)/1.1 var(--display); letter-spacing: -.04em; padding-inline: var(--gutter); color: rgba(16, 12, 21, .62); }
+.feel__mask { display: inline-block; overflow: hidden; vertical-align: bottom; padding-bottom: .08em; margin-bottom: -.08em; }
+.feel__mask b { display: inline-block; font-weight: 400; color: var(--f-acc); background: var(--f-bg); padding: 0 .16em; transition: background-color var(--f-dur) ease, color var(--f-dur) ease; }
+.feel__mask b.is-swap { animation: var(--f-anim); }
+.feel__stick[data-feel="grave"] .feel__mask b { font-family: var(--serif); font-style: italic; letter-spacing: 0; font-size: 1.18em; line-height: .9; }
+.feel__row { position: relative; }
+.feel__item { --fw: clamp(180px, min(25vw, 38vh), 400px); position: absolute; left: 0; top: 50%; width: var(--fw); margin: 0; transform-origin: 0 50%; will-change: transform, opacity; transition: opacity .35s ease; }
+.feel__item img { width: 100%; aspect-ratio: 3 / 4; height: auto; object-fit: cover; filter: var(--f-img); transition: filter var(--f-dur) ease; }
+.feel__stick[data-feel="joy"] .feel__item.is-on img { animation: f-wiggle .5s ease-out; }
+.feel__item figcaption { position: absolute; top: 100%; left: 0; padding-top: 10px; font: 400 11px/1.3 var(--mono); text-transform: uppercase; white-space: nowrap; opacity: 0; transition: opacity .3s ease; }
+.feel__item figcaption span { opacity: .5; }
+.feel__item.is-on figcaption { opacity: 1; }
+.feel__ticks { display: flex; justify-content: center; align-items: center; gap: 5px; height: 34px; }
+.feel__ticks i { width: 1px; height: var(--h, 4px); opacity: var(--o, .4); background: currentColor; }
+.js .feel--static { height: auto; }
+.js .feel--static .feel__stick { position: static; height: auto; display: block; }
+.js .feel--static .feel__row { display: flex; gap: 12px; overflow-x: auto; padding: 32px var(--gutter); }
+.js .feel--static .feel__item { position: relative; top: auto; flex: 0 0 var(--fw); transform: none !important; }
+.js .feel--static .feel__item figcaption { position: static; opacity: 1; }
+.js .feel--static .feel__ticks { display: none; }
+
+/* 02 Our story: long text on the left, the photo on the right swaps as each chapter passes. */
+.story__grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: clamp(32px, 5vw, 96px); }
+.story__chapters { display: grid; }
+.chapter { min-height: 72vh; display: grid; align-content: center; gap: 18px; padding-block: 10vh; }
+.chapter:first-child { padding-top: 0; min-height: 60vh; align-content: start; }
+.chapter .kicker { opacity: .7; }
+.chapter p { font: 400 clamp(20px, 1.6vw, 24px)/1.55 var(--book); max-width: 36ch; }
+.chapter blockquote p { font: 400 clamp(32px, 3.4vw, 54px)/1.12 var(--book); letter-spacing: -.015em; max-width: 20ch; }
+.chapter blockquote .sw { opacity: var(--so, 1); transition: opacity .2s linear; }
+.chapter blockquote footer { margin-top: 18px; font: 400 12px var(--mono); text-transform: uppercase; opacity: .7; }
+.story__frame { position: sticky; top: 90px; background: var(--ink); height: calc(100vh - 120px); height: calc(100svh - 120px); align-self: start; overflow: hidden; }
+.story__frame img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transform: scale(1.06); transition: opacity .9s ease, transform 1.6s var(--ease); }
+.story__frame img.is-on { opacity: 1; transform: scale(1); }
+.story__frame figcaption { position: absolute; left: 12px; bottom: 12px; padding: 10px 14px; font: 400 11px var(--mono); text-transform: uppercase; }
+.story__count { position: absolute; right: 12px; top: 12px; padding: 8px 12px; font: 400 11px var(--mono); }
+
+/* 03 Ways in: four cards that stack as you scroll, each in its audience's register. */
+.who { padding-block: clamp(88px, 10vw, 160px) clamp(48px, 6vw, 96px); }
+.who__title { margin-bottom: clamp(36px, 4vw, 64px); }
+.who__stack { display: grid; gap: 24px; padding-inline: max(var(--gutter), env(safe-area-inset-left, 0px)); max-width: 1480px; margin: 0 auto; }
+.who__card { --k: 0; position: sticky; top: calc(90px + var(--k) * 22px); min-height: min(76vh, 700px); display: grid; grid-template-columns: minmax(120px, .5fr) minmax(0, 1.3fr) minmax(0, 1fr); grid-template-rows: auto minmax(0, 1fr); gap: 20px clamp(24px, 3vw, 56px); padding: clamp(22px, 2.6vw, 40px); background: var(--f-bg); color: var(--f-fg); box-shadow: 0 0 0 1px var(--ink); overflow: hidden; text-decoration: none; }
+.who__card:nth-child(2) { --k: 1; } .who__card:nth-child(3) { --k: 2; } .who__card:nth-child(4) { --k: 3; }
+.who__tag { font: 400 12px/1.3 var(--mono); text-transform: uppercase; padding-top: .6em; }
+.who__card h3 { font: 500 clamp(30px, 3.1vw, 50px)/1.02 var(--sans); letter-spacing: -.035em; max-width: 17ch; }
+.who__body { grid-column: 3; font: 400 17px/1.5 var(--book); max-width: 38ch; }
+.who__link { grid-column: 3; grid-row: 2; align-self: end; justify-self: start; display: inline-flex; gap: 10px; font: 400 clamp(22px, 2vw, 32px)/1 var(--display); letter-spacing: -.04em; text-transform: uppercase; }
+.who__link span { display: inline-block; transition: transform .3s var(--ease); }
+.who__card:hover .who__link span { transform: translate(6px, 4px); }
+.who__art { grid-column: 2; grid-row: 2; align-self: end; display: block; width: min(100%, 460px); max-height: 40vh; aspect-ratio: 4 / 3; background: var(--f-acc); -webkit-mask-position: center; mask-position: center; -webkit-mask-size: cover; mask-size: cover; -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat; }
+.who__card.in h3 { animation: var(--f-anim); }
+.who__card[data-feel="gentle"] .who__art { animation: f-bob 5s ease-in-out infinite; }
+.who__card[data-feel="serve"] { box-shadow: 0 0 0 1px rgba(255, 255, 255, .14); }
+.who__card[data-feel="serve"] .who__tag { color: var(--purple-text); }
+.who__card[data-feel="serve"]::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 4px; background: var(--purple-line); }
+.who__card[data-feel="home"].in .who__art { animation: f-rest 1.6s both; }
+.art--retreat-prayer { -webkit-mask-image: url("../assets/web/dots-retreat-prayer.webp"); mask-image: url("../assets/web/dots-retreat-prayer.webp"); }
+.art--youth-group { -webkit-mask-image: url("../assets/web/dots-youth-group.webp"); mask-image: url("../assets/web/dots-youth-group.webp"); }
+.art--interns { -webkit-mask-image: url("../assets/web/dots-interns.webp"); mask-image: url("../assets/web/dots-interns.webp"); }
+.art--village-chalet { -webkit-mask-image: url("../assets/web/dots-village-chalet.webp"); mask-image: url("../assets/web/dots-village-chalet.webp"); }
+
+
+@media (max-width: 900px) {
+  .ethos__pillars { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .ethos__pillars li:nth-child(3) { padding-left: 0; border-left: 0; }
+  .story__grid { grid-template-columns: minmax(0, 1fr); }
+  .story__frame { position: sticky; top: 76px; height: 44svh; order: -1; z-index: 1; }
+  .chapter { min-height: 60svh; }
+}
+@media (max-width: 680px) {
+  .label { grid-template-columns: 38px minmax(0, 1fr) auto; gap: 10px; font-size: 11px; }
+  .feel { height: 300vh; }
+  .feel__item { --fw: 54vw; }
+  .who__card { top: calc(76px + var(--k) * 14px); min-height: 78svh; grid-template-columns: minmax(0, 1fr); grid-template-rows: none; align-content: start; }
+  .who__body, .who__link, .who__art { grid-column: 1; grid-row: auto; }
+  .who__art { max-height: 30svh; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .js .intro { display: none; }
+  .story__frame img { transition: none; }
+}

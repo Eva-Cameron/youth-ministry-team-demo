@@ -1,295 +1,130 @@
 <!doctype html>
-<html lang="en-GB" class="no-js">
+<html lang="en-GB">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#120d18">
-  <title>The Internship | Youth Ministry Team</title>
-  <meta name="description" content="Live in community for a year as a Youth Ministry Team intern — read the current interns' blog and download the application pack.">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <title>The Internship · Youth Ministry Team</title>
+  <meta name="description" content="A year living in community at the Emmaus Youth Village for 18 to 30 year olds.">
+  <link rel="canonical" href="https://www.ymt.org/internship.html">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Youth Ministry Team">
+  <meta property="og:title" content="The Internship · Youth Ministry Team">
+  <meta property="og:description" content="A year living in community at the Emmaus Youth Village for 18 to 30 year olds.">
+  <meta property="og:image" content="https://www.ymt.org/assets/web/ph-interns-1600.webp">
+  <meta name="theme-color" content="#100c15">
   <link rel="icon" type="image/png" href="assets/images/logo.png">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=DM+Mono:wght@300;400;500&family=Figtree:ital,wght@0,400;0,500;0,600;0,700;1,500&display=swap" rel="stylesheet">
-  <script>document.documentElement.classList.remove('no-js');document.documentElement.classList.add('js');</script>
-  <link rel="stylesheet" href="css/main.css?v=12">
+  <link rel="preload" href="assets/fonts/archivo-black.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="assets/fonts/inter-tight.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="css/site.css?v=9">
+  <script src="js/boot.js?v=9"></script>
 </head>
-<body>
-  <a class="skip-link" href="#main-content">Skip to content</a>
+<body data-aud="volunteer">
+  <a class="skip" href="#main">Skip to content</a>
 
-  <header class="site-header" data-header>
-    <a class="site-brand" href="index.html" aria-label="Youth Ministry Team home">
-      <img src="assets/images/logo-white.png" alt="">
-      <span>Youth Ministry Team</span>
-    </a>
-
-    <nav class="desktop-nav" aria-label="Primary">
-      <a href="#about">The year</a>
-      <a href="#blog">Blog</a>
-      <a href="#apply">Apply</a>
+  <header class="nav">
+    <a class="nav__brand" href="./" aria-label="Youth Ministry Team home"><img src="assets/images/logo-white.png" alt="" width="64" height="49"><span>Youth Ministry<br>Team</span></a>
+    <nav class="nav__links" aria-label="Main">
+      <div class="nav__drop">
+        <button type="button" aria-expanded="false" aria-controls="aud-menu">Who it's for <svg viewBox="0 0 12 12" aria-hidden="true"><path d="M2 4l4 4 4-4"/></svg></button>
+        <div class="nav__menu" id="aud-menu"><a href="primary.html"><span class="dot dot--primary"></span><span><b>Primary</b><small>Residential retreats, the Year 6 Festival and classroom resources.</small></span></a><a href="secondary.html"><span class="dot dot--secondary"></span><span><b>Secondary</b><small>Retreats, The Source, Flame and the Youth Council.</small></span></a><a href="volunteer.html" aria-current="page"><span class="dot dot--volunteer"></span><span><b>16+ and volunteers</b><small>Festival crew, Lourdes, retreat teams and the Internship.</small></span></a><a href="everyone.html"><span class="dot dot--everyone"></span><span><b>Everyone else</b><small>Parishes, families and groups staying at the Village.</small></span></a></div>
+      </div>
+      <a href="about.html">About us</a>
+      <a href="resources.html">Resources</a>
     </nav>
-
-    <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="site-menu" data-menu-toggle>
-      <span data-menu-label>Menu</span>
-      <span class="menu-toggle__icon" aria-hidden="true"><i></i><i></i></span>
-    </button>
-  </header>
-
-  <div class="menu-panel" id="site-menu" aria-hidden="true" data-menu-panel>
-    <div class="menu-panel__wash" aria-hidden="true"></div>
-    <div class="menu-panel__inner">
-      <div class="menu-panel__top">
-        <a class="menu-brand" href="index.html" aria-label="Youth Ministry Team home">
-          <img src="assets/images/logo.png" alt="">
-          <span>Youth Ministry Team</span>
-        </a>
-      </div>
-
-      <nav class="menu-nav" aria-label="Site menu">
-        <a href="youth-village.html"><span>01</span>The Village</a>
-        <a href="retreats.html"><span>02</span>School Retreats</a>
-        <a href="festival.html"><span>03</span>Festival</a>
-        <a href="lourdes.html"><span>04</span>Lourdes</a>
-        <a href="the-source.html"><span>05</span>The Source</a>
-        <a href="internship.html" aria-current="page"><span>06</span>Internship</a>
-        <a href="youth-council.html"><span>07</span>Youth Council</a>
-      </nav>
-
-      <div class="menu-panel__foot">
-        <p>Emmaus Village · Consett · County Durham</p>
-        <div>
-          <a href="mailto:admin@ymt.org">admin@ymt.org</a>
-          <a href="donate.html">Support YMT ↗</a>
-          <a href="safeguarding.html">Safeguarding</a>
-        </div>
-      </div>
+    <div class="nav__end">
+      <button class="nav__latest" type="button" aria-expanded="false" aria-controls="latest" data-latest-open>Latest <i aria-hidden="true"></i></button>
+      <a class="nav__donate" href="donate.html">Donate</a>
+      <button class="nav__burger" type="button" aria-expanded="false" aria-controls="sheet" aria-label="Menu"><span></span></button>
     </div>
+  </header>
+  <nav class="sheet" id="sheet" aria-label="Menu">
+    <h2>Who it's for</h2><a href="primary.html"><span class="dot dot--primary"></span>Primary</a><a href="secondary.html"><span class="dot dot--secondary"></span>Secondary</a><a href="volunteer.html"><span class="dot dot--volunteer"></span>16+ and volunteers</a><a href="everyone.html"><span class="dot dot--everyone"></span>Everyone else</a>
+    <h2>YMT</h2><a href="about.html">About us</a><a href="resources.html">Resources</a><a href="enquire.html">Enquire</a><a href="donate.html">Donate</a>
+  </nav>
+  <div class="latest" id="latest" data-latest hidden>
+    <div class="latest__veil" data-latest-close></div>
+    <section class="latest__panel" role="dialog" aria-modal="true" aria-labelledby="latest-title">
+      <h2 id="latest-title">Coming up</h2>
+      <ul class="latest__list" role="list"></ul>
+      <a class="latest__all" href="enquire.html">Ask about any of these ↳</a>
+    </section>
+    <button class="latest__close" type="button" aria-label="Close" data-latest-close>×</button>
   </div>
 
-  <main id="main-content">
-    <section class="hero" id="top" aria-labelledby="hero-title">
-      <div class="hero__media" aria-hidden="true" data-hero-media>
-        <img class="hero__scene is-active" src="assets/images/interns.jpg" alt="">
-      </div>
-      <div class="hero__scrim" aria-hidden="true"></div>
-      <div class="hero__grain" aria-hidden="true"></div>
-
-      <h1 class="hero__wordmark hero__wordmark--long" id="hero-title" aria-label="The Internship">
-        <span>THE</span><span>INTERNSHIP</span>
-      </h1>
-
-      <div class="hero__subnav" aria-label="Page sections">
-        <a href="#about">The year</a>
-        <a href="#blog">Interns' blog</a>
-        <a href="#apply">Application pack</a>
-      </div>
-
-      <div class="hero__bottom">
-        <div class="hero__caption">
-          <span class="hero__count">Ages 18–30 · August to July</span>
-          <p class="hero__caption-title">A gap year, but deeper</p>
-          <p>Live in community at the Village for a year.</p>
+  <main id="main">
+    <section class="phero phero--photo" aria-labelledby="page-title">
+      <div class="phero__bg"><img src="assets/web/ph-interns-1600.webp" alt="" fetchpriority="high"></div>
+      <div class="wrap phero__grid">
+        <div>
+          <p class="phero__kicker"><span>Ages 18–30</span><span>August to July</span></p>
+          <h1 class="h1" id="page-title">The Internship</h1>
+          <p class="phero__meta">Applications open each spring · Emmaus Youth Village</p>
+          <p class="phero__lede">Live in community at the Village for a year, lead retreats for schools, and pray together morning and night.</p>
+          <p class="phero__actions"><a class="btn btn--main" href="#apply">Brochure and forms <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg></a><a class="btn btn--glass" href="#team">Where interns come from</a></p>
         </div>
-
-        <a class="hero__open magnetic" href="#about">
-          <span>Explore</span>
-          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6"/></svg>
-        </a>
+        
       </div>
     </section>
-
-    <section class="statement section-shell" id="about">
-      <div class="section-label reveal">
-        <span>01</span>
-        <span>Give a year</span>
-        <span>Ages 18–30</span>
-      </div>
-
-      <div class="statement__grid">
-        <h2 class="display-copy reveal">You come to give a year. <em>It hands you back changed.</em></h2>
-        <div class="statement__body reveal">
-          <p>Every August, young adults arrive at the Emmaus Youth Village to spend a year living, praying and working together.</p>
-          <a class="text-link" href="#apply">Get the application pack <span>↘</span></a>
-        </div>
-      </div>
-
-      <div class="statement__columns">
-        <div class="prose reveal">
-          <p>Interns lead school retreats, run outreach, help plan Festival and The Source, and pray together morning and night. Training, formation and support come as standard — and so do real, lifelong friendships.</p>
-          <h3>The year includes</h3>
-          <ul>
-            <li>Live-in community at the Village (August to July)</li>
-            <li>Training and formation in youth ministry</li>
-            <li>Leading retreats and school outreach</li>
-            <li>Accommodation, food and support provided</li>
-            <li>No previous experience required — just willingness to grow</li>
-          </ul>
-          <h3>How to apply</h3>
-          <ul>
-            <li>Download and read the internship brochure</li>
-            <li>Complete the application form</li>
-            <li>Ask two referees to complete a reference form</li>
-            <li>Send everything to <a href="mailto:admin@ymt.org">admin@ymt.org</a></li>
-            <li>We'll invite you to a conversation and a visit</li>
-          </ul>
-        </div>
-        <div class="reveal">
-          <dl class="facts">
-            <div><dt>Age</dt><dd>18–30</dd></div>
-            <div><dt>Length</dt><dd>August to July</dd></div>
-            <div><dt>Where</dt><dd>Emmaus Youth Village</dd></div>
-            <div><dt>Applications</dt><dd>Open each spring</dd></div>
-            <div><dt>Cost</dt><dd>Board provided</dd></div>
-          </dl>
-          <a class="pill-button magnetic" href="#apply">Apply now <span>↗</span></a>
+    <section class="section" aria-labelledby="year-title">
+      <div class="wrap"><div class="label" aria-hidden="true"><span>01</span><span>The year</span><span>What interns do</span></div><div class="section-head"><h2 class="h2" id="year-title">What the year involves</h2></div></div>
+      <ul class="track" role="list" tabindex="0" aria-label="The year, scroll sideways"><li class="card glass"><p class="kicker">August</p><p>Arrive, train and settle into community life.</p></li><li class="card glass"><p class="kicker">September to July</p><p>Lead residential retreats for schools.</p></li><li class="card glass"><p class="kicker">All year</p><p>Help plan and run The Source and outreach.</p></li><li class="card glass"><p class="kicker">Summer</p><p>Help run the Behold festivals.</p></li><li class="card glass"><p class="kicker">Every day</p><p>Pray together, morning and night.</p></li></ul>
+    </section>
+    <section class="section section--tight" id="photos" aria-labelledby="photos-title">
+      <div class="wrap">
+        <div class="label" aria-hidden="true"><span>02</span><span>Community</span><span>Live, pray, serve</span></div>
+        <div class="work"><div class="work__row work__row--a"><figure class="shot"><div class="shot__media"><img src="assets/web/ph-interns-1600.webp" alt="The team" loading="lazy" decoding="async"></div><figcaption><b>The team</b><span>Emmaus Youth Village</span></figcaption></figure><figure class="shot"><div class="shot__media"><img src="assets/web/ph-retreat-prayer-800.webp" alt="Leading a retreat" loading="lazy" decoding="async"></div><figcaption><b>Leading a retreat</b><span>With a school</span></figcaption></figure></div><div class="work__row work__row--b"><figure class="shot"><div class="shot__media"><img src="assets/web/ph-village-lounge-800.webp" alt="Home" loading="lazy" decoding="async"></div><figcaption><b>Home</b><span>The lodge</span></figcaption></figure><figure class="shot"><div class="shot__media"><img src="assets/web/ph-event-night-800.webp" alt="The Source" loading="lazy" decoding="async"></div><figcaption><b>The Source</b><span>On tour</span></figcaption></figure><figure class="shot"><div class="shot__media"><img src="assets/web/ph-fellowship-800.webp" alt="Community" loading="lazy" decoding="async"></div><figcaption><b>Community</b><span>Shared meals</span></figcaption></figure></div></div></div>
+    </section>
+    <section class="globe-sec" id="team" aria-labelledby="team-title">
+      <div class="wrap">
+        <div class="label" aria-hidden="true"><span>03</span><span>Where interns come from</span><span>Every August</span></div>
+        <div class="globe-sec__grid">
+          <div class="stack stack--lg">
+            <h2 class="h2" id="team-title">From all over the world to Consett</h2>
+            <p class="lede muted">Each year's team arrives from across the world. Choose a country to see its route.</p>
+            <p class="globe-sec__tally" data-globe-tally aria-live="polite"></p>
+            <ul class="globe-sec__chips" role="list" data-globe-chips aria-label="Countries"></ul>
+            <p class="globe-sec__note" data-globe-note aria-live="polite">Drag the globe to turn it.</p>
+          </div>
+          <div class="globe" data-globe><canvas role="img" aria-label="Globe showing routes from interns' home countries to Consett"></canvas><div class="globe__tags" data-globe-tags aria-hidden="true"></div></div>
         </div>
       </div>
     </section>
-
-    <div class="marquee" aria-hidden="true">
-      <div class="marquee__track">
-        <span>LIVE</span><i>✦</i><span>PRAY</span><i>✦</i><span>SERVE</span><i>✦</i><span>GROW</span><i>✦</i>
-        <span>LIVE</span><i>✦</i><span>PRAY</span><i>✦</i><span>SERVE</span><i>✦</i><span>GROW</span><i>✦</i>
-      </div>
-    </div>
-
-    <section class="updates section-shell" id="blog">
-      <div class="section-label reveal">
-        <span>02</span>
-        <span>Current interns' blog</span>
-        <span>Life in community</span>
-      </div>
-
-      <div class="updates__heading">
-        <h2 class="display-copy reveal">The highs, the washing-up rota <em>and everything in between.</em></h2>
-        <p class="reveal">Straight from this year's team.</p>
-      </div>
-
-      <div class="updates__grid">
-        <a class="update-card reveal" href="#blog">
-          <div class="update-card__image"><img src="assets/images/interns.jpg" alt=""></div>
-          <span class="update-card__meta">Maria · Week 6</span>
-          <h3>Week 6: retreats, rotas and a lot of laughter.</h3>
-          <span class="update-card__link">Read post ↗</span>
-        </a>
-        <a class="update-card reveal" href="#blog">
-          <div class="update-card__image"><img src="assets/images/fellowship.jpg" alt=""></div>
-          <span class="update-card__meta">Josh · This month</span>
-          <h3>Leading my first school retreat.</h3>
-          <span class="update-card__link">Read post ↗</span>
-        </a>
-        <a class="update-card reveal" href="#blog">
-          <div class="update-card__image"><img src="assets/images/worship-night.jpg" alt=""></div>
-          <span class="update-card__meta">The team · The Source</span>
-          <h3>Behind the scenes at The Source.</h3>
-          <span class="update-card__link">Read post ↗</span>
-        </a>
-      </div>
-    </section>
-
-    <section class="dates" id="apply">
-      <div class="section-shell">
-        <div class="section-label section-label--light reveal">
-          <span>03</span>
-          <span>Application pack</span>
-          <span>Ready to apply?</span>
-        </div>
-
-        <div class="dates__heading">
-          <h2 class="display-copy reveal">Download, fill in, <em>send it over.</em></h2>
-          <p class="reveal">Applications open each spring for the year beginning in August. Downloads are placeholders in this draft — final PDFs are hosted here in production.</p>
-        </div>
-
-        <div class="event-list">
-          <article class="event-row reveal">
-            <a href="#" download aria-label="Download: Internship brochure (PDF)">
-              <span class="event-row__number">01</span>
-              <span class="event-row__tag">PDF</span>
-              <h3>Internship brochure</h3>
-              <p>What the year looks like</p>
-              <span class="event-row__arrow" aria-hidden="true">↓</span>
-            </a>
-          </article>
-          <article class="event-row reveal">
-            <a href="#" download aria-label="Download: Application form (PDF)">
-              <span class="event-row__number">02</span>
-              <span class="event-row__tag">PDF</span>
-              <h3>Application form</h3>
-              <p>Everything we need to know</p>
-              <span class="event-row__arrow" aria-hidden="true">↓</span>
-            </a>
-          </article>
-          <article class="event-row reveal">
-            <a href="#" download aria-label="Download: Reference form">
-              <span class="event-row__number">03</span>
-              <span class="event-row__tag">PDF</span>
-              <h3>Reference form</h3>
-              <p>For your two referees</p>
-              <span class="event-row__arrow" aria-hidden="true">↓</span>
-            </a>
-          </article>
-          <article class="event-row reveal">
-            <a href="mailto:admin@ymt.org" aria-label="Email a question to admin@ymt.org">
-              <span class="event-row__number">04</span>
-              <span class="event-row__tag">Email</span>
-              <h3>Ask a question</h3>
-              <p>admin@ymt.org</p>
-              <span class="event-row__arrow" aria-hidden="true">↗</span>
-            </a>
-          </article>
-        </div>
-      </div>
-    </section>
-
-    <section class="closing" aria-label="Get the application pack">
-      <img src="assets/images/crew.jpg" alt="" data-parallax>
-      <div class="closing__scrim" aria-hidden="true"></div>
-      <div class="closing__content section-shell">
-        <span class="mono-label reveal">Ready to apply?</span>
-        <h2 class="reveal">Give a year.<br>Get <em>changed.</em></h2>
-        <a class="pill-button pill-button--light magnetic reveal" href="#apply">Get the application pack <span>↗</span></a>
-      </div>
+    <section class="section section--tight" id="apply" aria-labelledby="apply-title">
+      <div class="wrap">
+        <div class="label" aria-hidden="true"><span>04</span><span>Apply</span><span>Applications open each spring</span></div>
+        <div class="split">
+          <div class="split__aside">
+            <h2 class="h2" id="apply-title">How to apply</h2>
+            <ol class="ticks" role="list"><li>Read the Internship brochure.</li><li>Complete the application form.</li><li>Ask two referees to complete a reference form.</li><li>Send everything to <a href="mailto:admin@ymt.org">admin@ymt.org</a>.</li><li>We will invite you to a conversation and a visit.</li></ol>
+          </div>
+          <div class="stack stack--lg">
+            <dl class="facts"><div><dt>Age</dt><dd>18–30</dd></div><div><dt>Length</dt><dd>August to July</dd></div><div><dt>Where</dt><dd>Emmaus Youth Village</dd></div><div><dt>Included</dt><dd>Accommodation, food, training and formation</dd></div><div><dt>Experience</dt><dd>None needed</dd></div></dl>
+            <div class="bite-grid">
+              <article class="bite" data-type="Brochure"><div class="bite__top"><span class="bite__type">Brochure</span><span class="bite__level">18–30</span></div><div class="bite__body"><h3>The Internship brochure</h3><p>What the year looks like.</p></div><div class="bite__foot"><span class="bite__time">PDF</span><a class="bite__dl" href="resources/internship-brochure.pdf" download><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg>PDF</a></div></article>
+              <article class="bite" data-type="Form"><div class="bite__top"><span class="bite__type">Forms</span><span class="bite__level">18–30</span></div><div class="bite__body"><h3>Application and reference forms</h3><p>Return them to admin@ymt.org.</p></div><div class="bite__foot"><span class="bite__time">PDF</span><a class="bite__dl" href="resources/internship-application.pdf" download><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg>PDF</a></div></article>
+            </div>
+          </div>
+        </div></div>
     </section>
   </main>
 
-  <footer class="site-footer">
-    <div class="site-footer__top section-shell">
-      <div class="site-footer__wordmark" aria-label="Youth Ministry Team">
-        <span>YOUTH</span>
-        <span>MINISTRY</span>
-        <span>TEAM</span>
+  <footer class="foot">
+    <div class="wrap">
+      <p class="foot__name" aria-hidden="true">YMT</p>
+      <div class="foot__grid">
+        <section><h2>Visit</h2><address>Emmaus Youth Village<br>Pemberton Road<br>Allensford, Consett<br>DH8 9BA</address></section>
+        <section><h2>Who it's for</h2><ul role="list"><li><a href="primary.html">Primary</a></li><li><a href="secondary.html">Secondary</a></li><li><a href="volunteer.html">16+ and volunteers</a></li><li><a href="everyone.html">Everyone else</a></li></ul></section>
+        <section><h2>YMT</h2><ul role="list"><li><a href="about.html">About us</a></li><li><a href="resources.html">Resources</a></li><li><a href="internship.html">The Internship</a></li><li><a href="safeguarding.html">Safeguarding</a></li></ul></section>
+        <section><h2>Contact</h2><ul role="list"><li><a href="enquire.html">Send an enquiry</a></li><li><a href="mailto:admin@ymt.org">admin@ymt.org</a></li><li><a href="mailto:bookings@ymt.org">bookings@ymt.org</a></li></ul></section>
+        <section><h2>Follow</h2><ul role="list"><li><a href="https://www.tiktok.com/@ymttiktok" target="_blank" rel="noopener noreferrer">TikTok</a></li><li><a href="https://instagram.com/youthministryteam/" target="_blank" rel="noopener noreferrer">Instagram</a></li><li><a href="https://facebook.com/youthministryteam/" target="_blank" rel="noopener noreferrer">Facebook</a></li><li><a href="https://www.youtube.com/channel/UCVlOoCyoxRWub3zoPJorMhQ" target="_blank" rel="noopener noreferrer">YouTube</a></li></ul></section>
       </div>
-      <a class="footer-mark" href="#top" aria-label="Back to top"><img src="assets/images/logo-white.png" alt=""></a>
-    </div>
-
-    <div class="site-footer__grid section-shell">
-      <div>
-        <span class="footer-label">Visit</span>
-        <p>Emmaus Village<br>Pemberton Road<br>Allensford, Consett<br>DH8 9BA</p>
-      </div>
-      <div>
-        <span class="footer-label">Talk to us</span>
-        <a href="mailto:admin@ymt.org">admin@ymt.org</a>
-        <a href="safeguarding.html">Safeguarding</a>
-      </div>
-      <div>
-        <span class="footer-label">Follow</span>
-        <a href="https://instagram.com/youthministryteam/" target="_blank" rel="noopener">Instagram ↗</a>
-        <a href="https://facebook.com/youthministryteam/" target="_blank" rel="noopener">Facebook ↗</a>
-        <a href="https://www.youtube.com/channel/UCVlOoCyoxRWub3zoPJorMhQ" target="_blank" rel="noopener">YouTube ↗</a>
-      </div>
-      <div>
-        <span class="footer-label">Support</span>
-        <a class="footer-donate" href="donate.html">Donate to YMT ↗</a>
-      </div>
-    </div>
-
-    <div class="site-footer__legal section-shell">
-      <span>© <span data-year></span> Youth Ministry Trust · Diocese of Hexham &amp; Newcastle</span>
-      <span>Committed to the safeguarding policies of the Catholic Church in England &amp; Wales.</span>
+      <p class="foot__legal"><span>© <span data-year>2026</span> Youth Ministry Team · Diocese of Hexham &amp; Newcastle</span><a href="donate.html">Give to YMT</a></p>
     </div>
   </footer>
-
-  <div class="cursor" aria-hidden="true"><span></span></div>
-  <script src="js/main.js" defer></script>
+  <script src="js/config.js?v=9" defer></script>
+  <script src="js/data.js?v=9" defer></script>
+  <script src="js/site.js?v=9" defer></script>
+  <script src="js/globe.js?v=9" defer></script>
 </body>
 </html>
