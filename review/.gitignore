@@ -3,3 +3,6 @@ out/*.png
 out/*.jpg
 out/video-tmp/
 out/board-record.html
+out/board.html
+out/board.mp4
+out/board.gif

@@ -51,7 +51,7 @@ const CONFIG = {
   },
   record: true,                         // also record board.mp4 and board.gif
   video: { width: 1280, height: 720, crf: 22, preset: 'veryfast' },
-  gif: { width: 640, fps: 8 },
+  gif: { width: 480, fps: 6, colors: 64 },
   ffmpegPath: 'ffmpeg',
 };
 // -------------------------------------------------------------------------------------------------
@@ -278,7 +278,7 @@ if (CONFIG.record) {
     '-c:v', 'libx264', '-preset', CONFIG.video.preset, '-crf', String(CONFIG.video.crf), '-pix_fmt', 'yuv420p',
     '-movflags', '+faststart', mp4]);
   execFileSync(CONFIG.ffmpegPath, ['-y', '-loglevel', 'error', '-i', mp4, '-vf',
-    `fps=${CONFIG.gif.fps},scale=${CONFIG.gif.width}:-1:flags=lanczos,split[a][b];[a]palettegen=max_colors=96:stats_mode=diff[p];[b][p]paletteuse=dither=bayer:bayer_scale=4:diff_mode=rectangle`,
+    `fps=${CONFIG.gif.fps},scale=${CONFIG.gif.width}:-1:flags=lanczos,split[a][b];[a]palettegen=max_colors=${CONFIG.gif.colors}:stats_mode=diff[p];[b][p]paletteuse=dither=bayer:bayer_scale=4:diff_mode=rectangle`,
     gif]);
   await rm(videoDir, { recursive: true, force: true });
   await rm(join(OUT, 'board-record.html'), { force: true });
