@@ -1,15 +1,20 @@
 /* Home only. Shared parts (nav, footer, buttons, glass, reveals) live in site.css; the hero is hero.css. */
 
 /* Title card shown while the page loads */
-.intro { display: none; }
+.intro, html.intro-seen .intro { display: none; }
 .js .intro { position: fixed; inset: 0; z-index: 280; display: flex; align-items: center; justify-content: center; overflow: hidden; background: var(--ink); color: var(--white); pointer-events: none; transition: transform .95s var(--ease), border-radius .95s var(--ease); animation: intro-failsafe 0s 5s forwards; }
 .intro.is-leaving { border-radius: 0 0 50% 50%; transform: translateY(-105%); }
-.intro__word { display: flex; gap: .025em; overflow: hidden; font-family: var(--display); font-size: clamp(6rem, 22vw, 21rem); font-weight: 800; letter-spacing: -.04em; line-height: .72; }
-.intro__word span { display: inline-block; transform: translateY(110%); animation: intro-letter .72s var(--ease) forwards; }
-.intro__word span:nth-child(2) { animation-delay: .07s; }
-.intro__word span:nth-child(3) { animation-delay: .14s; }
-.intro__meta { position: absolute; right: var(--gutter); bottom: max(24px, env(safe-area-inset-bottom)); left: var(--gutter); display: flex; justify-content: space-between; border-top: 1px solid var(--line); padding-top: 10px; font-family: var(--mono); font-size: .72rem; text-transform: uppercase; }
-@keyframes intro-letter { to { transform: translateY(0); } }
+/* The mark draws itself like a sketch (wobbly outlines, then hatching), settles into the solid
+   logo, then the card lifts. Shapes are traced from assets/images/logo.png; --i staggers them. */
+.intro__mark { width: clamp(170px, 24vw, 340px); overflow: visible; color: var(--white); }
+.intro__mark use { --d: calc(var(--i) * 85ms); }
+.intro__lines use { fill: none; stroke: currentColor; stroke-width: 5; stroke-linejoin: round; stroke-dasharray: 1; stroke-dashoffset: 1; animation: intro-draw .6s var(--ease) var(--d) forwards, intro-out .3s ease 1.35s forwards; }
+.intro__hatch use { opacity: 0; animation: intro-in .35s ease calc(.45s + var(--d)) forwards, intro-out .3s ease 1.35s forwards; }
+.intro__solid use { fill: currentColor; opacity: 0; animation: intro-in .35s var(--ease) calc(1.15s + var(--d) / 3) forwards; }
+.intro__meta { position: absolute; right: var(--gutter); bottom: max(24px, env(safe-area-inset-bottom)); left: var(--gutter); display: flex; justify-content: space-between; border-top: 1px solid var(--line); padding-top: 10px; font-family: var(--mono); font-size: .72rem; text-transform: uppercase; opacity: 0; animation: intro-in .5s ease .3s forwards; }
+@keyframes intro-draw { to { stroke-dashoffset: 0; } }
+@keyframes intro-in { to { opacity: 1; } }
+@keyframes intro-out { to { opacity: 0; } }
 @keyframes intro-failsafe { to { visibility: hidden; } }
 /* The hero sits under the glass nav now, so its own sub-links step down a little. */
 .hero .hero__subnav a { text-decoration: none; }

@@ -6,33 +6,27 @@
   const $ = (s, r = document) => r.querySelector(s);
   const $$ = (s, r = document) => [...r.querySelectorAll(s)];
 
-  /* Title card: YMT rises, the count runs, the card lifts away. */
+  /* Title card: the YMT mark sketches itself in and settles (home.css), then the card lifts away.
+     It plays once per visit: boot.js hides it if this session has already seen it. */
   const root = document.documentElement;
   const intro = $('.intro');
-  const count = $('[data-loader-count]');
   let introDone = false;
   const finishIntro = () => {
     if (introDone) return;
     introDone = true;
-    if (count) count.textContent = '100';
     root.classList.add('page-ready');
-    if (!intro || reduce) { intro?.remove(); return; }
+    try { sessionStorage.setItem('ymt-intro', '1'); } catch {}
+    if (!intro || reduce || root.classList.contains('intro-seen')) { intro?.remove(); return; }
     intro.classList.add('is-leaving');
     setTimeout(() => intro.remove(), 1050);
   };
-  if (reduce) finishIntro();
+  if (reduce || root.classList.contains('intro-seen')) finishIntro();
   else {
-    const t0 = performance.now();
-    const tick = (now) => {
-      if (introDone) return;
-      const p = Math.min((now - t0) / 1150, 1);
-      if (count) count.textContent = String(Math.round((1 - Math.pow(1 - p, 3)) * 99)).padStart(2, '0');
-      if (p < 1) requestAnimationFrame(tick);
-    };
-    requestAnimationFrame(tick);
-    const onReady = () => setTimeout(finishIntro, 850);
-    if (document.readyState === 'complete') onReady(); else addEventListener('load', onReady, { once: true });
-    setTimeout(finishIntro, 2200);
+    // Lift once the mark has settled and the page has loaded, and never later than 3.2s.
+    const settled = new Promise((r) => setTimeout(r, 1850));
+    const loaded = new Promise((r) => (document.readyState === 'complete' ? r() : addEventListener('load', r, { once: true })));
+    Promise.all([settled, loaded]).then(finishIntro);
+    setTimeout(finishIntro, 3200);
   }
 
   /* The hero film plays unless motion is reduced or the visitor pauses it (WCAG 2.2.2); it retries
