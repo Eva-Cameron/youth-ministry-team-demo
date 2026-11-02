@@ -29,6 +29,12 @@
         ],
         "createdAt": "2026-11-02T12:06:16.350Z",
         "reason": "intended: story frames wait at opacity 0 to crossfade as chapters scroll (critique B, 2 Nov 2026)"
+      },
+      {
+        "rule": "design-system-font",
+        "value": "syne",
+        "createdAt": "2026-11-02T12:54:20.716Z",
+        "reason": "iteration-3-decisions.md (Eva, 2 Nov 2026): Syne is the display face and css/site.css already ships it; DESIGN.md still names Space Grotesk and is stale"
       }
     ]
   }

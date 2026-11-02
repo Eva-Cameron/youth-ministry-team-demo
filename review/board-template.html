@@ -1,0 +1,500 @@
+<title>YMT Review Board</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<style>
+/* Layout: a Figma-style infinite canvas. A thin tool bar on top, the board in the middle, the current thread spelled out underneath. */
+@font-face { font-family: "Syne"; font-weight: 400 800; font-display: block; src: url("data:font/woff2;base64,/*FONT_SYNE*/") format("woff2"); }
+@font-face { font-family: "Satoshi"; font-weight: 300 900; font-display: block; src: url("data:font/woff2;base64,/*FONT_SATOSHI*/") format("woff2"); }
+@font-face { font-family: "Space Mono"; font-weight: 400; font-display: block; src: url("data:font/woff2;base64,/*FONT_MONO*/") format("woff2"); }
+:root {
+  --canvas: #efede9;
+  --dot: #c9c4bc;
+  --chrome: #fbfaf8;
+  --ink: #1d1a22;
+  --muted: #625d6a;
+  --line: #dedad3;
+  --section: #e5e2dc;
+  --note-open: #ffe27a;
+  --note-done: #e3e2de;
+  --note-ink: #1d1a22;
+  --note-muted: #59545f;
+  --pin-open: #f2b200;
+  --pin-done: #74707b;
+  --wire-open: #c99300;
+  --wire-done: #a29fa6;
+  --focus: #1d1a22;
+  --display: "Syne", "Satoshi", system-ui, sans-serif;
+  --ui: "Satoshi", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono: "Space Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --canvas: #19171c; --dot: #3a3540; --chrome: #221f26; --ink: #f1eef4; --muted: #aaa3b2;
+    --line: #34303a; --section: #24212a; --wire-done: #77737c; --focus: #ffe27a; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --canvas: #19171c; --dot: #3a3540; --chrome: #221f26; --ink: #f1eef4; --muted: #aaa3b2;
+  --line: #34303a; --section: #24212a; --wire-done: #77737c; --focus: #ffe27a; color-scheme: dark;
+}
+html, body { height: 100%; }
+body { background: var(--canvas); color: var(--ink); font-family: var(--ui); overflow: hidden; }
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--chrome); }
+.app { height: 100%; display: grid; grid-template-rows: auto 1fr auto; }
+
+.bar {
+  display: flex; flex-wrap: wrap; align-items: center; gap: 8px 20px; justify-content: space-between;
+  padding-block: 10px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+  background: var(--chrome); color: var(--ink); border-bottom: 1px solid var(--line); position: relative; z-index: 2;
+}
+.bar__file { display: flex; align-items: baseline; gap: 12px; min-width: 0; flex-wrap: wrap; }
+.bar__file b { font-family: var(--display); font-weight: 700; font-size: 1.05rem; letter-spacing: -0.01em; }
+.bar__file span { font-family: var(--mono); font-size: 0.72rem; color: var(--muted); letter-spacing: 0.04em; }
+.ctrls { display: flex; align-items: center; gap: 6px; }
+.ctrls button {
+  font: 600 0.82rem/1 var(--ui); color: var(--ink); background: transparent; border: 1px solid var(--line);
+  border-radius: 8px; min-height: 36px; min-width: 36px; padding: 0 12px; cursor: pointer; display: inline-flex; align-items: center; gap: 6px;
+}
+.ctrls button:hover { background: var(--section); }
+.ctrls button:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+.ctrls svg { width: 14px; height: 14px; fill: currentColor; }
+.ctrls .count { font: 0.75rem var(--mono); color: var(--muted); min-width: 5.5ch; text-align: center; font-variant-numeric: tabular-nums; }
+
+.stage {
+  position: relative; overflow: hidden; cursor: grab; touch-action: none;
+  background-color: var(--canvas);
+  background-image: radial-gradient(circle at center, var(--dot) 1.1px, transparent 1.4px);
+}
+.stage.is-dragging { cursor: grabbing; }
+.world { position: absolute; left: 0; top: 0; transform-origin: 0 0; will-change: transform; }
+
+.frame-label { position: absolute; font: 700 28px/1 var(--mono); color: var(--muted); white-space: nowrap; }
+.section { position: absolute; background: var(--section); border-radius: 12px; }
+.section__name { position: absolute; left: 0; top: -84px; font: 700 52px/1 var(--display); color: var(--ink); white-space: nowrap; letter-spacing: -0.01em; }
+.shot { position: absolute; background: #100c15; box-shadow: 0 12px 40px rgb(16 12 21 / 0.18); overflow: hidden; }
+.shot img { display: block; max-width: none; }
+
+.cover { position: absolute; background: var(--chrome); color: var(--ink); border-radius: 24px; padding: 88px; width: 1000px; box-shadow: 0 12px 40px rgb(16 12 21 / 0.08); }
+.cover__kicker { font: 14px var(--mono); letter-spacing: 0.08em; color: var(--muted); text-transform: uppercase; }
+.cover h1 { font: 700 72px/1 var(--display); margin: 22px 0 22px; letter-spacing: -0.015em; }
+.cover p { font-size: 22px; line-height: 1.4; color: var(--muted); margin: 0 0 36px; max-width: 46ch; }
+.todo { list-style: none; margin: 0; padding: 0; }
+.todo li { display: grid; grid-template-columns: 30px auto 1fr; gap: 20px; align-items: start; padding: 22px 0; border-top: 1px solid var(--line); }
+.todo .box { width: 30px; height: 30px; border-radius: 8px; border: 2.5px solid var(--wire-open); box-sizing: border-box; display: grid; place-items: center; }
+.todo .done .box { background: var(--pin-done); border-color: var(--pin-done); }
+.todo .box svg { width: 18px; height: 18px; fill: none; stroke: #fff; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+.todo .num { font: 700 15px/1 var(--mono); padding: 6px 10px; border-radius: 99px; background: var(--note-open); color: var(--note-ink); }
+.todo .done .num { background: var(--note-done); }
+.todo q { display: block; font-weight: 500; font-size: 22px; line-height: 1.3; min-width: 0; overflow-wrap: anywhere; }
+.todo .done q { color: var(--muted); text-decoration: line-through; text-decoration-thickness: 1px; }
+.todo small { display: block; font: 13px var(--mono); color: var(--muted); margin-top: 6px; }
+
+.note {
+  position: absolute; width: 440px; box-sizing: border-box; padding: 24px; border-radius: 4px;
+  background: var(--note-open); color: var(--note-ink); box-shadow: 0 6px 16px rgb(26 20 13 / 0.18);
+  display: flex; flex-direction: column; gap: 12px;
+  opacity: 0; transform: translateY(14px) rotate(-1.2deg); transition: opacity 0.35s ease-out, transform 0.45s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.note.is-done { background: var(--note-done); }
+.note.is-gone { outline: 2px dashed var(--pin-done); outline-offset: -2px; }
+.note.on { opacity: 1; transform: none; }
+.note.is-current { box-shadow: 0 0 0 4px var(--wire-open), 0 10px 26px rgb(26 20 13 / 0.24); }
+.note.is-done.is-current { box-shadow: 0 0 0 4px var(--pin-done), 0 10px 26px rgb(26 20 13 / 0.24); }
+.note__head { font: 700 14px/1 var(--mono); letter-spacing: 0.04em; }
+.note__say { font-weight: 500; font-size: 22px; line-height: 1.28; overflow-wrap: anywhere; }
+.note__say .rest { visibility: hidden; }
+.note__say .caret[hidden] { display: none; }
+.note__say .caret { display: inline-block; width: 2px; height: 1em; background: var(--note-ink); vertical-align: -0.12em; margin: 0 -1px; }
+.note__meta { font: 13px var(--mono); color: var(--note-muted); }
+.note__more { display: none; flex-direction: column; gap: 10px; }
+.note__more.on { display: flex; animation: note-more 0.4s ease-out; }
+@keyframes note-more { from { opacity: 0; } }
+.note__reply { font-size: 14px; line-height: 1.4; color: var(--note-muted); }
+.note__reply b { display: block; font: 12px var(--mono); margin-bottom: 2px; font-weight: 400; }
+.note__moved { font-size: 13px; line-height: 1.35; font-style: italic; color: var(--note-muted); }
+
+.pin {
+  position: absolute; border-radius: 50%; display: grid; place-items: center; box-sizing: border-box;
+  background: var(--pin-open); color: var(--note-ink); border: 4px solid #fff; box-shadow: 0 4px 12px rgb(0 0 0 / 0.35);
+  font: 700 24px/1 var(--mono); transform: scale(0); transition: transform 0.38s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.pin.is-done { background: var(--pin-done); color: #fff; }
+.pin.on { transform: scale(1); }
+.pin.is-current::after { content: ""; position: absolute; inset: -14px; border-radius: 50%; border: 3px solid var(--pin-open); opacity: 0.7; }
+.pin.is-done.is-current::after { border-color: #fff; }
+
+.wires { position: absolute; left: 0; top: 0; overflow: visible; pointer-events: none; }
+.wires path { fill: none; stroke-width: 3; stroke-linecap: round; stroke-dasharray: 1 1; stroke-dashoffset: 1; transition: stroke-dashoffset 0.6s ease-out; }
+.wires path.on { stroke-dashoffset: 0; }
+.wires .is-open { stroke: var(--wire-open); }
+.wires .is-done { stroke: var(--wire-done); }
+
+.caption {
+  display: grid; grid-template-columns: auto 1fr; gap: 4px 16px; align-items: baseline;
+  padding-block: 12px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+  background: var(--chrome); color: var(--ink); border-top: 1px solid var(--line); min-height: 3.2em; position: relative; z-index: 2;
+}
+.caption__tag { font: 0.72rem var(--mono); letter-spacing: 0.05em; text-transform: uppercase; color: var(--muted); white-space: nowrap; }
+.caption__text { font-size: 0.95rem; line-height: 1.4; min-width: 0; overflow-wrap: anywhere; max-width: 90ch; }
+.caption__text small { display: block; color: var(--muted); font-size: 0.82rem; }
+@media (max-width: 560px) {
+  .caption { grid-template-columns: 1fr; }
+  .bar__file span { display: none; }
+}
+body.is-recording, body.is-recording .stage { cursor: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  .note, .pin, .wires path { transition: none; }
+  .note__more.on { animation: none; }
+}
+</style>
+
+<div class="app">
+  <header class="bar">
+    <div class="bar__file"><b id="file-title">YMT review</b><span id="file-meta"></span></div>
+    <div class="ctrls" role="group" aria-label="Board playback">
+      <button type="button" id="btn-prev" aria-label="Previous step"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M11 2 4 8l7 6z"/></svg></button>
+      <button type="button" id="btn-play" aria-label="Pause"><svg viewBox="0 0 16 16" aria-hidden="true" id="icon-play"><path d="M4 2h3v12H4zM9 2h3v12H9z"/></svg><span id="play-label">Pause</span></button>
+      <button type="button" id="btn-next" aria-label="Next step"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="m5 2 7 6-7 6z"/></svg></button>
+      <span class="count" id="step-count" aria-live="off">1 / 1</span>
+      <button type="button" id="btn-fit">Overview</button>
+    </div>
+  </header>
+  <main class="stage" id="stage" aria-label="Review board: page screenshots with comment pins. Drag to pan, scroll or pinch to zoom.">
+    <div class="world" id="world"></div>
+  </main>
+  <footer class="caption" aria-live="polite">
+    <span class="caption__tag" id="cap-tag"></span>
+    <div class="caption__text" id="cap-text"></div>
+  </footer>
+</div>
+
+<script id="board-data" type="application/json">/*BOARD_DATA*/null</script>
+<script>
+(() => {
+  // Comment text is viewer-written: it only ever reaches the page through textContent.
+  const board = JSON.parse(document.getElementById('board-data').textContent);
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const recording = location.hash === '#record';
+  if (recording) document.body.classList.add('is-recording');
+  const $ = (id) => document.getElementById(id);
+  const el = (tag, cls, text) => { const node = document.createElement(tag); if (cls) node.className = cls; if (text !== undefined) node.textContent = text; return node; };
+  const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  const when = (iso) => { const [day, time] = iso.split('T'); const [year, month, date] = day.split('-'); return `${Number(date)} ${months[Number(month) - 1]} ${year}${time ? ', ' + time : ''}`; };
+  const clip = (text, max) => text.length > max ? text.slice(0, max).replace(/\s+\S*$/, '') + '…' : text;
+
+  const stage = $('stage'), world = $('world');
+  const allPins = board.pages.flatMap((page) => page.pins.map((pin) => ({ ...pin, page: page.page })));
+  const openCount = allPins.filter((pin) => pin.status === 'open').length;
+  $('file-title').textContent = board.title;
+  $('file-meta').textContent = `${allPins.length} threads · ${openCount} open · ${board.pages.length} page${board.pages.length > 1 ? 's' : ''}`;
+
+  // ---------- Cover: every thread as a to-do ----------
+  const cover = el('section', 'cover');
+  cover.style.left = '0px'; cover.style.top = '0px';
+  cover.append(el('div', 'cover__kicker', `Review board · comments collected ${when(board.collected)}`), el('h1', '', board.title));
+  cover.append(el('p', '', `${allPins.length} threads on ${board.pages.length} page${board.pages.length > 1 ? 's' : ''}: ${openCount} open, ${allPins.length - openCount} resolved. Threads were placed on an earlier build; moved pins say where they now sit.`));
+  const todo = el('ul', 'todo');
+  for (const pin of allPins) {
+    const owner = pin.comments.find((comment) => comment.role === 'owner') || pin.comments[0];
+    const item = el('li', pin.status === 'open' ? '' : 'done');
+    const box = el('span', 'box');
+    if (pin.status !== 'open') box.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>';
+    const body = el('div');
+    body.append(el('q', '', owner.text), el('small', '', `${pin.page} · ${owner.role} · ${when(owner.date)} · ${pin.status === 'open' ? 'open' : 'resolved'}${pin.at.desktop.x === null ? ' · not on this page now' : ''}`));
+    item.append(box, el('span', 'num', `#${pin.n}`), body);
+    todo.append(item);
+  }
+  cover.append(todo);
+  world.append(cover);
+
+  // ---------- Sections: same geometry as the Figma file ----------
+  const FRAME_Y = 200, NOTE_X = 80, NOTE_W = 440, DESK_X = NOTE_X + NOTE_W + 200, GAP = 240;
+  const steps = [];
+  const sectionRects = [];
+  const pinViews = new Map();
+  let sectionX = 1000 + GAP;
+  const pending = [];
+  for (const page of board.pages) {
+    const desk = page.frames.desktop, mob = page.frames.mobile;
+    const mobX = DESK_X + desk.width + GAP;
+    const width = mobX + mob.width + 120, height = FRAME_Y + Math.max(desk.height, mob.height) + 160;
+    const section = el('div', 'section');
+    Object.assign(section.style, { left: sectionX + 'px', top: '0px', width: width + 'px', height: height + 'px' });
+    section.append(el('div', 'section__name', `${page.page} · ${page.title}`));
+    const frames = {};
+    for (const [view, frame, fx] of [['desktop', desk, DESK_X], ['mobile', mob, mobX]]) {
+      const label = el('div', 'frame-label', `${view === 'desktop' ? 'Desktop' : 'Mobile'} · ${frame.width}px`);
+      label.style.left = fx + 'px'; label.style.top = (FRAME_Y - 64) + 'px';
+      const shot = el('div', 'shot');
+      Object.assign(shot.style, { left: fx + 'px', top: FRAME_Y + 'px', width: frame.width + 'px', height: frame.height + 'px' });
+      const img = el('img');
+      img.alt = `${page.page} at ${frame.width}px wide`;
+      img.width = frame.width; img.height = frame.height; img.src = frame.src; img.decoding = 'async';
+      shot.append(img);
+      section.append(label, shot);
+      frames[view] = { node: shot, x: fx };
+    }
+    const wires = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    wires.setAttribute('class', 'wires'); wires.setAttribute('width', width); wires.setAttribute('height', height);
+    section.append(wires);
+    world.append(section);
+    sectionRects.push({ x: sectionX, y: 0, w: width, h: height });
+    steps.push({ kind: 'page', rect: { x: sectionX, y: -120, w: width, h: Math.min(height, 2600) + 120 }, page });
+
+    const ordered = [...page.pins].sort((one, two) => (one.at.desktop.y ?? 1e9) - (two.at.desktop.y ?? 1e9));
+    for (const pin of ordered) {
+      const open = pin.status === 'open';
+      const gone = pin.at.desktop.x === null;
+      const owner = pin.comments.find((comment) => comment.role === 'owner') || pin.comments[0];
+      const note = el('article', `note${open ? '' : ' is-done'}${gone ? ' is-gone' : ''}`);
+      note.append(el('div', 'note__head', `#${pin.n} · ${open ? 'OPEN' : 'RESOLVED'}${gone ? ' · NOT ON THIS PAGE NOW' : ''}`));
+      const say = el('div', 'note__say');
+      const typed = el('span', 'typed'), caret = el('span', 'caret'), rest = el('span', 'rest', owner.text);
+      caret.hidden = true;
+      say.append(typed, caret, rest);
+      note.append(say, el('div', 'note__meta', `${owner.role} · ${when(owner.date)}`));
+      const more = el('div', 'note__more');
+      for (const reply of pin.comments.filter((comment) => comment !== owner)) {
+        const line = el('div', 'note__reply');
+        line.append(el('b', '', `${reply.role} · ${when(reply.date)}`), document.createTextNode(clip(reply.text.replace(/\n+/g, ' '), 260)));
+        more.append(line);
+      }
+      if (pin.override) more.append(el('div', 'note__moved', `${gone ? '' : 'Pin moved: '}${pin.override.reason}`));
+      note.append(more);
+      section.append(note);
+      const views = { note, typed, caret, rest, more, text: owner.text, pins: [], wire: null, open };
+      for (const [view, size] of [['desktop', 52], ['mobile', 40]]) {
+        const spot = pin.at[view];
+        if (!spot || spot.x === null) continue;
+        const dot = el('div', `pin${open ? '' : ' is-done'}`, String(pin.n));
+        Object.assign(dot.style, { left: (spot.x - size / 2) + 'px', top: (spot.y - size / 2) + 'px', width: size + 'px', height: size + 'px', fontSize: Math.round(size * 0.46) + 'px', borderWidth: size > 44 ? '4px' : '3px' });
+        dot.setAttribute('aria-label', `Comment ${pin.n}`);
+        frames[view].node.append(dot);
+        views.pins.push(dot);
+      }
+      pinViews.set(pin.n, views);
+      pending.push({ pin, views, sectionX, wires, gone });
+      steps.push({ kind: 'pin', n: pin.n, pin, page, sectionX, chars: owner.text.length });
+    }
+    sectionX += width + GAP;
+  }
+
+  // Once fonts are in, measure the notes and stack them beside their pins, then wire them up.
+  const layout = () => {
+    // Measure every note at its full size so the stack never overlaps once replies appear.
+    pending.forEach((item) => item.views.more.classList.add('on'));
+    let nextY = FRAME_Y;
+    for (const item of pending) {
+      const { pin, views, wires, gone } = item;
+      const wantY = gone ? nextY : FRAME_Y + pin.at.desktop.y - 40;
+      const top = Math.max(wantY, nextY);
+      const h = views.note.offsetHeight;
+      views.note.style.left = NOTE_X + 'px'; views.note.style.top = top + 'px';
+      nextY = top + h + 40;
+      item.noteRect = { x: item.sectionX + NOTE_X, y: top, w: NOTE_W, h };
+      if (!gone) {
+        const x1 = NOTE_X + NOTE_W, y1 = top + 40, x2 = DESK_X + pin.at.desktop.x, y2 = FRAME_Y + pin.at.desktop.y;
+        const mid = (x2 - x1) / 2;
+        const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        path.setAttribute('d', `M${x1} ${y1} C${x1 + mid} ${y1} ${x2 - mid} ${y2} ${x2} ${y2}`);
+        path.setAttribute('pathLength', '1');
+        path.setAttribute('class', views.open ? 'is-open' : 'is-done');
+        wires.append(path);
+        views.wire = path;
+        item.pinRect = { x: item.sectionX + x2 - 260, y: y2 - 200, w: 520, h: 400 };
+      }
+      if (pending.indexOf(item) === pending.length - 1 || pending[pending.indexOf(item) + 1].sectionX !== item.sectionX) nextY = FRAME_Y;
+    }
+    for (const step of steps) {
+      if (step.kind !== 'pin') continue;
+      const item = pending.find((entry) => entry.pin.n === step.n);
+      const rects = [item.noteRect, item.pinRect].filter(Boolean);
+      const x = Math.min(...rects.map((r) => r.x)) - 60, y = Math.min(...rects.map((r) => r.y)) - 60;
+      const x2 = Math.max(...rects.map((r) => r.x + r.w)) + 60, y2 = Math.max(...rects.map((r) => r.y + r.h)) + 60;
+      step.rect = { x, y, w: x2 - x, h: y2 - y };
+    }
+    pending.forEach((item) => item.views.more.classList.remove('on'));
+    const right = Math.max(...sectionRects.map((r) => r.x + r.w));
+    const coverH = cover.offsetHeight;
+    steps.unshift({ kind: 'cover', rect: { x: -60, y: -60, w: 1120, h: coverH + 120 } });
+    steps.push({ kind: 'end', rect: { x: -60, y: -160, w: right + 120, h: Math.max(...sectionRects.map((r) => r.h)) + 220 } });
+  };
+
+  // ---------- Camera ----------
+  const cam = { x: 0, y: 0, s: 1 };
+  const fit = (rect) => {
+    const w = stage.clientWidth, h = stage.clientHeight, pad = 0.92;
+    const s = Math.min((w * pad) / rect.w, (h * pad) / rect.h, 1.1);
+    return { x: rect.x + rect.w / 2, y: rect.y + rect.h / 2, s };
+  };
+  const apply = () => {
+    const w = stage.clientWidth, h = stage.clientHeight;
+    const tx = w / 2 - cam.x * cam.s, ty = h / 2 - cam.y * cam.s;
+    world.style.transform = `translate(${tx}px, ${ty}px) scale(${cam.s})`;
+    let gap = 24 * cam.s;
+    while (gap < 12) gap *= 2;
+    stage.style.backgroundSize = `${gap}px ${gap}px`;
+    stage.style.backgroundPosition = `${tx % gap}px ${ty % gap}px`;
+  };
+  const ease = (t) => t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+
+  // ---------- Timeline ----------
+  const GLIDE = 1.4, POP = GLIDE + 0.05, TYPE_AT = GLIDE + 0.55, CPS = 34, HOLD = 1.3;
+  const duration = (step) => {
+    if (step.kind === 'cover') return 3.2;
+    if (step.kind === 'page') return GLIDE + 1.6;
+    if (step.kind === 'end') return GLIDE + 3;
+    return TYPE_AT + step.chars / CPS + 0.4 + HOLD;
+  };
+  let index = 0, elapsed = 0, playing = false, free = false, from = { ...cam }, last = 0;
+  const pinOrder = steps.filter((step) => step.kind === 'pin');
+
+  const setPinState = (views, phase, chars) => {
+    // phase: 0 hidden, 1 shown in full, 2 animating (chars typed so far)
+    const visible = phase > 0;
+    views.pins.forEach((dot) => dot.classList.toggle('on', visible));
+    if (views.wire) views.wire.classList.toggle('on', visible);
+    views.note.classList.toggle('on', visible);
+    const count = phase === 1 ? views.text.length : Math.max(0, Math.min(views.text.length, chars));
+    if (views.typed.textContent.length !== count) {
+      views.typed.textContent = views.text.slice(0, count);
+      views.rest.textContent = views.text.slice(count);
+    }
+    views.caret.hidden = !(phase === 2 && count < views.text.length);
+    views.more.classList.toggle('on', phase === 1 || (phase === 2 && count >= views.text.length));
+  };
+
+  const caption = (step) => {
+    const tag = $('cap-tag'), text = $('cap-text');
+    text.textContent = '';
+    if (step.kind === 'cover') { tag.textContent = 'To-do'; text.textContent = `${allPins.length} threads to work through, ${openCount} still open.`; return; }
+    if (step.kind === 'end') { tag.textContent = 'All pins'; text.textContent = 'Every thread on its page. Yellow is open, grey is resolved.'; return; }
+    if (step.kind === 'page') { tag.textContent = step.page.page; text.textContent = `${step.page.title}: ${step.page.pins.length} thread${step.page.pins.length > 1 ? 's' : ''}.`; return; }
+    const pin = step.pin;
+    const owner = pin.comments.find((comment) => comment.role === 'owner') || pin.comments[0];
+    tag.textContent = `#${pin.n} · ${pin.status}`;
+    text.append(document.createTextNode(`“${owner.text}”`));
+    const small = el('small', '', `${step.page.page} · ${pin.location || 'whole page'} · ${owner.role}, ${when(owner.date)}${pin.override ? ' · ' + pin.override.reason : ''}`);
+    text.append(small);
+  };
+
+  const render = () => {
+    const step = steps[index];
+    const t = Math.min(1, elapsed / GLIDE);
+    if (!free) {
+      const to = fit(step.rect);
+      const k = ease(t);
+      const distance = Math.hypot(to.x - from.x, to.y - from.y) * Math.min(from.s, to.s) / Math.hypot(stage.clientWidth, stage.clientHeight);
+      const dip = 1 / (1 + Math.min(2.5, distance * 0.6) * Math.sin(Math.PI * k));
+      cam.s = Math.exp(Math.log(from.s) + (Math.log(to.s) - Math.log(from.s)) * k) * dip;
+      cam.x = from.x + (to.x - from.x) * k;
+      cam.y = from.y + (to.y - from.y) * k;
+      apply();
+    }
+    const current = step.kind === 'pin' ? pinOrder.indexOf(step) : (step.kind === 'end' ? pinOrder.length : -1);
+    pinOrder.forEach((pinStep, order) => {
+      const views = pinViews.get(pinStep.n);
+      let phase = 0, chars = 0;
+      if (order < current) phase = 1;
+      else if (order === current && step.kind === 'pin') {
+        if (elapsed >= duration(step) - HOLD) phase = 1;
+        else if (elapsed >= POP) { phase = 2; chars = Math.floor((elapsed - TYPE_AT) * CPS); }
+      } else if (step.kind === 'end') phase = 1;
+      setPinState(views, phase, chars);
+      const isCurrent = order === current && step.kind === 'pin';
+      views.note.classList.toggle('is-current', isCurrent);
+      views.pins.forEach((dot) => dot.classList.toggle('is-current', isCurrent));
+    });
+    $('step-count').textContent = `${index + 1} / ${steps.length}`;
+  };
+
+  const go = (next, animate) => {
+    index = Math.max(0, Math.min(steps.length - 1, next));
+    from = { ...cam };
+    free = false;
+    elapsed = animate ? 0 : duration(steps[index]);
+    caption(steps[index]);
+    render();
+  };
+
+  const setPlaying = (value) => {
+    playing = value;
+    $('play-label').textContent = playing ? 'Pause' : (index === steps.length - 1 && elapsed >= duration(steps[index]) ? 'Replay' : 'Play');
+    $('btn-play').setAttribute('aria-label', $('play-label').textContent);
+    $('icon-play').innerHTML = playing ? '<path d="M4 2h3v12H4zM9 2h3v12H9z"/>' : '<path d="m4 2 10 6-10 6z"/>';
+    last = performance.now();
+  };
+
+  const tick = (now) => {
+    if (playing) {
+      elapsed += Math.min(0.1, (now - last) / 1000);
+      last = now;
+      if (elapsed >= duration(steps[index])) {
+        if (index < steps.length - 1) { go(index + 1, true); }
+        else { elapsed = duration(steps[index]); render(); setPlaying(false); window.boardDone = true; }
+      } else render();
+    }
+    requestAnimationFrame(tick);
+  };
+
+  // ---------- Controls ----------
+  if (reduce) $('btn-play').hidden = true;
+  $('btn-play').addEventListener('click', () => {
+    if (!playing && index === steps.length - 1 && elapsed >= duration(steps[index])) { go(0, !reduce); }
+    else if (!playing && free) { go(index, true); }
+    setPlaying(!playing && !reduce ? true : false);
+    if (reduce && !playing) go(index + 1, false);
+  });
+  $('btn-next').addEventListener('click', () => { go(index + 1, playing && !reduce); });
+  $('btn-prev').addEventListener('click', () => { go(index - 1, playing && !reduce); });
+  $('btn-fit').addEventListener('click', () => { setPlaying(false); go(steps.length - 1, !reduce); if (!reduce) setPlaying(true); });
+  addEventListener('keydown', (event) => {
+    if (event.target.closest && event.target.closest('button') && (event.key === ' ' || event.key === 'Enter')) return;
+    if (event.key === ' ') { event.preventDefault(); $('btn-play').click(); }
+    if (event.key === 'ArrowRight') $('btn-next').click();
+    if (event.key === 'ArrowLeft') $('btn-prev').click();
+  });
+
+  // Pan and zoom like a design canvas; touching the canvas pauses the tour.
+  let drag = null;
+  stage.addEventListener('pointerdown', (event) => {
+    drag = { x: event.clientX, y: event.clientY, cx: cam.x, cy: cam.y };
+    stage.setPointerCapture(event.pointerId); stage.classList.add('is-dragging');
+  });
+  stage.addEventListener('pointermove', (event) => {
+    if (!drag) return;
+    const dx = event.clientX - drag.x, dy = event.clientY - drag.y;
+    if (!free && Math.hypot(dx, dy) < 4) return;
+    if (!free) { free = true; setPlaying(false); }
+    cam.x = drag.cx - dx / cam.s; cam.y = drag.cy - dy / cam.s; apply();
+  });
+  const endDrag = () => { drag = null; stage.classList.remove('is-dragging'); };
+  stage.addEventListener('pointerup', endDrag);
+  stage.addEventListener('pointercancel', endDrag);
+  stage.addEventListener('wheel', (event) => {
+    event.preventDefault();
+    free = true; setPlaying(false);
+    const box = stage.getBoundingClientRect();
+    const px = event.clientX - box.left - box.width / 2, py = event.clientY - box.top - box.height / 2;
+    const wx = cam.x + px / cam.s, wy = cam.y + py / cam.s;
+    const factor = Math.exp(-event.deltaY * (event.ctrlKey ? 0.01 : 0.0015));
+    cam.s = Math.max(0.02, Math.min(3, cam.s * factor));
+    cam.x = wx - px / cam.s; cam.y = wy - py / cam.s; apply();
+  }, { passive: false });
+  addEventListener('resize', () => { if (!free) render(); else apply(); });
+
+  // ---------- Start ----------
+  document.fonts.ready.then(() => {
+    layout();
+    const start = reduce ? steps.length - 1 : 0;
+    Object.assign(cam, fit(steps[start].rect));
+    go(start, false);
+    if (!reduce) { elapsed = 0; render(); }
+    requestAnimationFrame((now) => { last = now; tick(now); });
+    window.boardPlay = () => { go(0, true); Object.assign(cam, fit(steps[0].rect)); from = { ...cam }; setPlaying(true); };
+    window.boardReady = true;
+    if (recording || reduce) setPlaying(false);
+    else setPlaying(true);
+  });
+})();
+</script>
