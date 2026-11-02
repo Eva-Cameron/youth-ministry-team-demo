@@ -20,19 +20,19 @@ colors:
   lilac: "#d9cdf6"
 typography:
   display:
-    fontFamily: "Space Grotesk, Arial, sans-serif"
+    fontFamily: "Syne, Arial, sans-serif"
     fontSize: "clamp(48px, 7.6vw, 132px)"
     fontWeight: 700
     lineHeight: 0.9
     letterSpacing: "-0.045em"
   display-grave:
-    fontFamily: "Space Grotesk, Arial, sans-serif"
+    fontFamily: "Syne, Arial, sans-serif"
     fontSize: "clamp(48px, 7.6vw, 132px)"
     fontWeight: 300
     lineHeight: 0.95
     letterSpacing: "-0.03em"
   headline:
-    fontFamily: "Space Grotesk, Arial, sans-serif"
+    fontFamily: "Syne, Arial, sans-serif"
     fontSize: "clamp(38px, 5vw, 80px)"
     fontWeight: 700
     lineHeight: 0.95
@@ -158,7 +158,7 @@ Programme pages may take a register (`data-feel`): Lourdes and adoration are slo
 **Key Characteristics:**
 - Near-black ground (`#100c15`), with white text and hairline rules at 26% white.
 - One accent per audience route, applied only through tokens.
-- Space Grotesk for display, Satoshi for reading and quotes, Space Mono for labels and metadata.
+- Syne for display, Satoshi for reading and quotes, Space Mono for labels and metadata.
 - Square-cornered surfaces; only buttons, pause controls and dots are rounded.
 - Frosted glass for the nav, panels and overlays; the hard offset shadow belongs to download cards on hover.
 - Real YMT photography. No stock images, no illustrations of people.
@@ -197,22 +197,22 @@ A dark, warm-black neutral with pastel and saturated route accents. Shades are k
 
 ## Typography
 
-**Display Font:** Space Grotesk (with Arial), 700; 300 in the grave register
+**Display Font:** Syne (with Arial), 700; 300 in the grave register
 **Body Font:** Satoshi (with Helvetica Neue, Arial), roman and italic
 **Label/Mono Font:** Space Mono (with Courier New)
 
-**Character:** Space Grotesk's squared, slightly quirky geometry gives the headings energy without shouting. Satoshi is warm and clear for long reading, even for younger readers, and its italic carries testimonials and pull quotes. Space Mono files everything: dates, section numbers, tags.
+**Character:** Syne's wide, slightly eccentric geometry (chosen 2 Nov 2026) gives the headings energy without shouting. Satoshi is warm and clear for long reading, even for younger readers, and its italic carries testimonials and pull quotes. Space Mono files everything: dates, section numbers, tags.
 
-All three faces are self-hosted woff2 in `assets/fonts`. Space Grotesk and Space Mono are subset to Latin; Satoshi ships unmodified, as its licence requires. Only the display face and the regular body face are preloaded.
+All three faces are self-hosted woff2 in `assets/fonts`. Syne and Space Mono are subset to Latin; Satoshi ships unmodified, as its licence requires. Only the display face and the regular body face are preloaded.
 
 ### Hierarchy
 - **Display** (700, clamp(48px, 7.6vw, 132px), 0.9, -0.045em): page `h1`s.
 - **Grave display** (300, same size, 0.95, -0.03em): page `h1`s in the grave register only.
-- **Wordmark** (700 Space Grotesk, uppercase, -0.05em in the home hero; -0.07em for the footer name): the YMT wordmark.
+- **Wordmark** (700 Syne, uppercase, -0.05em in the home hero; -0.07em for the footer name): the YMT wordmark.
 - **Headline** (700, clamp(38px, 5vw, 80px), 0.95, -0.04em): section `h2`s and timeline dates.
-- **Statement** (400–500 Space Grotesk, clamp(32px, 4.2vw, 72px), 1.04–1.1, -0.03em to -0.035em): the home ethos line, the mission quote. Secondary words sit in Text 2, and emphasis comes from 700 white, not italic.
-- **Card headline** (700 Space Grotesk, clamp(30px, 3.1vw, 50px), 1, -0.04em): the home route cards.
-- **Subheading** (500 Space Grotesk, clamp(22px, 1.9vw, 28px), 1.15, -0.02em): story chapter titles.
+- **Statement** (400–500 Syne, clamp(32px, 4.2vw, 72px), 1.04–1.1, -0.03em to -0.035em): the home ethos line, the mission quote. Secondary words sit in Text 2, and emphasis comes from 700 white, not italic.
+- **Card headline** (700 Syne, clamp(30px, 3.1vw, 50px), 1, -0.04em): the home route cards.
+- **Subheading** (500 Syne, clamp(22px, 1.9vw, 28px), 1.15, -0.02em): story chapter titles.
 - **Title** (500 Satoshi, clamp(22px, 1.9vw, 28px), 1.15, -0.02em): card titles, row titles, info cards.
 - **Lede** (400 Satoshi, clamp(18px, 1.3vw, 21px), 1.5, max 44ch): the paragraph under a heading.
 - **Body** (400 Satoshi, 17px, 1.55, max 62ch): prose and descriptions.
@@ -220,7 +220,7 @@ All three faces are self-hosted woff2 in `assets/fonts`. Space Grotesk and Space
 - **Label** (400 Space Mono, 12px, no tracking, uppercase; 11px in tags and captions): section labels, tags, dates, metadata. The home hero controls use it in lowercase.
 
 ### Named Rules
-**The Three Faces Rule.** Space Grotesk, Satoshi and Space Mono only. Registers change weight, size and pace, never the family.
+**The Three Faces Rule.** Syne, Satoshi and Space Mono only. Registers change weight, size and pace, never the family.
 
 **The No Eyebrow Rule.** Headings carry their own weight. No small labels sit above a heading. Metadata such as an age range goes under the heading as `.phero__meta`. The ruled section label row is a divider, not an eyebrow.
 
