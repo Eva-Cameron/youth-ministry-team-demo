@@ -146,6 +146,52 @@ Heuristics 7 (flexibility) and 10 (help) are n/a on these Persuade pages, so eac
 - **Intro card:** show it once per visit, or remove it. It delays every home visit by about 2 s.
 - **Endings and reassurance:** end each route with a closing email action, and put the client's "trained, DBS-checked" line near the decision points, not only in the footer.
 
+## Status after Phase 3 (2 November 2026)
+
+**Done:** sections 1–6, except the Phase 4 performance items in 6b and the recommendations in section 7.
+
+| Commit | What |
+|---|---|
+| `efc49b8` | Scope: email links instead of forms, no payments, config cleaned, unconfirmed events marked |
+| `79b61df` | Accessibility: focus traps in Latest and the menu, current route marked, Safeguarding in the menu, poster alt text |
+| `347d4ce` | Accessibility: pause controls for the hero film and TikTok clips; the film no longer loads under reduced motion |
+| `87e3602` | Accessibility: failing contrast pairs fixed, 44px tap targets |
+| `ed1fed1` | Typography: Space Grotesk, Satoshi and Space Mono, self-hosted; five old faces removed |
+| `c086e89` | Detector: stripes, bounce easing and grain removed |
+| `8cffdfd` | Responsive: story chapters carry their own photo on phones |
+| `e057e90` | Polish: route heroes show the route and its next event; the volunteer page gains dates |
+| `34d21a5` | Polish: the home hero says what YMT is; timeline dates read in order |
+| `fd7f632` | Clean-up: unused hero styles removed |
+
+**Colour:** the client kept the iteration-2 route colours. Colour work was limited to AA fixes.
+
+The only change to a token was the volunteer accent text, from white to ink. Solid backings were added where text sits over photos or video.
+
+**Verification:**
+
+- **File scan:** `impeccable detect` over every `*.html` and `css/*.css` exits 0.
+- **Live scan:** the browser scan of nine pages at 1280×800 and 390×844 reports 0 findings.
+- **Waived or ignored findings,** each recorded with its reason in `.impeccable/config.json`:
+  - *overused-font (Space Grotesk):* the fonts are pinned by the client.
+  - *cramped-padding and flat-type-hierarchy on `*.html`:* the file scan doesn't apply the CSS. The live scan raises neither.
+  - *buried-raster on `index.html`:* the story crossfade is intended.
+- **Links:** 1,032 local references checked, 0 broken.
+- **Forbidden patterns:** `<form`, `stripe`, `youtube.com/embed` and `formEndpoint` have no matches.
+- **Layout:** no horizontal scroll at 360 on all 22 pages, or at 390, 768 and 1440 on home, the routes, enquire and donate.
+- **Console:** no errors on those pages.
+
+**New copy, draft for the client to approve:**
+
+- **`enquire.html`:** the five row descriptions, the lede and the note under the rows.
+- **Email bodies:** the prompt lines in the pre-filled emails (for example "School:", "Year group(s):").
+- **`donate.html`:**
+  - "Gifts are made on our fundraising page, not on this site."
+  - "Online giving opens soon…"
+  - The sponsor line, adapted from the live ymt.org.
+- **`secondary.html` and `volunteer.html`:** the reworded email ledes, and "Each date shows who it is for and how to take part."
+- **The home Contact card line.**
+- **The hero card labels:** "What's on next" and "Coming up".
+
 ## Open client questions
 
 - **Giving URL:** there is no external giving page yet. The live ymt.org lists bank and cheque details, which the brief keeps off the site.

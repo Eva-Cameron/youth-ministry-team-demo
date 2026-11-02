@@ -1,0 +1,41 @@
+{
+  "detector": {
+    "ignoreRules": [],
+    "ignoreFiles": [],
+    "ignoreValues": [
+      {
+        "rule": "overused-font",
+        "value": "space grotesk",
+        "createdAt": "2026-11-02T12:06:16.302Z",
+        "reason": "client: fonts pinned in the iteration-3 brief (Space Grotesk, Satoshi, Space Mono); Eva confirmed 2 Nov 2026"
+      },
+      {
+        "rule": "cramped-padding",
+        "value": "*",
+        "files": [
+          "*.html"
+        ],
+        "createdAt": "2026-11-02T12:06:16.318Z",
+        "reason": "false positive: static HTML scan does not apply css/*.css; padding comes from .wrap/.panel; the in-browser overlay on 5 pages raised no cramped-padding (critique B, 2 Nov 2026)"
+      },
+      {
+        "rule": "flat-type-hierarchy",
+        "value": "*",
+        "files": [
+          "*.html"
+        ],
+        "createdAt": "2026-11-02T12:06:16.334Z",
+        "reason": "false positive: static scan does not resolve clamp(); computed h1 97-146px, h2 64px, body 17px in Chrome (critique B, 2 Nov 2026)"
+      },
+      {
+        "rule": "buried-raster",
+        "value": "*",
+        "files": [
+          "index.html"
+        ],
+        "createdAt": "2026-11-02T12:06:16.350Z",
+        "reason": "intended: story frames wait at opacity 0 to crossfade as chapters scroll (critique B, 2 Nov 2026)"
+      }
+    ]
+  }
+}

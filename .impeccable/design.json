@@ -1,0 +1,489 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-11-02T12:09:30+00:00",
+  "title": "Design System: Youth Ministry Team",
+  "extensions": {
+    "colorMeta": {
+      "ink": {
+        "role": "neutral",
+        "displayName": "Ink",
+        "canonical": "#100c15",
+        "tonalRamp": [
+          "#0c0b0d",
+          "#262429",
+          "#434048",
+          "#635f69",
+          "#85808b",
+          "#a7a3ac",
+          "#cac8ce",
+          "#efeef1"
+        ]
+      },
+      "ink-raised": {
+        "role": "neutral",
+        "displayName": "Ink Raised",
+        "canonical": "#1c1622",
+        "tonalRamp": [
+          "#0c0a0d",
+          "#27242a",
+          "#444049",
+          "#645e6b",
+          "#867f8d",
+          "#a8a2ae",
+          "#cbc7cf",
+          "#f0edf2"
+        ]
+      },
+      "ink-sunk": {
+        "role": "neutral",
+        "displayName": "Ink Sunk",
+        "canonical": "#2a2232",
+        "tonalRamp": [
+          "#0c0a0e",
+          "#27232b",
+          "#453f4b",
+          "#655d6e",
+          "#877e90",
+          "#a8a2b0",
+          "#ccc7d1",
+          "#f0edf3"
+        ]
+      },
+      "night": {
+        "role": "neutral",
+        "displayName": "Night",
+        "canonical": "#120c1c",
+        "tonalRamp": [
+          "#0c0a0e",
+          "#26232c",
+          "#443f4d",
+          "#645e70",
+          "#857f92",
+          "#a7a2b2",
+          "#cac7d2",
+          "#efedf4"
+        ]
+      },
+      "white": {
+        "role": "neutral",
+        "displayName": "White",
+        "canonical": "#ffffff",
+        "tonalRamp": [
+          "#0b0b0b",
+          "#252525",
+          "#424242",
+          "#616161",
+          "#828282",
+          "#a5a5a5",
+          "#c9c9c9",
+          "#eeeeee"
+        ]
+      },
+      "blossom-pink": {
+        "role": "primary",
+        "displayName": "Blossom Pink",
+        "canonical": "#f8c8da",
+        "tonalRamp": [
+          "#11080c",
+          "#301f26",
+          "#533943",
+          "#7a5563",
+          "#9c7684",
+          "#bb9ba7",
+          "#d9c2ca",
+          "#f8eaef"
+        ]
+      },
+      "butter": {
+        "role": "primary",
+        "displayName": "Butter",
+        "canonical": "#fde8a3",
+        "tonalRamp": [
+          "#0f0b02",
+          "#2c2409",
+          "#4d4117",
+          "#716025",
+          "#938147",
+          "#b2a579",
+          "#d3c9aa",
+          "#f4efdc"
+        ]
+      },
+      "signal-blue": {
+        "role": "secondary",
+        "displayName": "Signal Blue",
+        "canonical": "#2f5bff",
+        "tonalRamp": [
+          "#020727",
+          "#0a1c5d",
+          "#18339a",
+          "#274ddc",
+          "#4473ff",
+          "#739fff",
+          "#a5c7ff",
+          "#d9eeff"
+        ]
+      },
+      "stage-red": {
+        "role": "secondary",
+        "displayName": "Stage Red",
+        "canonical": "#d42f28",
+        "tonalRamp": [
+          "#1d0101",
+          "#4a0706",
+          "#7b1310",
+          "#b1201b",
+          "#d94a3f",
+          "#ef8073",
+          "#ffb1a6",
+          "#ffe1da"
+        ]
+      },
+      "mass-purple": {
+        "role": "tertiary",
+        "displayName": "Mass Purple",
+        "canonical": "#642678",
+        "tonalRamp": [
+          "#120616",
+          "#32193b",
+          "#562f64",
+          "#7e4790",
+          "#a168b4",
+          "#be92ce",
+          "#dbbce7",
+          "#f9e7ff"
+        ]
+      },
+      "purple-thread": {
+        "role": "tertiary",
+        "displayName": "Purple Thread",
+        "canonical": "#a35bc0",
+        "tonalRamp": [
+          "#120518",
+          "#33173f",
+          "#582b6a",
+          "#804299",
+          "#a364bd",
+          "#c08fd5",
+          "#ddbaed",
+          "#fae6ff"
+        ]
+      },
+      "purple-text": {
+        "role": "tertiary",
+        "displayName": "Purple Text",
+        "canonical": "#b77ad1",
+        "tonalRamp": [
+          "#110616",
+          "#31193b",
+          "#553064",
+          "#7c4891",
+          "#9f69b5",
+          "#bc93cf",
+          "#dabce8",
+          "#f9e7ff"
+        ]
+      },
+      "candle-gold": {
+        "role": "tertiary",
+        "displayName": "Candle Gold",
+        "canonical": "#f2c24a",
+        "tonalRamp": [
+          "#120900",
+          "#342200",
+          "#593d00",
+          "#815a00",
+          "#a47c00",
+          "#c0a158",
+          "#ddc796",
+          "#faedd1"
+        ]
+      },
+      "mint": {
+        "role": "tertiary",
+        "displayName": "Mint",
+        "canonical": "#c4ead6",
+        "tonalRamp": [
+          "#070d09",
+          "#1b2922",
+          "#32483d",
+          "#4b695a",
+          "#6b8b7b",
+          "#93ac9f",
+          "#bdcec5",
+          "#e7f1ec"
+        ]
+      },
+      "sky": {
+        "role": "tertiary",
+        "displayName": "Sky",
+        "canonical": "#c3e2f7",
+        "tonalRamp": [
+          "#070c10",
+          "#1b272e",
+          "#334550",
+          "#4c6575",
+          "#6d8697",
+          "#94a8b6",
+          "#bdccd5",
+          "#e7f0f6"
+        ]
+      },
+      "lilac": {
+        "role": "neutral",
+        "displayName": "Lilac",
+        "canonical": "#d9cdf6",
+        "tonalRamp": [
+          "#0c0a11",
+          "#272231",
+          "#453e54",
+          "#655b7b",
+          "#867c9e",
+          "#a8a0bb",
+          "#cbc6d9",
+          "#f0ecf8"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Display",
+        "purpose": "Page h1s; Space Grotesk 700."
+      },
+      "display-grave": {
+        "displayName": "Grave Display",
+        "purpose": "Page h1s in the grave register only; Space Grotesk 300."
+      },
+      "headline": {
+        "displayName": "Headline",
+        "purpose": "Section h2s and timeline dates."
+      },
+      "title": {
+        "displayName": "Title",
+        "purpose": "Card titles, row titles, info cards."
+      },
+      "lede": {
+        "displayName": "Lede",
+        "purpose": "The paragraph under a heading, max 44ch."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "Prose and descriptions, max 62ch; Satoshi italic carries quotes."
+      },
+      "label": {
+        "displayName": "Label",
+        "purpose": "Section labels, tags, dates and metadata; uppercase, no tracking."
+      }
+    },
+    "shadows": [
+      {
+        "name": "hairline",
+        "value": "inset 0 0 0 1px rgba(255, 255, 255, .22)",
+        "purpose": "Edges glass surfaces, ghost buttons and pause controls."
+      },
+      {
+        "name": "hard-offset",
+        "value": "0 0 0 2px #100c15, 6px 6px 0 var(--acc)",
+        "purpose": "Download cards on hover, with translate(-4px, -4px)."
+      },
+      {
+        "name": "menu-drop",
+        "value": "0 30px 60px rgba(0, 0, 0, .35)",
+        "purpose": "The nav dropdown only."
+      },
+      {
+        "name": "focus-ring",
+        "value": "outline: 3px solid var(--focus, var(--white)); outline-offset: 3px",
+        "purpose": "Focus on every control; --focus is ink on light surfaces and --acc-ink on route heroes."
+      },
+      {
+        "name": "glass-blur",
+        "value": "backdrop-filter: blur(18px) saturate(150%)",
+        "purpose": "Frosted glass for the nav, menus, panels and overlays."
+      }
+    ],
+    "motion": [
+      {
+        "name": "ease",
+        "value": "cubic-bezier(.16, 1, .3, 1)",
+        "purpose": "Ease-out for entrances, lifts and reveals; no overshoot."
+      },
+      {
+        "name": "lift",
+        "value": "transform .2s var(--ease)",
+        "purpose": "Buttons lift 2px on hover and press to scale(.97)."
+      },
+      {
+        "name": "rise",
+        "value": "rise .8s var(--ease) both",
+        "purpose": "Reveal-once entrance, 24px up with fade; skipped under reduced motion."
+      },
+      {
+        "name": "word",
+        "value": "word .9s var(--ease) both",
+        "purpose": "Headings slide up word by word once on screen."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "compact-nav",
+        "value": "520px"
+      },
+      {
+        "name": "label",
+        "value": "680px"
+      },
+      {
+        "name": "rows",
+        "value": "760px"
+      },
+      {
+        "name": "single-column",
+        "value": "900px"
+      },
+      {
+        "name": "article",
+        "value": "960px"
+      },
+      {
+        "name": "burger-nav",
+        "value": "980px"
+      },
+      {
+        "name": "wide",
+        "value": "1050px"
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "White pill on the dark ground; the default action, including email actions.",
+      "html": "<a class=\"ds-btn\" href=\"#\">Email the team <svg viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"M5 12h13M13 6l6 6-6 6\"/></svg></a>",
+      "css": ".ds-btn { display: inline-flex; align-items: center; justify-content: center; gap: var(--sp-2); min-height: 48px; padding: 0 var(--sp-5); border: 0; border-radius: 999px; font: 600 16px/1 var(--sans); text-decoration: none; white-space: nowrap; cursor: pointer; transition: transform .2s var(--ease), background-color .2s ease, color .2s ease; } .ds-btn:hover { transform: translateY(-2px); } .ds-btn:active { transform: scale(.97); } .ds-btn:focus-visible { outline: 3px solid var(--focus, var(--white)); outline-offset: 3px; } .ds-btn svg { width: 18px; height: 18px; stroke: currentColor; fill: none; stroke-width: 2; } .ds-btn { background: var(--white); color: var(--ink); }"
+    },
+    {
+      "name": "Route Button",
+      "kind": "button",
+      "refersTo": "button-route",
+      "description": "The route accent pill; colour comes only from --acc and --acc-ink (shown here in the Primary route).",
+      "html": "<a class=\"ds-btn-acc\" href=\"#\">Book a retreat <svg viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"M5 12h13M13 6l6 6-6 6\"/></svg></a>",
+      "css": ".ds-btn-acc { display: inline-flex; align-items: center; justify-content: center; gap: var(--sp-2); min-height: 48px; padding: 0 var(--sp-5); border: 0; border-radius: 999px; font: 600 16px/1 var(--sans); text-decoration: none; white-space: nowrap; cursor: pointer; transition: transform .2s var(--ease), background-color .2s ease, color .2s ease; } .ds-btn-acc:hover { transform: translateY(-2px); } .ds-btn-acc:active { transform: scale(.97); } .ds-btn-acc:focus-visible { outline: 3px solid var(--focus, var(--white)); outline-offset: 3px; } .ds-btn-acc svg { width: 18px; height: 18px; stroke: currentColor; fill: none; stroke-width: 2; } .ds-btn-acc { --acc: var(--pink); --acc-ink: var(--ink); background: var(--acc); color: var(--acc-ink); }"
+    },
+    {
+      "name": "Line Button Pair",
+      "kind": "button",
+      "refersTo": "button-line",
+      "description": "A filled action followed by a transparent currentColor-hairline pill, as in button pairs and the Pause clips toggle.",
+      "html": "<p class=\"ds-go\"><a class=\"ds-go__btn ds-go__btn--fill\" href=\"#\">Follow @ymttiktok</a><button class=\"ds-go__btn ds-go__btn--line\" type=\"button\" aria-pressed=\"false\">Pause clips</button></p>",
+      "css": ".ds-go { display: flex; flex-wrap: wrap; gap: var(--sp-2); margin: 0; } .ds-go__btn { display: inline-flex; align-items: center; justify-content: center; gap: var(--sp-2); min-height: 48px; padding: 0 var(--sp-5); border: 0; border-radius: 999px; font: 600 16px/1 var(--sans); text-decoration: none; white-space: nowrap; cursor: pointer; transition: transform .2s var(--ease), background-color .2s ease, color .2s ease; } .ds-go__btn:hover { transform: translateY(-2px); } .ds-go__btn:active { transform: scale(.97); } .ds-go__btn:focus-visible { outline: 3px solid var(--focus, var(--white)); outline-offset: 3px; } .ds-go__btn svg { width: 18px; height: 18px; stroke: currentColor; fill: none; stroke-width: 2; } .ds-go__btn--fill { background: var(--white); color: var(--ink); } .ds-go__btn--line { background: transparent; color: var(--white); box-shadow: inset 0 0 0 1px currentColor; }"
+    },
+    {
+      "name": "Tags",
+      "kind": "chip",
+      "refersTo": "tag",
+      "description": "Square Space Mono tags per route, plus the hairline To be confirmed tag for provisional events.",
+      "html": "<span class=\"ds-tags\"><i class=\"ds-tag ds-tag--primary\">Primary</i><i class=\"ds-tag ds-tag--secondary\">Secondary</i><i class=\"ds-tag ds-tag--volunteer\">16+</i><i class=\"ds-tag ds-tag--everyone\">Everyone</i><i class=\"ds-tag ds-tag--tbc\">To be confirmed</i></span>",
+      "css": ".ds-tags { display: flex; flex-wrap: wrap; gap: var(--sp-1) var(--sp-2); padding: var(--sp-3); background: var(--white); } .ds-tag { display: inline-block; padding: 3px 6px; font: 400 11px/1.2 var(--mono); font-style: normal; text-transform: uppercase; background: var(--white); color: var(--ink); box-shadow: inset 0 0 0 1px var(--line-ink); } .ds-tag--primary { background: var(--pink); box-shadow: none; } .ds-tag--secondary { background: var(--blue); color: var(--white); box-shadow: none; } .ds-tag--volunteer { background: var(--purple); color: var(--white); box-shadow: none; } .ds-tag--everyone { background: var(--mint); box-shadow: none; } .ds-tag--tbc { background: transparent; box-shadow: inset 0 0 0 1px currentColor; }"
+    },
+    {
+      "name": "Download Card",
+      "kind": "card",
+      "refersTo": "download-card",
+      "description": "White card with a type-coloured top band and ink outline; on hover it lifts to the hard offset shadow in the route colour.",
+      "html": "<article class=\"ds-bite\" tabindex=\"0\"><div class=\"ds-bite__top\"><span class=\"ds-bite__type\">Prayer</span><span class=\"ds-bite__level\">KS2</span></div><div class=\"ds-bite__body\"><span class=\"ds-bite__from\">From Retreats</span><h3>Evening prayer for a class</h3><p>A ten-minute prayer service to close a retreat day.</p></div><div class=\"ds-bite__foot\"><span class=\"ds-bite__time\">10 min</span><a class=\"ds-bite__dl\" href=\"#\"><svg viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"M12 4v11M7 10l5 5 5-5M5 20h14\"/></svg>PDF</a></div></article>",
+      "css": ".ds-bite { --focus: var(--ink); --acc: var(--pink); --c: var(--lilac); display: grid; grid-template-rows: auto 1fr auto; max-width: 320px; background: var(--white); color: var(--ink); box-shadow: 0 0 0 2px var(--ink); transition: transform .25s var(--ease), box-shadow .25s var(--ease); } .ds-bite:hover, .ds-bite:focus-within { transform: translate(-4px, -4px); box-shadow: 0 0 0 2px var(--ink), 6px 6px 0 var(--acc); } .ds-bite:focus-visible { outline: 3px solid var(--focus); outline-offset: 3px; } .ds-bite__top { display: flex; justify-content: space-between; align-items: center; gap: 10px; min-height: 84px; padding: 14px var(--sp-4); background: var(--c); } .ds-bite__type { font: 700 15px var(--sans); } .ds-bite__level { padding: 5px 10px; border-radius: 999px; background: var(--ink); color: var(--white); font: 600 var(--fs-xs) var(--sans); } .ds-bite__body { display: grid; gap: var(--sp-2); padding: var(--sp-4) var(--sp-4) 10px; } .ds-bite__body h3 { margin: 0; font: 700 19px/1.15 var(--sans); letter-spacing: -.02em; } .ds-bite__body p { margin: 0; font: 400 15px/1.45 var(--sans); color: rgba(16, 12, 21, .8); } .ds-bite__from { font: 400 11px var(--mono); text-transform: uppercase; color: rgba(16, 12, 21, .7); } .ds-bite__foot { display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: var(--sp-3) var(--sp-4) var(--sp-4); } .ds-bite__time { font: 500 13px var(--sans); color: rgba(16, 12, 21, .7); } .ds-bite__dl { display: inline-flex; align-items: center; gap: var(--sp-2); min-height: 44px; padding: 0 var(--sp-4); border-radius: 999px; background: var(--ink); color: var(--white); font: 600 var(--fs-sm) var(--sans); text-decoration: none; } .ds-bite__dl:hover { background: var(--blue); } .ds-bite__dl:focus-visible { outline: 3px solid var(--focus); outline-offset: 3px; } .ds-bite__dl svg { width: 16px; height: 16px; stroke: currentColor; fill: none; stroke-width: 2.2; }"
+    },
+    {
+      "name": "News Card",
+      "kind": "card",
+      "refersTo": "news-card",
+      "description": "Translucent white Latest card: 88px thumbnail, title, and a mono meta line with route tags, date and the To be confirmed tag.",
+      "html": "<a class=\"ds-news\" href=\"#\"><span class=\"ds-news__img\" aria-hidden=\"true\"></span><span><b>The Source: Advent night</b><small><i class=\"ds-news__tag\">Secondary</i>Fri 4 Dec<i class=\"ds-news__tag ds-news__tag--tbc\">To be confirmed</i></small></span></a>",
+      "css": ".ds-news { --focus: var(--ink); display: grid; grid-template-columns: 88px minmax(0, 1fr); gap: 14px; max-width: 420px; min-height: 108px; padding: 10px; background: rgba(255, 255, 255, .86); color: var(--ink); text-decoration: none; transition: transform .3s var(--ease); } .ds-news:hover { transform: translate(-3px, -3px); } .ds-news:focus-visible { outline: 3px solid var(--focus); outline-offset: 3px; } .ds-news__img { width: 88px; height: 88px; background: var(--ink-3); } .ds-news > span:last-child { display: grid; align-content: space-between; gap: var(--sp-2); } .ds-news b { font: 500 16px/1.2 var(--sans); } .ds-news small { display: flex; flex-wrap: wrap; gap: var(--sp-1) var(--sp-2); align-items: center; font: 400 11px/1.2 var(--mono); text-transform: uppercase; color: rgba(16, 12, 21, .7); } .ds-news__tag { padding: 3px 6px; font-style: normal; background: var(--blue); color: var(--white); } .ds-news__tag--tbc { background: transparent; color: var(--ink); box-shadow: inset 0 0 0 1px currentColor; }"
+    },
+    {
+      "name": "Route Hero Next Card",
+      "kind": "custom",
+      "refersTo": "route-hero-next",
+      "description": "Light-glass card on the route hero's 4:5 photo, filled from js/data.js with the route's next event.",
+      "html": "<figure class=\"ds-next\"><span class=\"ds-next__photo\" aria-hidden=\"true\"></span><figcaption><small>Next · to be confirmed</small><b>Behold: the Year 6 Festival</b><span>Thu 24 Jun · Emmaus Village</span></figcaption></figure>",
+      "css": ".ds-next { position: relative; width: 320px; aspect-ratio: 4 / 5; margin: 0; background: var(--pink); } .ds-next__photo { position: absolute; inset: 0; background: var(--ink-3); } .ds-next figcaption { --focus: var(--ink); position: absolute; left: var(--sp-3); right: var(--sp-3); bottom: var(--sp-3); padding: 14px var(--sp-4); background: rgba(255, 255, 255, .78); color: var(--ink); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .6); backdrop-filter: var(--blur); -webkit-backdrop-filter: var(--blur); } .ds-next small { display: block; margin-bottom: 4px; font: 400 var(--fs-xs)/1.3 var(--mono); text-transform: uppercase; } .ds-next b { display: block; font: 600 15px/1.3 var(--sans); } .ds-next figcaption > span { font: 400 var(--fs-sm)/1.35 var(--sans); }"
+    },
+    {
+      "name": "Mail Row",
+      "kind": "custom",
+      "refersTo": "mail-row",
+      "description": "Ruled enquiry row with a title, muted description and one mailto button; the picked row gets a glass fill. A muted note follows the list.",
+      "html": "<div class=\"ds-mail\"><ul class=\"ds-mail__rows\" role=\"list\"><li><b>Book a retreat</b><p>Residential retreats at the Emmaus Youth Village. Tell us the year group, rough numbers and dates.</p><a class=\"ds-mail__btn\" href=\"#\">Email bookings <svg viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"M5 12h13M13 6l6 6-6 6\"/></svg></a></li><li class=\"is-picked\"><b>Volunteer with us</b><p>Festival crew, Lourdes youth helpers, retreat teams and the Internship.</p><a class=\"ds-mail__btn\" href=\"#\">Email the team <svg viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"M5 12h13M13 6l6 6-6 6\"/></svg></a></li></ul><p class=\"ds-mail__note\">Each button opens your email app with the address and subject filled in. You can also write to <a href=\"#\">admin@ymt.org</a>.</p></div>",
+      "css": ".ds-mail { padding: var(--sp-5); background: var(--ink); color: var(--white); } .ds-mail__rows { margin: 0 0 var(--sp-4); padding: 0; list-style: none; border-top: 1px solid var(--line); } .ds-mail__rows li { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr) auto; gap: var(--sp-3) var(--sp-6); align-items: center; padding: var(--sp-5) 0; border-bottom: 1px solid var(--line); } .ds-mail__rows li.is-picked { padding-inline: var(--sp-4); background: var(--glass-2); box-shadow: inset 0 0 0 1px var(--glass-line); } .ds-mail__rows b { font: 500 var(--fs-lg)/1.1 var(--sans); letter-spacing: -.02em; } .ds-mail__rows p { margin: 0; font: 400 var(--fs-base)/1.45 var(--sans); color: var(--text-2); } .ds-mail__btn { display: inline-flex; align-items: center; justify-content: center; gap: var(--sp-2); min-height: 48px; padding: 0 var(--sp-5); border: 0; border-radius: 999px; font: 600 16px/1 var(--sans); text-decoration: none; white-space: nowrap; cursor: pointer; transition: transform .2s var(--ease), background-color .2s ease, color .2s ease; } .ds-mail__btn:hover { transform: translateY(-2px); } .ds-mail__btn:active { transform: scale(.97); } .ds-mail__btn:focus-visible { outline: 3px solid var(--focus, var(--white)); outline-offset: 3px; } .ds-mail__btn svg { width: 18px; height: 18px; stroke: currentColor; fill: none; stroke-width: 2; } .ds-mail__btn { background: var(--white); color: var(--ink); } .ds-mail__note { margin: 0; font: 400 var(--fs-sm)/1.45 var(--sans); color: var(--text-2); } .ds-mail__note a { color: var(--white); } .ds-mail__note a:focus-visible { outline: 3px solid var(--focus, var(--white)); outline-offset: 3px; } @media (max-width: 760px) { .ds-mail__rows li { grid-template-columns: minmax(0, 1fr); } }"
+    },
+    {
+      "name": "Navigation",
+      "kind": "nav",
+      "refersTo": "nav",
+      "description": "Fixed frosted-glass bar: brand, route dropdown, About, Resources, then the Latest and Donate pills; current page underlined in --acc.",
+      "html": "<nav class=\"ds-nav\" aria-label=\"Main\"><a class=\"ds-nav__brand\" href=\"#\">YMT</a><span class=\"ds-nav__links\"><button type=\"button\" aria-expanded=\"false\">Who it’s for</button><a href=\"#\" aria-current=\"page\">About</a><a href=\"#\">Resources</a></span><span class=\"ds-nav__end\"><a class=\"ds-nav__latest\" href=\"#\">Latest<i></i></a><a class=\"ds-nav__donate\" href=\"#\">Donate</a></span></nav>",
+      "css": ".ds-nav { --acc: var(--pink); display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: var(--sp-4); min-height: 60px; padding: var(--sp-2) var(--sp-2) var(--sp-2) var(--sp-4); background: rgba(16, 12, 21, .58); color: var(--white); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .15); backdrop-filter: var(--blur); -webkit-backdrop-filter: var(--blur); } .ds-nav a, .ds-nav button { color: inherit; } .ds-nav :focus-visible { outline: 3px solid var(--focus, var(--white)); outline-offset: 3px; } .ds-nav__brand { display: inline-flex; align-items: center; min-height: 44px; font: 700 22px/1 var(--display); letter-spacing: -.05em; text-decoration: none; } .ds-nav__links { display: flex; gap: var(--sp-1); } .ds-nav__links > a, .ds-nav__links > button { display: inline-flex; align-items: center; min-height: 44px; padding: 0 var(--sp-4); border: 0; background: transparent; font: 500 15px var(--sans); text-decoration: none; cursor: pointer; transition: background-color .2s ease; } .ds-nav__links > a:hover, .ds-nav__links > button:hover { background: rgba(255, 255, 255, .12); } .ds-nav__links > a[aria-current=\"page\"] { box-shadow: inset 0 -2px 0 var(--acc); } .ds-nav__end { justify-self: end; display: flex; gap: 6px; } .ds-nav__latest, .ds-nav__donate { position: relative; display: inline-flex; align-items: center; min-height: 44px; padding: 0 var(--sp-4); border-radius: 999px; font: 600 var(--fs-sm) var(--sans); text-decoration: none; transition: transform .2s var(--ease); } .ds-nav__latest:hover, .ds-nav__donate:hover { transform: translateY(-1px); } .ds-nav__latest { background: var(--white); color: var(--ink) !important; } .ds-nav__latest i { position: absolute; top: 7px; right: 8px; width: 7px; height: 7px; border-radius: 50%; background: var(--red); } .ds-nav__donate { background: rgba(16, 12, 21, .8); box-shadow: inset 0 0 0 1px var(--glass-line); }"
+    }
+  ],
+  "narrative": {
+    "northStar": "Real photos, clear routes, one team",
+    "overview": "A dark, photo-led site. Real YMT photography carries the feeling: worship nights, retreat rooms, festival crowds and the Village. The interface stays out of the way: a near-black ground, frosted glass for anything that floats, big tight display type for headings, and small mono labels that number and file each section. Colour belongs to the routes. Each audience has its own accent, set once on `body[data-aud]` and reused by heroes, buttons, tick marks and nav underlines, so the visitor always knows whose page they are on.\n\nDensity is generous. Sections breathe (`--section` padding), and lists are ruled with hairlines rather than boxed. Interaction is bold and tactile: pill buttons lift on hover, and download cards jump to a hard offset shadow in the route colour. Motion is reveal-once: content is visible at rest and moves only the first time it scrolls into view, and never when reduced motion is requested. Entrances, lifts and reveals ease out; nothing bounces and no CSS animation loops forever. The two moving-image surfaces, the home film and the TikTok clips, each carry a pause control.\n\nProgramme pages may take a register (`data-feel`): Lourdes and adoration are slow, still and gold, with light 300-weight headings; The Source is quick and bright. Registers change accent, weight and pace, not structure.",
+    "keyCharacteristics": [
+      "Near-black ground (`#100c15`), with white text and hairline rules at 26% white.",
+      "One accent per audience route, applied only through tokens.",
+      "Space Grotesk for display, Satoshi for reading and quotes, Space Mono for labels and metadata.",
+      "Square-cornered surfaces; only buttons, pause controls and dots are rounded.",
+      "Frosted glass for the nav, panels and overlays; the hard offset shadow belongs to download cards on hover.",
+      "Real YMT photography. No stock images, no illustrations of people.",
+      "Every tap target is at least 44px; the focus ring follows the ground."
+    ],
+    "rules": [
+      {
+        "name": "The Route Owns the Colour Rule",
+        "body": "Accents change only through `--acc`, `--acc-ink` and `--acc-2` on `body[data-aud]` or `body[data-feel]`. Never colour one page by hand.",
+        "section": "colors"
+      },
+      {
+        "name": "The AA Rule",
+        "body": "Every text and background pair passes WCAG AA (4.5:1 for body text, 3:1 for large text and UI). White never sits on Blossom Pink, Mint, Butter, Sky or Purple Text, and ink never sits on Signal Blue or Stage Red.",
+        "section": "colors"
+      },
+      {
+        "name": "The Focus Follows the Ground Rule",
+        "body": "The focus ring is a 3px outline in `--focus` at a 3px offset. It is white on the dark ground; light surfaces (light glass, download cards, the white photo band) set it to ink, and route heroes set it to `--acc-ink`.",
+        "section": "colors"
+      },
+      {
+        "name": "The Three Faces Rule",
+        "body": "Space Grotesk, Satoshi and Space Mono only. Registers change weight, size and pace, never the family.",
+        "section": "typography"
+      },
+      {
+        "name": "The Flat at Rest Rule",
+        "body": "Surfaces are flat at rest. Lifts and offset shadows answer hover and focus, never decorate.",
+        "section": "elevation"
+      }
+    ],
+    "dos": [
+      "Do set route colour only through `--acc` / `--acc-ink` / `--acc-2` on `body[data-aud]`.",
+      "Do use real YMT photos with first-name or event captions only.",
+      "Do keep tap targets at least 44px and text pairs at AA.",
+      "Do set `--focus` to ink on any new light surface.",
+      "Do use `cubic-bezier(.16, 1, .3, 1)` (ease-out) for entrances, lifts and reveals.",
+      "Do give any looping video a visible pause control.",
+      "Do keep repeated blocks (shot, bite, tl__item, news-card, info__card, mail row) as identical components so they can become CMS slots."
+    ],
+    "donts": [
+      "Don't add forms, payment widgets, logins or YouTube/Vimeo embeds.",
+      "Don't put a coloured one-sided border or inset stripe on a card, row or callout.",
+      "Don't use overshooting or bounce easing.",
+      "Don't run a CSS animation on an endless loop.",
+      "Don't add decorative repeating-gradient or grain textures.",
+      "Don't introduce a fourth typeface."
+    ]
+  }
+}
