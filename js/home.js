@@ -23,7 +23,7 @@
   if (reduce || root.classList.contains('intro-seen')) finishIntro();
   else {
     // Lift once the mark has settled and the page has loaded, and never later than 3.2s.
-    const settled = new Promise((r) => setTimeout(r, 1850));
+    const settled = new Promise((r) => setTimeout(r, 1400));
     const loaded = new Promise((r) => (document.readyState === 'complete' ? r() : addEventListener('load', r, { once: true })));
     Promise.all([settled, loaded]).then(finishIntro);
     setTimeout(finishIntro, 3200);

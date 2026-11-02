@@ -74,31 +74,6 @@
   clip-path: inset(0);
   transform: translateY(0);
 }
-.hero__subnav {
-  position: absolute;
-  top: clamp(235px, 25vw, 320px);
-  left: var(--gutter);
-  display: flex;
-  gap: 8px;
-  font-family: var(--mono);
-  text-transform: lowercase;
-}
-/* Over the moving film these pills are tinted glass without the blur (a backdrop blur over video repaints every frame). */
-.hero__subnav a {
-  --glass-fill: rgba(16, 12, 21, .72);
-  display: inline-flex;
-  align-items: center;
-  min-height: 44px;
-  padding: 0 14px;
-  border-radius: 999px;
-  background: var(--glass-fill);
-  box-shadow: inset 0 0 0 1px var(--glass-edge), var(--glass-highlight);
-  font-size: 12px;
-  transition: background-color .2s var(--ease);
-}
-.hero__subnav a:hover {
-  --glass-fill: rgba(16, 12, 21, .8);
-}
 .hero__bottom {
   position: absolute;
   right: var(--gutter);
@@ -172,13 +147,11 @@
 .hero__open:hover svg {
   transform: translateX(4px);
 }
-.js .hero__subnav,
 .js .hero__bottom {
   transform: translateY(18px);
   opacity: 0;
   transition: transform .72s var(--ease-out), opacity .72s;
 }
-.js.page-ready .hero__subnav,
 .js.page-ready .hero__bottom {
   transform: translateY(0);
   opacity: 1;
@@ -196,9 +169,6 @@
     line-height: .71;
     text-align: left;
   }
-  .hero__subnav {
-    top: clamp(300px, 41vw, 410px);
-  }
 }
 @media (max-width: 760px) {
   .hero {
@@ -213,9 +183,6 @@
   .hero__wordmark {
     top: 96px;
     font-size: clamp(3.4rem, 15.8vw, 6.4rem);
-  }
-  .hero__subnav {
-    display: none;
   }
   .hero__bottom {
     bottom: max(24px, env(safe-area-inset-bottom));
@@ -255,9 +222,6 @@
     top: 86px;
     flex-direction: row;
     font-size: 10vw;
-  }
-  .hero__subnav {
-    display: none;
   }
   .hero__bottom {
     bottom: 82px;

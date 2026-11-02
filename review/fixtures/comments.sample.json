@@ -1,0 +1,57 @@
+{
+  "SAMPLE": "SAMPLE DATA ONLY. These threads are invented to exercise the pipeline. They are not Mary's comments and must never be published, replied to or resolved.",
+  "source": "sample",
+  "collected": "2026-11-02",
+  "note": "Same shape as review/comments.json. To try it, copy it over review/comments.json in a scratch checkout, never on a branch you'll merge.",
+  "threads": [
+    {
+      "id": "sample-0001",
+      "page": "index.html",
+      "anchor": ".hero__open",
+      "location": "Hero › link \"Who it's for\"",
+      "quote": null,
+      "status": "open",
+      "sentToClaude": true,
+      "comments": [
+        { "role": "owner", "date": "2026-11-01T10:00", "text": "SAMPLE: should this button be bigger on phones?" }
+      ]
+    },
+    {
+      "id": "sample-0002",
+      "page": "index.html",
+      "anchor": "#who-title",
+      "location": "Who is it for?",
+      "quote": null,
+      "status": "open",
+      "sentToClaude": false,
+      "comments": [
+        { "role": "commenter", "date": "2026-11-01T10:05", "text": "SAMPLE: a heading comment that has not been sent to Claude." }
+      ]
+    },
+    {
+      "id": "sample-0003",
+      "page": "index.html",
+      "anchor": "#main > section:nth-of-type(99)",
+      "location": "A section that no longer exists",
+      "quote": null,
+      "status": "open",
+      "sentToClaude": true,
+      "comments": [
+        { "role": "owner", "date": "2026-11-01T10:10", "text": "SAMPLE: an anchor that cannot be resolved, so it lands in the \"element moved\" gutter." }
+      ]
+    },
+    {
+      "id": "sample-0004",
+      "page": "index.html",
+      "anchor": null,
+      "location": "Alongside young people since 1994",
+      "quote": "The Youth Ministry Team is the Diocese of Hexham and Newcastle",
+      "status": "resolved",
+      "sentToClaude": true,
+      "comments": [
+        { "role": "owner", "date": "2026-11-01T10:15", "text": "SAMPLE: a resolved thread placed by its quoted text." },
+        { "role": "claude", "date": "2026-11-01T11:00", "text": "SAMPLE: reply." }
+      ]
+    }
+  ]
+}

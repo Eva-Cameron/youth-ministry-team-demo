@@ -3,6 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="robots" content="noindex, nofollow"><!-- staging only: remove at launch -->
   <meta name="referrer" content="strict-origin-when-cross-origin">
   <title>Donate · Youth Ministry Team</title>
   <meta name="description" content="Give to the Youth Ministry Team by card or bank transfer. Every gift has its own reference.">
@@ -16,8 +17,8 @@
   <link rel="icon" type="image/png" href="assets/images/logo.png">
   <link rel="preload" href="assets/fonts/syne.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="assets/fonts/satoshi.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="css/site.css?v=15">
-  <script src="js/boot.js?v=15"></script>
+  <link rel="stylesheet" href="css/site.css?v=18">
+  <script src="js/boot.js?v=18"></script>
 </head>
 <body>
   <a class="skip" href="#main">Skip to content</a>
@@ -59,14 +60,17 @@
           <div class="label" aria-hidden="true"><span>YMT</span><span>Donate</span><span>Support our work</span></div>
           <h1 class="h1" id="page-title" data-words>Give to YMT</h1>
           <p class="lede muted">Gifts keep retreats affordable, help young people go to Lourdes and support the interns' year.</p>
-          <ul class="ticks" role="list"><li>£10 provides classroom resources for a retreat</li><li>£50 helps send a youth helper to Lourdes</li><li>£20 a month sponsors an intern</li><li>Gift Aid adds 25% at no cost to you</li></ul>
+          <ul class="ticks" role="list"><li>£10 provides classroom resources for a retreat</li><li>£50 helps send a youth helper to Lourdes</li><li>Gift Aid adds 25% at no cost to you</li></ul>
         </div>
-        <section class="panel glass stack" aria-labelledby="give-title">
-          <h2 class="h3" id="give-title">Give online</h2>
-          <p class="lede">Gifts are made on our fundraising page, not on this site.</p>
-          <p><a class="btn" data-giving href="donate.html" hidden>Give to YMT <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8"/></svg></a></p>
+        <section class="panel glass stack give" aria-labelledby="give-title" data-give>
+          <h2 class="h3" id="give-title">Make a gift</h2>
+          <div class="filters give__choices" role="group" aria-label="How often"><button type="button" data-freq="once" aria-pressed="true">One-off</button><button type="button" data-freq="monthly" aria-pressed="false">Monthly</button></div>
+          <div class="filters give__choices" role="group" aria-label="Amount"><button type="button" data-amount="10" aria-pressed="false">£10</button><button type="button" data-amount="25" aria-pressed="true">£25</button><button type="button" data-amount="50" aria-pressed="false">£50</button><button type="button" data-amount="100" aria-pressed="false">£100</button></div>
+          <p class="give__total" aria-live="polite" data-give-total>£25 one-off · £31.25 with Gift Aid</p>
+          <p class="give__impact" data-give-impact hidden></p>
+          <p><a class="btn" data-giving href="donate.html" hidden>Continue to our giving page <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8"/></svg></a></p>
+          <p class="note">You finish your gift on our secure fundraising page. This site never takes payments or card details.</p>
           <p class="note" data-giving-off>Online giving opens soon. Until then, email <a href="mailto:admin@ymt.org">admin@ymt.org</a> and we will tell you how to give.</p>
-          <p class="note">To sponsor an intern for a year or join our sponsors, email <a href="mailto:admin@ymt.org">admin@ymt.org</a>.</p>
           <ul class="copy-email" role="list" aria-label="Email address"><li><span><small>Enquiries</small><span class="copy-email__addr">admin@ymt.org</span></span><button class="btn btn--line" type="button" data-copy="admin@ymt.org">Copy<span class="sr"> admin@ymt.org</span></button></li></ul><p class="sr" role="status" data-copy-status></p>
         </section>
       </div>
@@ -86,9 +90,10 @@
       <p class="foot__legal"><span>© <span data-year>2026</span> Youth Ministry Team · Diocese of Hexham &amp; Newcastle</span><a href="donate.html">Give to YMT</a></p>
     </div>
   </footer>
-  <script src="js/config.js?v=15" defer></script>
-  <script src="js/data.js?v=15" defer></script>
-  <script src="js/site.js?v=15" defer></script>
-  <script src="js/terrain.js?v=15" defer></script>
+  <script src="js/config.js?v=18" defer></script>
+  <script src="js/data.js?v=18" defer></script>
+  <script src="js/site.js?v=18" defer></script>
+  <script src="js/terrain.js?v=18" defer></script>
+  <script src="review/review.js?v=3" defer></script><!-- staging only: remove at launch -->
 </body>
 </html>

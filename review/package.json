@@ -1,0 +1,13 @@
+{
+  "name": "ymt-review-board",
+  "private": true,
+  "description": "Turns review-artifact comments into screenshots, pins and an animated board. The site itself stays build-free; only this folder has dependencies.",
+  "type": "module",
+  "scripts": {
+    "board": "node board.mjs",
+    "record": "node record.mjs"
+  },
+  "dependencies": {
+    "playwright": "1.48.2"
+  }
+}
