@@ -1,0 +1,11 @@
+# Cloudflare Pages: the static site plus Functions (functions/) and the review database.
+# Local: `npx wrangler@3.99.0 pages dev .` serves the site and functions with a local D1.
+name = "ymt-staging"
+compatibility_date = "2024-11-01"
+pages_build_output_dir = "."
+
+[[d1_databases]]
+binding = "REVIEW_DB"
+database_name = "ymt-review"
+# PLACEHOLDER: set to the D1 database id once Eva creates `ymt-review` in Cloudflare.
+database_id = "00000000-0000-0000-0000-000000000000"

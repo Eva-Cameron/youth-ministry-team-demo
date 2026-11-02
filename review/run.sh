@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # YMT review board: one entry point, no arguments.  bash review/run.sh
-# Capture the commented pages, fill the board, record the video. Publishing the board artifact is a
-# separate step done by an agent session or by Eva (see review/README.md): a shell script can't publish.
+# Pull the latest threads (if EXPORT_URL is set in board.mjs), capture the commented pages, fill the board,
+# record the video. Outputs land in review/out/.
 
 # ---- Config -------------------------------------------------------------------------------------
 CHROME_PATH="/var/lib/flatpak/app/com.google.Chrome/current/active/files/extra/chrome"
@@ -9,7 +9,6 @@ NODE="node"
 FFMPEG="ffmpeg"
 FFPROBE="ffprobe"
 RECORD="yes"            # "no" skips the MP4 and GIF
-BOARD_URL="https://claude.ai/artifact/RS6grqHgbX9NkUK1CeeZ96"
 # -------------------------------------------------------------------------------------------------
 
 set -euo pipefail
@@ -31,7 +30,6 @@ if [ "$RECORD" = "yes" ]; then
 else
   echo "3/3 record skipped"
 fi
-echo "$BOARD_URL" > review/out/board-link.txt
 
 echo
-echo "Done. Next: republish review/out/board.html to $BOARD_URL (same URL) and send review/out/board.mp4."
+echo "Done. Send Eva review/out/board.html and review/out/board.mp4."
