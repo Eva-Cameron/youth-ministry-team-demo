@@ -17,7 +17,7 @@
   <link rel="icon" type="image/png" href="assets/images/logo.png">
   <link rel="preload" href="assets/fonts/syne.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="assets/fonts/satoshi.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="css/site.css?v=33">
+  <link rel="stylesheet" href="css/site.css?v=34">
   <script src="js/boot.js?v=26"></script>
 </head>
 <body>
@@ -62,26 +62,32 @@
           <p class="lede muted">Tell us what it's about and we'll pass it to the right person. Bookings go to the bookings team; everything else goes to the office. We'll reply by email.</p>
         </div>
         <div class="stack stack--lg">
-          <form class="enquiry glass--light" id="enquiry" action="/api/enquire" method="post" data-enquiry novalidate>
-            <fieldset class="enquiry__topics">
-              <legend>What is it about?</legend>
-              <div class="topics"><label class="topic"><input type="radio" name="topic" value="retreat" required><span><b>Book a retreat</b><small>For schools</small></span></label><label class="topic"><input type="radio" name="topic" value="village" required><span><b>Stay at the Village</b><small>Groups, parishes, families</small></span></label><label class="topic"><input type="radio" name="topic" value="event" required><span><b>Come to an event</b><small>The Source, festivals, Youth Council</small></span></label><label class="topic"><input type="radio" name="topic" value="volunteer" required><span><b>Volunteer</b><small>Crew, Lourdes, retreat teams</small></span></label><label class="topic"><input type="radio" name="topic" value="other" checked required><span><b>Something else</b><small>Any other question</small></span></label></div>
+          <form class="enquiry" id="enquiry" action="/api/enquire" method="post" data-enquiry novalidate>
+            <fieldset class="enquiry__step enquiry__topics">
+              <legend><span class="enquiry__num" aria-hidden="true">01</span>What is it about?</legend>
+              <div class="topics"><label class="topic topic--retreat"><input type="radio" name="topic" value="retreat" required><span class="topic__tile"><svg class="topic__icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="9" r="3.5"/><path d="M3 19c3-4 6-5 9-3s6 1 9-2"/></svg><b>Book a retreat</b><small>For schools</small><svg class="topic__tick" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span></label><label class="topic topic--village"><input type="radio" name="topic" value="village" required><span class="topic__tile"><svg class="topic__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 11l8-6 8 6v8H4z"/><path d="M10 19v-5h4v5"/></svg><b>Stay at the Village</b><small>Groups, parishes, families</small><svg class="topic__tick" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span></label><label class="topic topic--event"><input type="radio" name="topic" value="event" required><span class="topic__tile"><svg class="topic__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.5l2.5 5.3 5.8.7-4.3 4 1.1 5.7L12 16.4l-5.1 2.8 1.1-5.7-4.3-4 5.8-.7z"/></svg><b>Come to an event</b><small>The Source, festivals, Youth Council</small><svg class="topic__tick" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span></label><label class="topic topic--volunteer"><input type="radio" name="topic" value="volunteer" required><span class="topic__tile"><svg class="topic__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19.5s-7-4.3-7-9.3A3.8 3.8 0 0 1 12 8a3.8 3.8 0 0 1 7 2.2c0 5-7 9.3-7 9.3z"/></svg><b>Volunteer</b><small>Crew, Lourdes, retreat teams</small><svg class="topic__tick" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span></label><label class="topic topic--other"><input type="radio" name="topic" value="other" checked required><span class="topic__tile"><svg class="topic__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4.5 5h15v10.5H9.5L4.5 19.5z"/></svg><b>Something else</b><small>Any other question</small><svg class="topic__tick" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span></label></div>
             </fieldset>
-            <div class="enquiry__grid">
-              <p class="field"><label for="f-name">Your name</label><input id="f-name" name="name" autocomplete="name" maxlength="120" required></p>
-              <p class="field"><label for="f-email">Email</label><input id="f-email" name="email" type="email" autocomplete="email" maxlength="200" required></p>
-              <p class="field"><label for="f-phone">Phone <span>optional</span></label><input id="f-phone" name="phone" type="tel" autocomplete="tel" maxlength="40"></p>
-              <p class="field"><label for="f-group">School, parish or group <span>optional</span></label><input id="f-group" name="group" autocomplete="organization" maxlength="160"></p>
-              <p class="field" data-for="retreat village event"><label for="f-numbers">Roughly how many <span>optional</span></label><input id="f-numbers" name="numbers" inputmode="numeric" maxlength="60"></p>
-              <p class="field" data-for="retreat village event volunteer"><label for="f-dates">Preferred dates <span>optional</span></label><input id="f-dates" name="dates" maxlength="120" placeholder="e.g. a week in March"></p>
-              <p class="field field--wide"><label for="f-message">Message</label><textarea id="f-message" name="message" rows="6" maxlength="4000" required></textarea><small class="field__hint" data-hint>For a retreat, tell us the year group and rough numbers.</small></p>
-            </div>
+            <fieldset class="enquiry__step">
+              <legend><span class="enquiry__num" aria-hidden="true">02</span>About you</legend>
+              <div class="enquiry__grid">
+                <p class="field"><label for="f-name">Your name</label><input id="f-name" name="name" autocomplete="name" maxlength="120" required></p>
+                <p class="field"><label for="f-email">Email</label><input id="f-email" name="email" type="email" autocomplete="email" maxlength="200" required></p>
+                <p class="field"><label for="f-phone">Phone <span>optional</span></label><input id="f-phone" name="phone" type="tel" autocomplete="tel" maxlength="40"></p>
+                <p class="field"><label for="f-group">School, parish or group <span>optional</span></label><input id="f-group" name="group" autocomplete="organization" maxlength="160"></p>
+                <p class="field" data-for="retreat village event"><label for="f-numbers">Roughly how many <span>optional</span></label><input id="f-numbers" name="numbers" inputmode="numeric" maxlength="60"></p>
+                <p class="field" data-for="retreat village event volunteer"><label for="f-dates">Preferred dates <span>optional</span></label><input id="f-dates" name="dates" maxlength="120" placeholder="e.g. a week in March"></p>
+              </div>
+            </fieldset>
+            <fieldset class="enquiry__step">
+              <legend><span class="enquiry__num" aria-hidden="true">03</span>Your message</legend>
+              <p class="field"><label class="sr" for="f-message">Message</label><textarea id="f-message" name="message" rows="6" maxlength="4000" required></textarea><small class="field__hint" data-hint>For a retreat, tell us the year group and rough numbers.</small></p>
+              <p class="enquiry__note"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l7 3v5.5c0 4.4-3 7.7-7 9.5-4-1.8-7-5.1-7-9.5V6z"/></svg><span>Please don't include young people's names, dates of birth or medical details. We'll ask for what we need when we reply.</span></p>
+            </fieldset>
             <input type="hidden" name="about" data-about>
             <input type="hidden" name="started" data-started>
             <p class="enquiry__trap" aria-hidden="true"><label>Leave this empty<input name="website" tabindex="-1" autocomplete="off"></label></p>
             <p class="check"><input id="f-consent" name="consent" type="checkbox" value="yes" required><label for="f-consent">I'm 18 or over, or a parent, carer or teacher knows I'm sending this. YMT will use these details only to reply to this enquiry.</label></p>
-            <p class="note note--ink">Please don't include young people's names, dates of birth or medical details here. We'll ask for what we need when we reply.</p>
-            <div class="enquiry__foot"><button class="btn enquiry__send" type="submit" data-send>Send enquiry <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6"/></svg></button><p class="enquiry__status" role="status" aria-live="polite" data-status></p></div>
+            <div class="enquiry__foot"><button class="btn enquiry__send" type="submit" data-send>Send enquiry <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6"/></svg></button><p class="enquiry__eta">We reply by email, usually within a few working days.</p><p class="enquiry__status" role="status" aria-live="polite" data-status></p></div>
           </form>
           <h2 class="h3 enquiry__or">Prefer email?</h2>
           <ul class="rows rows--mail" role="list"><li data-mail-row="retreat"><b>Book a retreat</b><p>Residential retreats at the Emmaus Youth Village for primary and secondary schools. Tell us the year group, rough numbers and dates.</p><a class="btn" data-mail="retreat" href="mailto:bookings@ymt.org?cc=admin@ymt.org&amp;subject=%5BYMT%5D%20Booking%20Enquiry%20%C2%B7%20Retreat&amp;body=School%3A%20%0AYear%20group(s)%3A%20%0ARoughly%20how%20many%3A%20%0APreferred%20dates%3A%20%0A%0A">Email bookings <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6"/></svg></a></li><li data-mail-row="village"><b>Stay at the Village</b><p>Group stays for parishes, schools, families and groups, for up to 90 guests, all year.</p><a class="btn" data-mail="village" href="mailto:bookings@ymt.org?cc=admin@ymt.org&amp;subject=%5BYMT%5D%20Booking%20Enquiry%20%C2%B7%20Village%20stay&amp;body=Parish%2C%20school%20or%20group%3A%20%0ARoughly%20how%20many%3A%20%0APreferred%20dates%3A%20%0A%0A">Email bookings <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6"/></svg></a></li><li data-mail-row="event"><b>Come to an event</b><p>The Source, the festivals, the Youth Council, Flame and anything in Latest.</p><a class="btn" data-mail="event" href="mailto:admin@ymt.org?subject=%5BYMT%5D%20Event%20Enquiry&amp;body=Event%3A%20%0ASchool%2C%20parish%20or%20group%20(if%20any)%3A%20%0ARoughly%20how%20many%3A%20%0A%0A">Email the team <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6"/></svg></a></li><li data-mail-row="volunteer"><b>Volunteer with us</b><p>Festival crew, Lourdes youth helpers, retreat teams, The Source team and the Internship. If you are under 18, a parent or carer will need to agree before you take part.</p><a class="btn" data-mail="volunteer" href="mailto:admin@ymt.org?subject=%5BYMT%5D%20Volunteering&amp;body=What%20you%20would%20like%20to%20do%3A%20%0AYour%20age%3A%20%0ASchool%20or%20parish%3A%20%0A%0A">Email the team <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6"/></svg></a></li><li data-mail-row="other"><b>Something else</b><p>Anything else, from schools and parishes to questions about YMT.</p><a class="btn" data-mail="other" href="mailto:admin@ymt.org?subject=%5BYMT%5D%20General%20Enquiry">Email the team <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6"/></svg></a></li></ul>
@@ -107,8 +113,8 @@
   </footer>
   <script src="js/config.js?v=26" defer></script>
   <script src="js/data.js?v=26" defer></script>
-  <script src="js/site.js?v=30" defer></script>
-  <script src="js/photos.js?v=5" defer></script>
+  <script src="js/site.js?v=31" defer></script>
+  <script src="js/photos.js?v=6" defer></script>
   <script src="js/enquire.js?v=1" defer></script>
   <script src="js/terrain.js?v=30" defer></script>
   <script src="review/review.js?v=10" defer></script><!-- staging only: remove at launch -->

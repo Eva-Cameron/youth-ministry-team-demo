@@ -1,12 +1,10 @@
-/* Colour-pop photos: at rest a photo is greyscale with (by default) plain greyscale (pre-rendered into
-   assets/web/pop by tools/colour_pop.py), or a fine halftone on the home route cards (assets/web/dots,
-   tools/halftone.py). Hovering it, or the card it sits in, eases it to full colour;
-   a tap or click (or Enter / Space on a photo that isn't inside a link) holds it in colour, and a second tap,
-   Escape or picking another photo puts it back. The full-colour copy loads only when it's first wanted.
-   Groups of photos also take turns coming into colour on their own (see the end of this file). */
+/* Halftone photos: the home route cards show a fine dot version in their route colours (assets/web/dots,
+   made by tools/halftone.py). Hovering the card eases it to the full-colour photo; the cards also take turns
+   coming into colour while on screen. Every other photo on the site is shown in full colour as it is
+   (Eva, 2 Nov: no greyscale). The full-colour copy loads only when it's first wanted. */
 (() => {
   'use strict';
-  const POP = /\/assets\/web\/(pop|dots)\//;
+  const POP = /\/assets\/web\/dots\//;
   // The home story frame crossfades its own stack of photos, so it is left as it is.
   const isPop = (img) => POP.test(img.currentSrc || img.src) && !img.closest('.story__frame');
   let held = null;

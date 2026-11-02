@@ -28,7 +28,7 @@
 [data-feel="gentle"] { --f-bg: var(--pink); --f-fg: var(--ink); --f-acc: var(--ink); --f-dur: .7s; --f-anim: f-gentle .8s cubic-bezier(.22, 1, .36, 1) both; --f-img: none; }
 [data-feel="open"] { --f-bg: var(--blue); --f-fg: var(--white); --f-acc: var(--white); --f-dur: .6s; --f-anim: word .7s var(--ease) both; --f-img: none; }
 [data-feel="joy"] { --f-bg: var(--red); --f-fg: var(--white); --f-acc: var(--white); --f-dur: .3s; --f-anim: f-joy .55s cubic-bezier(.16, 1, .3, 1) both; --f-img: saturate(1.15); }
-[data-feel="grave"] { --f-bg: var(--plum); --f-fg: #efe6d2; --f-acc: var(--gold); --f-dur: 1.6s; --f-anim: f-grave 1.8s cubic-bezier(.22, 1, .36, 1) both; --f-img: grayscale(.55) sepia(.3) brightness(.85); }
+[data-feel="grave"] { --f-bg: var(--plum); --f-fg: #efe6d2; --f-acc: var(--gold); --f-dur: 1.6s; --f-anim: f-grave 1.8s cubic-bezier(.22, 1, .36, 1) both; --f-img: brightness(.92); }
 [data-feel="serve"] { --f-bg: var(--purple); --f-fg: var(--white); --f-acc: var(--white); --f-dur: .9s; --f-anim: f-given 1s var(--ease) both; --f-img: none; }
 [data-feel="home"] { --f-bg: var(--mint); --f-fg: var(--ink); --f-acc: var(--ink); --f-dur: 1.3s; --f-anim: f-rest 1.5s cubic-bezier(.2, .7, .2, 1) both; --f-img: none; }
 @keyframes f-gentle { from { transform: translateY(100%); } }
