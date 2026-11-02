@@ -14,6 +14,12 @@
     link.textContent = 'Preview site · Leave feedback';
     link.setAttribute('style', 'position:fixed;z-index:2147483000;right:calc(16px + env(safe-area-inset-right,0px));bottom:calc(16px + env(safe-area-inset-bottom,0px));display:inline-flex;align-items:center;min-height:48px;padding:0 20px;border-radius:999px;background:#fff;color:#100c15;font:600 14px/1.2 "Inter Tight",system-ui,sans-serif;text-decoration:none;box-shadow:0 6px 24px rgba(16,12,21,.35),0 0 0 1px rgba(16,12,21,.12)');
     document.body.appendChild(link);
+    // The home film's own controls (pause, Who it's for) sit in this corner, so the pill waits
+    // until the film has scrolled mostly out of view.
+    const film = document.querySelector('.hero');
+    if (film && 'IntersectionObserver' in window) {
+      new IntersectionObserver(([entry]) => { link.hidden = entry.intersectionRatio > 0.3; }, { threshold: [0, 0.3, 1] }).observe(film);
+    }
     return;
   }
   const comments = await window.claude.use('comments');
