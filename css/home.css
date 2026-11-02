@@ -66,9 +66,9 @@
 .feel__mask b.is-swap { animation: var(--f-anim); }
 .feel__stick[data-feel="grave"] .feel__mask b { font-weight: 400; letter-spacing: -.01em; }
 .feel__row { position: relative; }
-.feel__item { --fw: clamp(180px, min(25vw, 38vh), 400px); position: absolute; left: 0; top: 50%; width: var(--fw); margin: 0; transform-origin: 0 50%; will-change: transform, opacity; transition: opacity .35s ease; }
+.feel__item { --fw: clamp(180px, min(25vw, 38vh), 400px); position: absolute; left: 0; top: 50%; width: var(--fw); margin: 0; transform-origin: 0 50%; will-change: transform, opacity; transition: opacity .35s var(--ease); }
 .feel__item img { width: 100%; aspect-ratio: 3 / 4; height: auto; object-fit: cover; border-radius: var(--r-md); box-shadow: 0 24px 48px -20px rgba(16, 12, 21, .45); filter: var(--f-img); transition: filter var(--f-dur) ease; }
-.feel__item figcaption { position: absolute; top: 100%; left: 0; padding-top: 10px; font: 400 11px/1.3 var(--mono); text-transform: uppercase; white-space: nowrap; opacity: 0; transition: opacity .3s ease; }
+.feel__item figcaption { position: absolute; top: 100%; left: 0; padding-top: 10px; font: 400 11px/1.3 var(--mono); text-transform: uppercase; white-space: nowrap; opacity: 0; transition: opacity .3s var(--ease); }
 .feel__item figcaption span { color: rgba(16, 12, 21, .72); }
 .feel__item.is-on figcaption { opacity: 1; }
 .feel__ticks { display: flex; justify-content: center; align-items: center; gap: 5px; height: 34px; }
@@ -89,10 +89,10 @@
 .chapter__img { display: none; }
 .chapter p { font: 400 clamp(20px, 1.6vw, 24px)/1.55 var(--sans); max-width: 36ch; }
 .chapter blockquote p { font: 400 clamp(30px, 3.2vw, 50px)/1.12 var(--display); letter-spacing: -.025em; max-width: 20ch; }
-.chapter blockquote .sw { opacity: var(--so, 1); transition: opacity .2s linear; }
+.chapter blockquote .sw { opacity: var(--so, 1); transition: opacity .2s var(--ease); }
 .chapter blockquote footer { margin-top: 18px; font: 400 12px var(--mono); text-transform: uppercase; opacity: .7; }
 .story__frame { position: sticky; top: 90px; border-radius: var(--r-lg); box-shadow: var(--shadow-1); background: var(--ink); height: calc(100vh - 120px); height: calc(100svh - 120px); align-self: start; overflow: hidden; }
-.story__frame img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transform: scale(1.06); transition: opacity .9s ease, transform 1.6s var(--ease); }
+.story__frame img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transform: scale(1.06); transition: opacity .9s var(--ease), transform 1.6s var(--ease); }
 .story__frame img.is-on { opacity: 1; transform: scale(1); }
 .story__frame figcaption { position: absolute; left: 12px; bottom: 12px; padding: 10px 14px; font: 400 11px var(--mono); text-transform: uppercase; }
 /* On the photo, so it takes the dark glass fill, not the light wash panels use on the ground. */

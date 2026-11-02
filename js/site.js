@@ -236,8 +236,9 @@
   }
 
   /* ---------- Motion ---------- */
-  // Headings split into masked words that slide up once on screen.
-  $$('main .h2, main .h1[data-words]').forEach((h) => {
+  // Page headings that opt in (data-words) split into masked words that slide up once. Section headings stay
+  // still, so each page keeps one moment of its own.
+  $$('main .h1[data-words]').forEach((h) => {
     if (h.children.length) return;
     const text = h.textContent.trim();
     h.setAttribute('aria-label', text);
@@ -249,7 +250,7 @@
   if (!reduce && 'IntersectionObserver' in window) {
     const io = new IntersectionObserver((entries) => {
       entries.filter((x) => x.isIntersecting).forEach((x, i) => {
-        if (!x.target.classList.contains('words')) x.target.style.setProperty('--delay', i * 70 + 'ms');
+        if (!x.target.classList.contains('words')) x.target.style.setProperty('--delay', Math.min(i, 4) * 70 + 'ms');
         x.target.classList.add('in');
         io.unobserve(x.target);
       });
