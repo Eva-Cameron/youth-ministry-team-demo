@@ -59,7 +59,7 @@
 .feel__item img { width: 100%; aspect-ratio: 3 / 4; height: auto; object-fit: cover; filter: var(--f-img); transition: filter var(--f-dur) ease; }
 .feel__stick[data-feel="joy"] .feel__item.is-on img { animation: f-wiggle .5s ease-out; }
 .feel__item figcaption { position: absolute; top: 100%; left: 0; padding-top: 10px; font: 400 11px/1.3 var(--mono); text-transform: uppercase; white-space: nowrap; opacity: 0; transition: opacity .3s ease; }
-.feel__item figcaption span { opacity: .5; }
+.feel__item figcaption span { color: rgba(16, 12, 21, .72); }
 .feel__item.is-on figcaption { opacity: 1; }
 .feel__ticks { display: flex; justify-content: center; align-items: center; gap: 5px; height: 34px; }
 .feel__ticks i { width: 1px; height: var(--h, 4px); opacity: var(--o, .4); background: currentColor; }
