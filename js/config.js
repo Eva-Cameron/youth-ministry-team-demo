@@ -1,6 +1,7 @@
 /* Site settings. Never put secret keys here: this file is public.
-   The site has no forms and takes no payments: bookings and enquiries are email links,
-   and giving happens on an external fundraising page. */
+   Bookings and enquiries go through the form on enquire.html (sent by functions/api/enquire.js, whose
+   addresses and keys live in Cloudflare settings, not here); these addresses are the email fallback.
+   The site takes no payments: giving happens on an external fundraising page. */
 window.YMT_CONFIG = Object.freeze({
   // Enquiries are emailed here (Eve's address).
   enquiryTo: 'admin@ymt.org',

@@ -68,3 +68,7 @@ Eva's answers on the v2 brief (`docs/prompts/iteration-3-round-2.md` and the v2 
 - Under every hero, the bands now step down in solid tints from the hero colour into the page, instead of translucent grey.
 
 - Photos at rest are now plain greyscale; the kept colour is gone (Eva, 2 November). They still turn full colour on hover or tap. `KEEP_COLOUR` in `tools/colour_pop.py` brings the kept colour back.
+
+### Bookings form and TikTok (Eva, 2 November)
+- Bookings now go through an internal form on enquire.html, which emails the bookings team or the office (functions/api/enquire.js, Resend). Every booking button opens it with its topic chosen; the mailto links stay as a fallback. Routing and setup are in docs/forms-routing.md. This lifts the "no forms" rule from the first brief, as the v2 brief allowed.
+- TikTok (volunteer page): the pinned phone moves through four clips as you scroll, with progress bars along its top, instead of one clip the whole way down.

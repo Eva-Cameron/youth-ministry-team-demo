@@ -17,7 +17,7 @@
   <link rel="icon" type="image/png" href="assets/images/logo.png">
   <link rel="preload" href="assets/fonts/syne.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="assets/fonts/satoshi.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="css/site.css?v=29">
+  <link rel="stylesheet" href="css/site.css?v=30">
   <script src="js/boot.js?v=26"></script>
 </head>
 <body>
@@ -57,13 +57,35 @@
     <section class="section section--page" aria-labelledby="page-title">
       <div class="wrap split">
         <div class="split__aside">
-          <div class="label" aria-hidden="true"><span>YMT</span><span>Enquire</span><span>By email</span></div>
+          <div class="label" aria-hidden="true"><span>YMT</span><span>Enquire</span><span>Bookings and questions</span></div>
           <h1 class="h1" id="page-title" data-words>Contact us</h1>
-          <p class="lede muted">Choose what it is about. Each one opens an email to the right person with the subject already filled in.</p>
+          <p class="lede muted">Tell us what it's about and we'll pass it to the right person. Bookings go to the bookings team; everything else goes to the office. We'll reply by email.</p>
         </div>
         <div class="stack stack--lg">
+          <form class="enquiry glass--light" id="enquiry" action="/api/enquire" method="post" data-enquiry novalidate>
+            <fieldset class="enquiry__topics">
+              <legend>What is it about?</legend>
+              <div class="topics"><label class="topic"><input type="radio" name="topic" value="retreat" required><span><b>Book a retreat</b><small>For schools</small></span></label><label class="topic"><input type="radio" name="topic" value="village" required><span><b>Stay at the Village</b><small>Groups, parishes, families</small></span></label><label class="topic"><input type="radio" name="topic" value="event" required><span><b>Come to an event</b><small>The Source, festivals, Youth Council</small></span></label><label class="topic"><input type="radio" name="topic" value="volunteer" required><span><b>Volunteer</b><small>Crew, Lourdes, retreat teams</small></span></label><label class="topic"><input type="radio" name="topic" value="other" checked required><span><b>Something else</b><small>Any other question</small></span></label></div>
+            </fieldset>
+            <div class="enquiry__grid">
+              <p class="field"><label for="f-name">Your name</label><input id="f-name" name="name" autocomplete="name" maxlength="120" required></p>
+              <p class="field"><label for="f-email">Email</label><input id="f-email" name="email" type="email" autocomplete="email" maxlength="200" required></p>
+              <p class="field"><label for="f-phone">Phone <span>optional</span></label><input id="f-phone" name="phone" type="tel" autocomplete="tel" maxlength="40"></p>
+              <p class="field"><label for="f-group">School, parish or group <span>optional</span></label><input id="f-group" name="group" autocomplete="organization" maxlength="160"></p>
+              <p class="field" data-for="retreat village event"><label for="f-numbers">Roughly how many <span>optional</span></label><input id="f-numbers" name="numbers" inputmode="numeric" maxlength="60"></p>
+              <p class="field" data-for="retreat village event volunteer"><label for="f-dates">Preferred dates <span>optional</span></label><input id="f-dates" name="dates" maxlength="120" placeholder="e.g. a week in March"></p>
+              <p class="field field--wide"><label for="f-message">Message</label><textarea id="f-message" name="message" rows="6" maxlength="4000" required></textarea><small class="field__hint" data-hint>For a retreat, tell us the year group and rough numbers.</small></p>
+            </div>
+            <input type="hidden" name="about" data-about>
+            <input type="hidden" name="started" data-started>
+            <p class="enquiry__trap" aria-hidden="true"><label>Leave this empty<input name="website" tabindex="-1" autocomplete="off"></label></p>
+            <p class="check"><input id="f-consent" name="consent" type="checkbox" value="yes" required><label for="f-consent">I'm 18 or over, or a parent, carer or teacher knows I'm sending this. YMT will use these details only to reply to this enquiry.</label></p>
+            <p class="note note--ink">Please don't include young people's names, dates of birth or medical details here. We'll ask for what we need when we reply.</p>
+            <div class="enquiry__foot"><button class="btn enquiry__send" type="submit" data-send>Send enquiry <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6"/></svg></button><p class="enquiry__status" role="status" aria-live="polite" data-status></p></div>
+          </form>
+          <h2 class="h3 enquiry__or">Prefer email?</h2>
           <ul class="rows rows--mail" role="list"><li data-mail-row="retreat"><b>Book a retreat</b><p>Residential retreats at the Emmaus Youth Village for primary and secondary schools. Tell us the year group, rough numbers and dates.</p><a class="btn" data-mail="retreat" href="mailto:bookings@ymt.org?cc=admin@ymt.org&amp;subject=%5BYMT%5D%20Booking%20Enquiry%20%C2%B7%20Retreat&amp;body=School%3A%20%0AYear%20group(s)%3A%20%0ARoughly%20how%20many%3A%20%0APreferred%20dates%3A%20%0A%0A">Email bookings <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6"/></svg></a></li><li data-mail-row="village"><b>Stay at the Village</b><p>Group stays for parishes, schools, families and groups, for up to 90 guests, all year.</p><a class="btn" data-mail="village" href="mailto:bookings@ymt.org?cc=admin@ymt.org&amp;subject=%5BYMT%5D%20Booking%20Enquiry%20%C2%B7%20Village%20stay&amp;body=Parish%2C%20school%20or%20group%3A%20%0ARoughly%20how%20many%3A%20%0APreferred%20dates%3A%20%0A%0A">Email bookings <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6"/></svg></a></li><li data-mail-row="event"><b>Come to an event</b><p>The Source, the festivals, the Youth Council, Flame and anything in Latest.</p><a class="btn" data-mail="event" href="mailto:admin@ymt.org?subject=%5BYMT%5D%20Event%20Enquiry&amp;body=Event%3A%20%0ASchool%2C%20parish%20or%20group%20(if%20any)%3A%20%0ARoughly%20how%20many%3A%20%0A%0A">Email the team <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6"/></svg></a></li><li data-mail-row="volunteer"><b>Volunteer with us</b><p>Festival crew, Lourdes youth helpers, retreat teams, The Source team and the Internship. If you are under 18, a parent or carer will need to agree before you take part.</p><a class="btn" data-mail="volunteer" href="mailto:admin@ymt.org?subject=%5BYMT%5D%20Volunteering&amp;body=What%20you%20would%20like%20to%20do%3A%20%0AYour%20age%3A%20%0ASchool%20or%20parish%3A%20%0A%0A">Email the team <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6"/></svg></a></li><li data-mail-row="other"><b>Something else</b><p>Anything else, from schools and parishes to questions about YMT.</p><a class="btn" data-mail="other" href="mailto:admin@ymt.org?subject=%5BYMT%5D%20General%20Enquiry">Email the team <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6"/></svg></a></li></ul>
-          <p class="note">Each button opens your email app with the address and subject filled in. If it does not open, copy an address below.</p>
+          <p class="note">Each button opens your email app with the address and subject filled in. If it does not open, copy an address below, or use the form above.</p>
           <ul class="copy-email" role="list" aria-label="Email addresses"><li><span><small>Enquiries</small><span class="copy-email__addr">admin@ymt.org</span></span><button class="btn btn--line" type="button" data-copy="admin@ymt.org">Copy<span class="sr"> admin@ymt.org</span></button></li><li><span><small>Bookings</small><span class="copy-email__addr">bookings@ymt.org</span></span><button class="btn btn--line" type="button" data-copy="bookings@ymt.org">Copy<span class="sr"> bookings@ymt.org</span></button></li></ul><p class="sr" role="status" data-copy-status></p>
         </div>
       </div>
@@ -85,8 +107,9 @@
   </footer>
   <script src="js/config.js?v=26" defer></script>
   <script src="js/data.js?v=26" defer></script>
-  <script src="js/site.js?v=27" defer></script>
+  <script src="js/site.js?v=28" defer></script>
   <script src="js/photos.js?v=3" defer></script>
+  <script src="js/enquire.js?v=1" defer></script>
   <script src="js/terrain.js?v=30" defer></script>
   <script src="review/review.js?v=10" defer></script><!-- staging only: remove at launch -->
 </body>

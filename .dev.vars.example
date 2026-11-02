@@ -3,3 +3,12 @@ TURNSTILE_SECRET=PLACEHOLDER_TURNSTILE_SECRET
 TURNSTILE_SITE_KEY=PLACEHOLDER_TURNSTILE_SITE_KEY
 RESEND_KEY=PLACEHOLDER_RESEND_KEY
 REVIEW_NOTIFY_TO=PLACEHOLDER_EVA_EMAIL
+# Enquiry form (functions/api/enquire.js). RESEND_KEY above sends it.
+FORM_TO_BOOKINGS=PLACEHOLDER_BOOKINGS_EMAIL
+FORM_TO_ADMIN=PLACEHOLDER_OFFICE_EMAIL
+# Optional: send every enquiry to one address (useful while testing).
+FORM_TO_ALL=PLACEHOLDER_TEST_EMAIL
+# Optional: a sender on a domain verified in Resend, e.g. YMT website <website@ymt.org>.
+FORM_FROM=PLACEHOLDER_FORM_FROM
+# Local only: 1 prints each enquiry in the wrangler terminal instead of sending it.
+FORM_DEV_LOG=0

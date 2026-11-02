@@ -221,9 +221,8 @@
   });
 
   /* ---------- Email links ---------- */
-  // No forms: every booking or question is a mailto link with a [YMT] subject, built here from the
-  // addresses in config.js. Each link also carries a plain mailto href so it works without JS.
-  // The body only holds prompts for the visitor to fill in their own email app.
+  // Email links on the enquire page: a mailto with a [YMT] subject, built here from the addresses in
+  // config.js. The body only holds prompts for the visitor to fill in their own email app.
   const MAIL = {
     retreat: { to: 'bookingsTo', cc: true, subject: 'Booking Enquiry · Retreat', body: ['School', 'Year group(s)', 'Roughly how many', 'Preferred dates'] },
     village: { to: 'bookingsTo', cc: true, subject: 'Booking Enquiry · Village stay', body: ['Parish, school or group', 'Roughly how many', 'Preferred dates'] },
@@ -241,7 +240,12 @@
     if (m.body.length) q.push('body=' + encodeURIComponent(m.body.map((l) => l + ': ').join('\n') + '\n\n'));
     return `mailto:${to}?${q.join('&')}`;
   };
-  if (C.enquiryTo) $$('a[data-mail]').forEach((a) => { a.href = mailto(a.dataset.mail, a.dataset.mailAbout); });
+  // Booking and enquiry buttons around the site open the enquiry form with the topic chosen; the email
+  // links on the enquire page itself stay as a fallback for people who'd rather write their own.
+  const formLink = (kind, about) => `enquire.html?topic=${encodeURIComponent(kind)}${about ? '&about=' + encodeURIComponent(about) : ''}#enquiry`;
+  $$('a[data-mail]').forEach((a) => {
+    if (a.closest('[data-mail-row]')) { if (C.enquiryTo) a.href = mailto(a.dataset.mail, a.dataset.mailAbout); } else a.href = formLink(a.dataset.mail, a.dataset.mailAbout);
+  });
 
   // Copy buttons next to each address. The button says what happened; a status line reads it out.
   $$('[data-copy]').forEach((btn) => btn.addEventListener('click', () => {
@@ -253,7 +257,7 @@
 
   // Old ?topic= links to the enquire page land on the matching email.
   const topic = new URLSearchParams(location.search).get('topic');
-  const picked = topic && $(`[data-mail-row="${CSS.escape(topic)}"]`);
+  const picked = topic && !$('[data-enquiry]') && $(`[data-mail-row="${CSS.escape(topic)}"]`);
   if (picked) { picked.classList.add('is-picked'); picked.scrollIntoView({ block: 'center' }); }
 
   // Donate: choose how often and how much; the gift itself is made on the external giving page.
@@ -345,7 +349,8 @@
     setClips();
   }
 
-  // TikTok stage (wide screens): the side windows scroll past the pinned one at their own speeds.
+  // TikTok stage (wide screens): the side windows scroll past the pinned one at their own speeds, and the
+  // pinned one changes clip as you go, so the long scroll isn't spent on one video.
   const stage = $('[data-phones]');
   if (stage && !reduce) {
     const wide = matchMedia('(min-width: 1051px)');
@@ -359,7 +364,36 @@
       if (r.bottom < 0 || r.top > vh) return;
       const p = (vh - r.top) / (vh + r.height);
       phones.forEach((ph) => ph.style.setProperty('--py', ((.5 - p) * parseFloat(ph.dataset.speed) * vh * .9).toFixed(1) + 'px'));
+      // While it's pinned, the middle phone moves on to the next clip at each stage of the scroll.
+      const q = Math.min(.999, Math.max(0, -r.top / Math.max(1, r.height - vh)));
+      show(Math.floor(q * reel.length));
     };
+    // The clips the middle phone plays in turn: its own first, then three of the windows around it.
+    const hero = $('.phone--hero', stage);
+    const heroVid = hero && $('video', hero);
+    const clipOf = (ph) => ({ ph, href: ph.href, label: ph.getAttribute('aria-label'), cap: $('.phone__cap', ph).textContent, poster: $('video', ph).poster, src: $('video', ph).dataset.src });
+    const reel = hero ? ['.phone--hero', '.phone--4', '.phone--1', '.phone--5'].map((s) => $(s, stage)).filter(Boolean).map(clipOf) : [];
+    let showing = 0;
+    const steps = document.createElement('span');
+    steps.className = 'phone__steps';
+    steps.setAttribute('aria-hidden', 'true');
+    steps.innerHTML = reel.map(() => '<i></i>').join('');
+    if (hero) hero.prepend(steps);
+    const show = (k) => {
+      if (!hero || !wide.matches || k === showing) return;
+      showing = k;
+      const c = reel[k];
+      hero.href = c.href;
+      hero.setAttribute('aria-label', c.label);
+      $('.phone__cap', hero).textContent = c.cap;
+      heroVid.poster = c.poster;
+      heroVid.dataset.src = c.src;
+      if (heroVid.src) { heroVid.src = c.src; heroVid.load(); if (!clipsPaused) heroVid.play().catch(() => {}); }
+      reel.forEach((r, i) => { if (r.ph !== hero) r.ph.classList.toggle('is-on-stage', i === k); });
+      [...steps.children].forEach((s, i) => s.classList.toggle('is-on', i === k));
+      hero.classList.remove('is-swap'); void hero.offsetWidth; hero.classList.add('is-swap');
+    };
+    steps.firstChild?.classList.add('is-on');
     addEventListener('scroll', () => { if (!ticking) { ticking = true; requestAnimationFrame(move); } }, { passive: true });
     move();
   }
