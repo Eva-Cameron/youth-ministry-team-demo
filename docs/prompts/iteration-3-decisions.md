@@ -22,3 +22,17 @@ Eva made these decisions on 2 November 2026. Where they conflict with `iteration
 - **Shapes:** Eva asked for softer shapes and layered depth. The hard offset shadows are retired.
 - **Dispatch:** `/dev-teams` and `/ponytail` aren't available. The lead session runs workstreams C and D as subagents on their own branches, and a different agent reviews each one before it merges.
 - **Pushing:** the machine has no GitHub credentials yet, so commits stay local until Eva runs `gh auth login`.
+
+## Round 2 (2 November, afternoon)
+
+These override everything above where they conflict. The brief is `docs/prompts/iteration-3-round-2.md`.
+
+- **Photos:** replace the route duotone on photographs. At rest they're greyscale with one colour family popping out, pre-rendered per photo. When tapped, they turn full colour with soft, blurred edges.
+- **Carousel:** "Come away feeling…" gets grain and better photos; it isn't plain white any more.
+- **TikToks:** better clips, crops, posters and captions, with tap to unmute and one playing at a time.
+- **Kids' page:** the planning information moves to "For teachers" on `retreats.html`. Primary becomes slightly more child-friendly, with resources for children.
+- **Forms are back in scope.** Bookings, enquiries and payments go through forms to the right inboxes, Stripe Payment Links and JustGiving, using Pages Functions and Resend. Nothing is stored, and card data never touches the site. This replaces the earlier "email links instead of forms, no payments" decision.
+- **Content:** a writer agent and a producer agent make placeholder copy and printable materials, all marked as placeholders.
+- **Comments:** they no longer go to the claude.ai artifact, because Mary can't access Eva's Claude. Build our own comment system on Cloudflare staging, with invite links and D1, and feed the existing review board from its export.
+- **Hosting:** staging moves to Cloudflare Pages, because forms and comments need Functions. GitHub Pages stays as a view-only mirror of `main`.
+- **Dispatch:** the lead session runs the workstreams as subagents (`tools/dispatch-iteration-3.sh`).
