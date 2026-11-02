@@ -12,7 +12,7 @@ const draw = (g, p) => {
   g.fillStyle = g.strokeStyle = p.c; g.lineWidth = s/3.2; g.lineCap = 'round'; g.beginPath();
   if (p.k == 0) g.arc(0, 0, s/2, 0, 7);
   else if (p.k == 1) { g.moveTo(0, -s/1.6); g.lineTo(s/1.8, s/2.4); g.lineTo(-s/1.8, s/2.4); }
-  else if (p.k == 2) { g.moveTo(-s, 0); for (let i = 1; i < 5; i++) g.quadraticCurveTo(-s+(i - .5)*s/2, i % 2 ? -s/2 : s/2, -s+i*s/2, 0); }
+  else if (p.k == 2) { g.moveTo(-s, 0); for (let i = 1; i < 5; i++) g.lineTo(-s+i*s/2, i % 2 ? -s/3 : s/3); }
   else for (let i = 0; i < 10; i++) { const a = i*PI/5+up, d = i % 2 ? s/4.5 : s/1.7; g.lineTo(M.cos(a)*d, M.sin(a)*d); }
   p.k == 2 ? g.stroke() : g.fill(); g.restore();
 };

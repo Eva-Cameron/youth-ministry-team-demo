@@ -156,7 +156,7 @@
     if (words.length) {
       const r = scrub.getBoundingClientRect();
       const lit = Math.min(1, Math.max(0, (vh * .8 - r.top) / (vh * .45))) * words.length;
-      words.forEach((w, i) => w.style.setProperty('--so', (.5 + .5 * Math.min(1, Math.max(0, lit - i))).toFixed(2)));
+      words.forEach((w, i) => w.style.setProperty('--so', (.66 + .34 * Math.min(1, Math.max(0, lit - i))).toFixed(2)));
     }
   };
   if (!reduce) {

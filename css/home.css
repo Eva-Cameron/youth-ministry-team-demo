@@ -46,7 +46,6 @@
 .ethos__pillars li + li { padding-left: 20px; border-left: 1px solid var(--line); }
 .ethos__pillars b { font: 600 clamp(22px, 1.8vw, 26px)/1.05 var(--display); letter-spacing: -.02em; }
 .ethos__pillars p { font: 400 16px/1.45 var(--sans); color: rgba(255, 255, 255, .72); }
-.ethos__pillars small { font: 400 11px var(--mono); text-transform: uppercase; opacity: .6; }
 /* Wide screens: the four pillars sit beside the statement, so the eye reads across in one sweep
    (statement, then Encounter, Belong, Grow, Serve) instead of dropping past an empty half-screen. */
 @media (min-width: 1100px) {
@@ -134,7 +133,6 @@
   .chapter__img { display: block; width: 100%; aspect-ratio: 4 / 3; object-fit: cover; border-radius: var(--r-md); }
 }
 @media (max-width: 680px) {
-  .label { grid-template-columns: 38px max-content minmax(0, 1fr); gap: 10px var(--sp-4); font-size: 11px; }
   .feel { height: 210vh; }
   .feel__item { --fw: 54vw; }
   .who__card { top: calc(76px + var(--k) * 14px); min-height: 78svh; grid-template-columns: minmax(0, 1fr); grid-template-rows: none; align-content: start; }

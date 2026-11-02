@@ -1,138 +1,295 @@
-/* Review mode for the client preview on claude.ai. Not part of the live site:
-   outside the claude.ai viewer the comments capability is absent and nothing renders. */
+/* Review mode, with an inspector for picking what to comment on. Not part of the live site.
+   - In the claude.ai review copy, Comment opens claude.ai's own composer on the picked element, so the
+     thread reaches the review board.
+   - On staging copies (GitHub Pages, Cloudflare previews, localhost) the same inspector saves comments in
+     this browser, pins them on the page, and exports them in the review/comments.json format.
+   Outside those two places nothing renders, so it never shows on ymt.org. */
 (async () => {
   const REVIEW_COPY_URL = 'https://claude.ai/artifact/6EH6MLrH7ecfBfVtt6vfw1';
   const STAGING_HOSTS = ['github.io', 'pages.dev', 'localhost', '127.0.0.1'];
+  const STORE = 'ymt-review-comments';
+
+  const inClaude = !!(window.claude && typeof window.claude.use === 'function');
+  const onStaging = STAGING_HOSTS.some((host) => location.hostname === host || location.hostname.endsWith('.' + host));
+  if (!inClaude && !onStaging) return;
+  let composer = null;
+  if (inClaude) {
+    const comments = await window.claude.use('comments');
+    if (!comments || typeof comments.openComposer !== 'function') return;
+    composer = comments;
+  }
 
   const style = document.createElement('style');
   style.textContent = `
-    .rv { position: fixed; z-index: 2147483000; right: calc(16px + env(safe-area-inset-right, 0px)); bottom: calc(16px + env(safe-area-inset-bottom, 0px)); display: grid; justify-items: end; gap: 10px; font: 500 14px/1.3 var(--sans, system-ui, sans-serif); }
+    .rv { position: fixed; z-index: 2147483000; right: calc(16px + env(safe-area-inset-right, 0px)); bottom: calc(16px + env(safe-area-inset-bottom, 0px)); display: grid; justify-items: end; gap: 10px; font: 500 14px/1.3 var(--sans, system-ui, sans-serif); color: var(--ink, #100c15); }
+    .rv__bar { display: flex; gap: 8px; }
     .rv__btn { display: inline-flex; align-items: center; gap: 10px; min-height: 48px; padding: 0 20px; border: 0; border-radius: 999px; background: var(--white, #fff); color: var(--ink, #100c15); font: inherit; font-weight: 600; cursor: pointer; box-shadow: 0 6px 24px rgba(16, 12, 21, .35), 0 0 0 1px rgba(16, 12, 21, .12); }
-    .rv__btn:focus-visible { outline: 3px solid var(--gold, #f2c24a); outline-offset: 3px; }
+    .rv__btn:focus-visible, .rv button:focus-visible, .rv a:focus-visible, .rv textarea:focus-visible { outline: 3px solid var(--gold, #f2c24a); outline-offset: 3px; }
     .rv__btn svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2; }
     .rv__btn[aria-pressed="true"] { background: var(--gold, #f2c24a); }
-    .rv__tip { max-width: min(300px, calc(100vw - 32px)); padding: 14px 16px; border-radius: 14px; background: var(--ink, #100c15); color: var(--white, #fff); box-shadow: 0 6px 24px rgba(16, 12, 21, .4), 0 0 0 1px rgba(255, 255, 255, .14); }
-    .rv__tip b { display: block; margin-bottom: 4px; }
-    .rv__go { display: inline-flex; align-items: center; min-height: 44px; margin-top: 10px; padding: 0 16px; border-radius: 999px; background: var(--white, #fff); color: var(--ink, #100c15); font-weight: 600; text-decoration: none; }
-    .rv__tip button { margin-top: 10px; padding: 6px 12px; border: 1px solid rgba(255, 255, 255, .5); border-radius: 999px; background: transparent; color: inherit; font: inherit; cursor: pointer; }
+    .rv__btn--count { padding: 0 16px; }
+    .rv__card { width: min(360px, calc(100vw - 32px)); max-height: min(60vh, 520px); overflow: auto; padding: 16px; border-radius: 16px; background: var(--ink, #100c15); color: var(--white, #fff); box-shadow: 0 10px 40px rgba(16, 12, 21, .45), 0 0 0 1px rgba(255, 255, 255, .14); }
+    .rv__card b { display: block; margin-bottom: 6px; }
+    .rv__card p { margin: 0 0 10px; color: rgba(255, 255, 255, .8); }
+    .rv__row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+    .rv__ghost, .rv__solid { display: inline-flex; align-items: center; min-height: 40px; padding: 0 14px; border-radius: 999px; font: inherit; font-weight: 600; text-decoration: none; cursor: pointer; }
+    .rv__ghost { border: 1px solid rgba(255, 255, 255, .5); background: transparent; color: inherit; }
+    .rv__solid { border: 0; background: var(--white, #fff); color: var(--ink, #100c15); }
+    .rv__list { display: grid; gap: 10px; margin: 0; padding: 0; list-style: none; }
+    .rv__list li { display: grid; grid-template-columns: 28px 1fr; gap: 10px; padding-top: 10px; border-top: 1px solid rgba(255, 255, 255, .14); }
+    .rv__list li.is-done { opacity: .55; }
+    .rv__num, .rv-pin { display: inline-grid; place-items: center; width: 28px; height: 28px; border-radius: 50%; background: var(--gold, #f2c24a); color: var(--ink, #100c15); font: 700 13px/1 var(--mono, ui-monospace, monospace); }
+    .rv__where { display: block; margin-bottom: 2px; font: 400 11px/1.3 var(--mono, ui-monospace, monospace); text-transform: uppercase; color: rgba(255, 255, 255, .6); }
+    .rv__text { white-space: pre-wrap; overflow-wrap: anywhere; }
+    .rv textarea { width: 100%; min-height: 96px; margin: 6px 0 0; padding: 10px 12px; border: 0; border-radius: 10px; background: #fff; color: #100c15; font: 400 15px/1.4 var(--sans, system-ui, sans-serif); resize: vertical; }
+    .rv label { display: block; font-weight: 600; }
     html.rv-picking, html.rv-picking * { cursor: crosshair !important; }
-    .rv-hover { outline: 3px solid var(--gold, #f2c24a) !important; outline-offset: 3px !important; }
+    .rv-box { position: fixed; z-index: 2147482990; pointer-events: none; border: 2px solid var(--gold, #f2c24a); border-radius: 4px; background: rgba(242, 194, 74, .14); box-shadow: 0 0 0 9999px rgba(16, 12, 21, .12); transition: all .08s linear; }
+    .rv-chip { position: fixed; z-index: 2147482995; pointer-events: none; max-width: min(420px, calc(100vw - 16px)); padding: 5px 9px; border-radius: 6px; background: var(--ink, #100c15); color: #fff; font: 500 12px/1.3 var(--mono, ui-monospace, monospace); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; box-shadow: 0 4px 16px rgba(0, 0, 0, .35); }
+    .rv-chip i { font-style: normal; color: var(--gold, #f2c24a); }
+    .rv-pin { position: absolute; z-index: 2147482980; transform: translate(-50%, -50%); border: 0; box-shadow: 0 2px 10px rgba(16, 12, 21, .4), 0 0 0 2px #fff; cursor: pointer; }
+    .rv-pin.is-done { background: #c9c3cf; }
+    .rv-flash { outline: 3px solid var(--gold, #f2c24a) !important; outline-offset: 3px !important; }
+    @media (prefers-reduced-motion: reduce) { .rv-box { transition: none; } }
   `;
   document.head.appendChild(style);
 
-  if (!window.claude || typeof window.claude.use !== 'function') {
-    // Staging copy outside claude.ai: the same Comment button, which sends reviewers to the
-    // commentable review copy (comments are saved there). Never shows on ymt.org.
-    if (!STAGING_HOSTS.some((host) => location.hostname === host || location.hostname.endsWith('.' + host))) return;
-    const stage = document.createElement('div');
-    stage.className = 'rv';
-    stage.innerHTML = `
-      <div class="rv__tip" role="status" hidden>
-        <b>Leave a comment</b>
-        <span>Comments are saved on the review copy of this site. Open it, tap <em>Comment</em>, then tap anything you'd like changed.</span>
-        <br><a class="rv__go" href="${REVIEW_COPY_URL}" target="_blank" rel="noopener">Open the review copy</a>
-      </div>
-      <button type="button" class="rv__btn" aria-expanded="false">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16v11H9l-5 4z"/></svg>
-        <span>Comment</span>
-      </button>`;
-    document.body.appendChild(stage);
-    const stageBtn = stage.querySelector('.rv__btn');
-    const stageTip = stage.querySelector('.rv__tip');
-    stageBtn.addEventListener('click', () => { stageTip.hidden = !stageTip.hidden; stageBtn.setAttribute('aria-expanded', String(!stageTip.hidden)); });
-    // The home film's own controls (pause, Who it's for) sit in this corner, so the button waits
-    // until the film has scrolled mostly out of view.
-    const film = document.querySelector('.hero');
-    if (film && 'IntersectionObserver' in window) {
-      new IntersectionObserver(([entry]) => { stage.hidden = entry.intersectionRatio > 0.3; }, { threshold: [0, 0.3, 1] }).observe(film);
+  /* ---------- Inspector: what you are pointing at, labelled like devtools ---------- */
+  const PICKABLE = 'h1, h2, h3, h4, p, li, figure, img, video, blockquote, a, button, address, dl, .who__card, .info__card, .shot, .bite, .tl__item, .news-card, .label, .feel__line, .phero__photo, section';
+  const own = (node) => node instanceof Element && !!node.closest('.rv, .rv-pin, .rv-box, .rv-chip');
+  const targetFor = (node) => {
+    if (!(node instanceof Element) || own(node)) return null;
+    return node.closest(PICKABLE) || node;
+  };
+  const kindOf = (el) => {
+    if (el.matches('.who__card')) return 'Route card';
+    if (el.matches('.bite')) return 'Download';
+    if (el.matches('.tl__item')) return 'Event';
+    if (el.matches('.news-card')) return 'Latest card';
+    if (el.matches('.info__card')) return 'Info card';
+    if (el.matches('.label')) return 'Section label';
+    if (el.matches('h1, h2, h3, h4')) return 'Heading';
+    if (el.matches('img, figure, .shot, .phero__photo')) return 'Photo';
+    if (el.matches('video')) return 'Video';
+    if (el.matches('a.btn, button, a[data-mail]')) return 'Button';
+    if (el.matches('a')) return 'Link';
+    if (el.matches('blockquote')) return 'Quote';
+    if (el.matches('li')) return 'List item';
+    if (el.matches('section')) return 'Section';
+    return 'Text';
+  };
+  const labelOf = (el) => {
+    const img = el.matches('img') ? el : el.querySelector('img');
+    const text = (el.getAttribute('aria-label') || (el.matches('img, figure, .shot, .phero__photo') && img?.alt) || el.textContent || '').replace(/\s+/g, ' ').trim();
+    return text.length > 60 ? text.slice(0, 57) + '…' : text;
+  };
+  const cssPath = (el) => {
+    const parts = [];
+    for (let node = el; node && node !== document.body && parts.length < 8; node = node.parentElement) {
+      if (node.id) { parts.unshift('#' + CSS.escape(node.id)); break; }
+      const tag = node.tagName.toLowerCase();
+      const cls = [...node.classList].filter((c) => !c.startsWith('rv') && !['in', 'rise', 'words', 'is-on', 'is-open'].includes(c))[0];
+      const siblings = node.parentElement ? [...node.parentElement.children].filter((s) => s.tagName === node.tagName) : [];
+      const nth = siblings.length > 1 ? `:nth-of-type(${siblings.indexOf(node) + 1})` : '';
+      parts.unshift(tag + (cls ? '.' + CSS.escape(cls) : '') + nth);
     }
-    return;
-  }
-  const comments = await window.claude.use('comments');
-  if (!comments || typeof comments.openComposer !== 'function') return;
+    return parts.join(' > ');
+  };
 
+  const hoverBox = document.createElement('div'); hoverBox.className = 'rv-box'; hoverBox.hidden = true;
+  const chip = document.createElement('div'); chip.className = 'rv-chip'; chip.hidden = true;
+  document.body.append(hoverBox, chip);
+  let picking = false;
+  let hovered = null;
+  const showHover = (el) => {
+    hovered = el;
+    if (!el) { hoverBox.hidden = true; chip.hidden = true; return; }
+    const r = el.getBoundingClientRect();
+    Object.assign(hoverBox.style, { left: r.left + 'px', top: r.top + 'px', width: r.width + 'px', height: r.height + 'px' });
+    chip.textContent = '';
+    const kind = document.createElement('i'); kind.textContent = kindOf(el);
+    const text = labelOf(el);
+    chip.append(kind, document.createTextNode(`${text ? ' · ' + text : ''} · ${Math.round(r.width)}×${Math.round(r.height)}`));
+    chip.style.left = Math.max(8, Math.min(r.left, innerWidth - 300)) + 'px';
+    chip.style.top = (r.top > 34 ? r.top - 30 : r.bottom + 6) + 'px';
+    hoverBox.hidden = false; chip.hidden = false;
+  };
 
+  /* ---------- Panel ---------- */
   const box = document.createElement('div');
   box.className = 'rv';
   box.setAttribute('data-uncommentable', '');
   box.innerHTML = `
-    <div class="rv__tip" role="status" hidden>
-      <b>Review mode</b>
-      <span>Tap <em>Comment</em>, then tap anything on the page you'd like changed: a heading, a photo, a colour, a button. Write what you'd like instead and post it.</span>
-      <br><button type="button" class="rv__ok">Got it</button>
-    </div>
-    <button type="button" class="rv__btn" aria-pressed="false">
-      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16v11H9l-5 4z"/></svg>
-      <span class="rv__label">Comment</span>
-    </button>`;
+    <div class="rv__card" data-rv-card hidden></div>
+    <div class="rv__bar">
+      ${inClaude ? '' : '<button type="button" class="rv__btn rv__btn--count" aria-expanded="false" data-rv-list>Comments <span data-rv-count>0</span></button>'}
+      <button type="button" class="rv__btn" aria-pressed="false" data-rv-pick>
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16v11H9l-5 4z"/></svg>
+        <span data-rv-label>Comment</span>
+      </button>
+    </div>`;
   document.body.appendChild(box);
+  const pickBtn = box.querySelector('[data-rv-pick]');
+  const pickLabel = box.querySelector('[data-rv-label]');
+  const card = box.querySelector('[data-rv-card]');
+  const listBtn = box.querySelector('[data-rv-list]');
 
-  const btn = box.querySelector('.rv__btn');
-  const label = box.querySelector('.rv__label');
-  const tip = box.querySelector('.rv__tip');
-  const tipText = tip.querySelector('span');
-  const defaultTip = tipText.innerHTML;
-  let picking = false;
-  let hovered = null;
-
-  let seen = false;
-  try { seen = localStorage.getItem('ymt-review-tip') === '1'; } catch (err) { seen = false; }
-  if (!seen) tip.hidden = false;
-  box.querySelector('.rv__ok').addEventListener('click', () => {
-    tip.hidden = true;
-    tipText.innerHTML = defaultTip;
-    try { localStorage.setItem('ymt-review-tip', '1'); } catch (err) { /* private window: tip shows again next time */ }
-  });
-
-  const targetFor = (node) => {
-    if (!(node instanceof Element) || box.contains(node)) return null;
-    return node.closest('h1, h2, h3, h4, p, li, figure, img, video, blockquote, a, button, address, .who__card, .info__card, .shot, .label, .feel__line') || node;
-  };
-
-  const clearHover = () => { if (hovered) hovered.classList.remove('rv-hover'); hovered = null; };
+  const make = (tag, cls, text) => { const n = document.createElement(tag); if (cls) n.className = cls; if (text != null) n.textContent = text; return n; };
+  const showCard = (...children) => { card.replaceChildren(...children); card.hidden = false; };
+  const hideCard = () => { card.hidden = true; card.replaceChildren(); listBtn?.setAttribute('aria-expanded', 'false'); };
 
   const setPicking = (on) => {
     picking = on;
     document.documentElement.classList.toggle('rv-picking', on);
-    btn.setAttribute('aria-pressed', String(on));
-    label.textContent = on ? 'Tap what to change · Cancel' : 'Comment';
-    if (!on) clearHover();
+    pickBtn.setAttribute('aria-pressed', String(on));
+    pickLabel.textContent = on ? 'Pick what to change · Esc to stop' : 'Comment';
+    if (!on) showHover(null);
   };
 
-  btn.addEventListener('click', () => setPicking(!picking));
+  // First time Comment is pressed: say how it works (never on page load, so it covers nothing).
+  const firstTip = () => {
+    let seen = false;
+    try { seen = localStorage.getItem('ymt-review-tip') === '1'; } catch { seen = false; }
+    if (seen) return;
+    try { localStorage.setItem('ymt-review-tip', '1'); } catch {}
+    showCard(make('b', '', 'Review mode'), make('p', '', 'Point at anything (a heading, a photo, a button) and click it, then write what you would like changed. Esc stops.'));
+    setTimeout(() => { if (card.querySelector('b')?.textContent === 'Review mode') hideCard(); }, 4500);
+  };
 
-  document.addEventListener('pointerover', (event) => {
+  /* ---------- Local comments (staging) ---------- */
+  const load = () => { try { return JSON.parse(localStorage.getItem(STORE) || '[]'); } catch { return []; } };
+  const save = (all) => { try { localStorage.setItem(STORE, JSON.stringify(all)); } catch {} };
+  const here = location.pathname.split('/').pop() || 'index.html';
+  const pinLayer = [];
+
+  const renderPins = () => {
+    pinLayer.splice(0).forEach((p) => p.remove());
+    if (inClaude) return;
+    const all = load();
+    if (listBtn) listBtn.querySelector('[data-rv-count]').textContent = String(all.filter((t) => t.status === 'open').length);
+    all.forEach((t, i) => {
+      if (t.page !== here) return;
+      let el = null;
+      try { el = t.anchor ? document.querySelector(t.anchor) : null; } catch { el = null; }
+      if (!el) return;
+      const r = el.getBoundingClientRect();
+      const pin = make('button', 'rv-pin' + (t.status === 'resolved' ? ' is-done' : ''), String(i + 1));
+      pin.type = 'button';
+      pin.setAttribute('aria-label', `Comment ${i + 1}: ${t.comments[0].text.slice(0, 80)}`);
+      pin.style.left = (r.left + scrollX + Math.min(r.width - 14, 18)) + 'px';
+      pin.style.top = (r.top + scrollY + Math.min(r.height - 14, 18)) + 'px';
+      pin.addEventListener('click', () => openList(t.id));
+      document.body.appendChild(pin);
+      pinLayer.push(pin);
+    });
+  };
+
+  const exportDoc = () => ({ source: `staging browser comments from ${location.origin}`, exported: new Date().toISOString(), threads: load() });
+  const openList = (focusId) => {
+    const all = load();
+    const list = make('ol', 'rv__list');
+    all.forEach((t, i) => {
+      const li = make('li', t.status === 'resolved' ? 'is-done' : '');
+      const body = make('div');
+      body.append(make('span', 'rv__where', `${t.page} · ${t.location}`), make('div', 'rv__text', t.comments[0].text));
+      const row = make('div', 'rv__row');
+      const go = make('a', 'rv__ghost', 'Show');
+      go.href = t.page === here ? '#' : `${t.page}#rv-${t.id}`;
+      go.addEventListener('click', (e) => {
+        if (t.page !== here) return;
+        e.preventDefault();
+        let el = null; try { el = document.querySelector(t.anchor); } catch { el = null; }
+        if (el) { el.scrollIntoView({ block: 'center' }); el.classList.add('rv-flash'); setTimeout(() => el.classList.remove('rv-flash'), 1600); }
+      });
+      const done = make('button', 'rv__ghost', t.status === 'resolved' ? 'Reopen' : 'Done'); done.type = 'button';
+      done.addEventListener('click', () => { const next = load(); next[i].status = next[i].status === 'resolved' ? 'open' : 'resolved'; save(next); renderPins(); openList(); });
+      const del = make('button', 'rv__ghost', 'Delete'); del.type = 'button';
+      del.addEventListener('click', () => { const next = load(); next.splice(i, 1); save(next); renderPins(); openList(); });
+      row.append(go, done, del);
+      body.append(row);
+      li.append(make('span', 'rv__num', String(i + 1)), body);
+      if (t.id === focusId) li.style.outline = '2px solid var(--gold, #f2c24a)';
+      list.append(li);
+    });
+    const actions = make('div', 'rv__row');
+    const copy = make('button', 'rv__solid', 'Copy as JSON'); copy.type = 'button';
+    copy.addEventListener('click', () => navigator.clipboard?.writeText(JSON.stringify(exportDoc(), null, 2)).then(() => { copy.textContent = 'Copied'; }, () => { copy.textContent = 'Copy blocked: use Download'; }));
+    const dl = make('a', 'rv__ghost', 'Download'); dl.download = 'comments.json';
+    dl.href = URL.createObjectURL(new Blob([JSON.stringify(exportDoc(), null, 2)], { type: 'application/json' }));
+    const review = make('a', 'rv__ghost', 'Review copy'); review.href = REVIEW_COPY_URL; review.target = '_blank'; review.rel = 'noopener';
+    const close = make('button', 'rv__ghost', 'Close'); close.type = 'button'; close.addEventListener('click', hideCard);
+    actions.append(copy, dl, review, close);
+    const intro = make('p', '', all.length ? 'Saved in this browser. Export them for the review board, or leave them on the review copy so the team sees them.' : 'No comments yet. Tap Comment and click anything on the page.');
+    showCard(make('b', '', `Comments (${all.length})`), intro, list, actions);
+    listBtn?.setAttribute('aria-expanded', 'true');
+  };
+  listBtn?.addEventListener('click', () => (card.hidden || !card.querySelector('.rv__list') ? openList() : hideCard()));
+
+  const compose = (el) => {
+    const where = `${kindOf(el)}${labelOf(el) ? ' · ' + labelOf(el) : ''}`;
+    const label = make('label', '', 'What would you like changed?');
+    const area = make('textarea'); area.maxLength = 2000; area.id = 'rv-text'; label.htmlFor = 'rv-text';
+    const ok = make('button', 'rv__solid', 'Save comment'); ok.type = 'button';
+    const cancel = make('button', 'rv__ghost', 'Cancel'); cancel.type = 'button';
+    const row = make('div', 'rv__row'); row.append(ok, cancel);
+    showCard(make('span', 'rv__where', where), label, area, row);
+    el.classList.add('rv-flash');
+    area.focus();
+    const finish = () => { el.classList.remove('rv-flash'); hideCard(); pickBtn.focus(); };
+    cancel.addEventListener('click', finish);
+    ok.addEventListener('click', () => {
+      const text = area.value.trim();
+      if (!text) { area.focus(); return; }
+      const all = load();
+      all.push({ id: 'local-' + Date.now().toString(36), page: here, anchor: cssPath(el), location: where, quote: labelOf(el), status: 'open', sentToClaude: false, comments: [{ role: 'owner', date: new Date().toISOString().slice(0, 10), text }] });
+      save(all);
+      renderPins();
+      finish();
+    });
+  };
+
+  /* ---------- Picking ---------- */
+  pickBtn.addEventListener('click', () => { hideCard(); setPicking(!picking); if (picking) firstTip(); });
+  document.addEventListener('pointermove', (event) => {
     if (!picking) return;
     const target = targetFor(event.target);
-    if (target === hovered) return;
-    clearHover();
-    if (target) { hovered = target; hovered.classList.add('rv-hover'); }
+    if (target !== hovered) showHover(target);
   }, true);
-
+  addEventListener('scroll', () => { if (picking && hovered) showHover(hovered); }, { passive: true });
   document.addEventListener('click', async (event) => {
-    if (!picking) return;
+    if (!picking || own(event.target)) return;
     const target = targetFor(event.target);
     if (!target) return;
     event.preventDefault();
     event.stopPropagation();
     setPicking(false);
+    if (!inClaude) { compose(target); return; }
     try {
-      const result = await comments.openComposer({ element: target });
-      if (!result.opened) {
-        tipText.textContent = 'Finish or close the comment that is already open, then try again.';
-        tip.hidden = false;
-      }
+      const result = await composer.openComposer({ element: target });
+      if (!result.opened) showCard(make('p', '', 'Finish or close the comment that is already open, then try again.'));
     } catch (err) {
-      if (err && (err.code === 'unavailable' || err.code === 'not_granted' || err.code === 'capability_disabled' || err.code === 'capability_removed')) {
-        box.hidden = true;
-      } else {
-        tipText.textContent = 'That comment could not be opened. Please try again in a moment.';
-        tip.hidden = false;
-      }
+      if (err && ['unavailable', 'not_granted', 'capability_disabled', 'capability_removed'].includes(err.code)) box.hidden = true;
+      else showCard(make('p', '', 'That comment could not be opened. Please try again in a moment.'));
     }
   }, true);
-
   document.addEventListener('keydown', (event) => {
-    if (event.key === 'Escape' && picking) setPicking(false);
+    if (event.key !== 'Escape') return;
+    // Only when the review tool is in use, so Escape still closes the site's own panels normally.
+    if (picking) setPicking(false);
+    else if (!card.hidden && box.contains(document.activeElement)) { hideCard(); pickBtn.focus(); }
   });
+
+  renderPins();
+  addEventListener('load', renderPins);
+  let resizeTimer;
+  addEventListener('resize', () => { clearTimeout(resizeTimer); resizeTimer = setTimeout(renderPins, 150); });
+  // Reveal animations move things after load; settle the pins once they have played.
+  setTimeout(renderPins, 1500);
+
+  // On phones the home film's own controls (pause, Who it's for) sit in this corner, so the bar waits
+  // until the film has scrolled mostly out of view.
+  const film = document.querySelector('.hero');
+  if (film && 'IntersectionObserver' in window && matchMedia('(max-width: 700px)').matches) {
+    new IntersectionObserver(([entry]) => { box.hidden = entry.intersectionRatio > 0.3 && !picking; }, { threshold: [0, 0.3, 1] }).observe(film);
+  }
 })();
