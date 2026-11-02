@@ -36,3 +36,15 @@ These override everything above where they conflict. The brief is `docs/prompts/
 - **Comments:** they no longer go to the claude.ai artifact, because Mary can't access Eva's Claude. Build our own comment system on Cloudflare staging, with invite links and D1, and feed the existing review board from its export.
 - **Hosting:** staging moves to Cloudflare Pages, because forms and comments need Functions. GitHub Pages stays as a view-only mirror of `main`.
 - **Dispatch:** the lead session runs the workstreams as subagents (`tools/dispatch-iteration-3.sh`).
+
+## Round 2, v2 brief (2 November, late afternoon)
+
+Eva's answers on the v2 brief (`docs/prompts/iteration-3-round-2.md` and the v2 text). Where they conflict with that brief, they win.
+
+- **Fonts:** keep what is live. That's **Syne** for display, **Satoshi** for UI and reading text, and **Space Mono** for labels. Ignore the brief's Archivo Black / Inter Tight / Newsreader / DM Mono line, and don't replace any text styles.
+- **Photos:** use the brief's **colour-pop** treatment everywhere, the route cards included:
+  - at rest, greyscale with one colour family, pre-rendered by `tools/colour_pop.py`;
+  - on tap, full colour with soft blurred edges.
+  - This replaces today's duotone. The halftone **dots stay gone**: Eva doesn't like them.
+- **Contours:** bring back the brief's topographic **contour lines** behind page heroes (seeded noise, marching squares, slow drift). This reverses this morning's "no curls" note for contours only. Keep the strata bands as section transitions.
+- **Order:** build **G (the comment system)** first and run it locally (wrangler dev with a local D1) behind `PLACEHOLDER_*` values until Eva connects Cloudflare. Then do B (forms), then C, D, E and F as subagents.
