@@ -20,15 +20,15 @@
   // contour lines, then colour token, alpha and drift (on/off).
   // Memphis: one piece per `per` px² (at most `most`), edge bias, smallest and biggest radius, colours.
   // Bands: [colour token, alpha] from the top band down; depth is how far down the padding they reach (0–1).
-  const LIGHT = { lines: { scale: 1100, step: .034, color: '--acc-ink', alpha: .1 }, bands: { depth: .62, layers: [['--acc-on-dark', .1], ['--acc-on-dark', .05]] } };
+  const LIGHT = { lines: { scale: 1100, step: .034, color: '--acc-on-dark', alpha: .18 }, bands: { depth: .62, layers: [['--acc-on-dark', .1], ['--acc-on-dark', .05]] } };
   const ROUTES = {
     index: { who: { scale: 1200, step: .036, color: '--white', alpha: .08 } },
     // Primary has Memphis shapes instead of contours (Eva, 2 Nov): tints of the hero pink, so they sit in the ground
     // rather than on it, crowding the top and bottom edges.
     primary: { memphis: { per: 15000, most: 90, bias: 2.2, small: 6, big: 22, alpha: .55, colours: ['#e48aa6', '#d9768f', '#ffd3a8', '#ddb5fa', '#fff1f4'] }, bands: { depth: .7, layers: [['--acc-on-dark', .22], ['--lilac', .2], ['--acc-on-dark', .08]] } },
-    secondary: { lines: { scale: 900, step: .026, color: '--sky', alpha: .26, drift: true }, bands: { depth: .72, layers: [['--blue-light', .2], ['--blue', .32], ['--blue-light', .07]] } },
-    volunteer: { lines: { scale: 1000, step: .03, color: '--plum', alpha: .26, drift: true }, bands: { depth: .9, layers: [['--purple-text', .3], ['--purple', .42], ['--purple-text', .14], ['--plum', .9]] } },
-    everyone: { lines: { scale: 1100, step: .034, color: '--acc-ink', alpha: .12, drift: true }, bands: { depth: .6, layers: [['--acc-on-dark', .1], ['--stone', .05]] } },
+    secondary: { lines: { scale: 900, step: .026, color: '--blue-light', alpha: .26, drift: true }, bands: { depth: .72, layers: [['--blue-light', .2], ['--blue', .32], ['--blue-light', .07]] } },
+    volunteer: { lines: { scale: 1000, step: .03, color: '--lilac', alpha: .22, drift: true }, bands: { depth: .9, layers: [['--purple-text', .3], ['--purple', .42], ['--purple-text', .14], ['--plum', .9]] } },
+    everyone: { lines: { scale: 1100, step: .034, color: '--mint', alpha: .2, drift: true }, bands: { depth: .6, layers: [['--acc-on-dark', .1], ['--stone', .05]] } },
   };
   const conf = ROUTES[page] || LIGHT;
 
@@ -247,7 +247,8 @@
     document.querySelectorAll('main > :is(.section, .tiktok, .globe-sec)').forEach((s) => {
       const prev = s.previousElementSibling;
       if (!prev || s.matches('.section--tight') || parseFloat(getComputedStyle(s).paddingTop) < 40) return;
-      bands(s, conf.bands, prev.matches('.phero:not(.phero--photo)'));
+      // Heroes share the page's dark ground now, so the bands after them are the same as anywhere else.
+      bands(s, conf.bands, false);
     });
   }
 })();
