@@ -1,4 +1,4 @@
-/* Shared behaviour: nav, Latest panel, data-driven lists, forms, donations and motion.
+/* Shared behaviour: nav, Latest panel, data-driven lists, email links, giving and motion.
    Reads window.YMT (js/data.js) and window.YMT_CONFIG (js/config.js). */
 (() => {
   'use strict';
@@ -11,15 +11,6 @@
   /* ---------- Safety helpers ---------- */
   // Escape text before it goes into markup built from data.
   const esc = (t) => String(t ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
-  // Clean user input: drop control characters and angle brackets, collapse spaces, cap the length.
-  const clean = (v, max = 200, multiline = false) => {
-    let s = String(v ?? '').normalize('NFC');
-    s = multiline ? s.replace(/[\u0000-\u0009\u000B-\u001F\u007F]/g, '') : s.replace(/[\u0000-\u001F\u007F]/g, ' ');
-    s = s.replace(/[<>]/g, '');
-    s = multiline ? s.replace(/[ \t]+/g, ' ').replace(/\n{3,}/g, '\n\n') : s.replace(/\s+/g, ' ');
-    return s.trim().slice(0, max);
-  };
-  const EMAIL = /^[A-Za-z0-9._%+'-]{1,64}@[A-Za-z0-9-]+(\.[A-Za-z0-9-]+)*\.[A-Za-z]{2,24}$/;
   // Only allow HTTPS URLs, optionally on a fixed set of hosts.
   const safeUrl = (u, hosts) => {
     try {
@@ -31,16 +22,6 @@
   };
   const extLink = (href) => /^https?:/.test(href) ? ' target="_blank" rel="noopener noreferrer"' : '';
   $$('a[target="_blank"]').forEach((a) => { a.rel = 'noopener noreferrer'; });
-
-  let toastTimer;
-  const toast = (msg) => {
-    let t = $('.toast');
-    if (!t) { t = document.createElement('div'); t.className = 'toast'; t.setAttribute('role', 'status'); document.body.append(t); }
-    t.textContent = msg;
-    t.classList.add('is-on');
-    clearTimeout(toastTimer);
-    toastTimer = setTimeout(() => t.classList.remove('is-on'), 4200);
-  };
 
   /* ---------- Dates ---------- */
   const day = (iso) => new Date(iso + 'T12:00:00');
@@ -95,10 +76,12 @@
   }
 
   /* ---------- Latest panel ---------- */
+  // Events marked sample: true are not yet confirmed by the team, so they say so wherever they show.
+  const tbc = (e) => (e.sample ? '<i class="tag tag--tbc">To be confirmed</i>' : '');
   const tag = (a) => `<i class="tag tag--${esc(a)}">${esc(D.audiences[a]?.name || a)}</i>`;
   const newsCard = (e) => {
     const href = e.link || D.audiences[e.aud[0]]?.page || '#';
-    return `<a class="news-card" href="${esc(href)}"${extLink(href)}><img src="${esc(img(e.img))}" alt="" width="88" height="88" loading="lazy" decoding="async"><span><b>${esc(e.title)}</b><small>${tag(e.aud[0])}${esc(when(e))}</small></span></a>`;
+    return `<a class="news-card" href="${esc(href)}"${extLink(href)}><img src="${esc(img(e.img))}" alt="" width="88" height="88" loading="lazy" decoding="async"><span><b>${esc(e.title)}</b><small>${tag(e.aud[0])}${esc(when(e))}${tbc(e)}</small></span></a>`;
   };
   const latest = $('[data-latest]');
   const latestBtn = $('[data-latest-open]');
@@ -149,14 +132,11 @@
         <p class="tl__date">${fmt(e.date, { day: 'numeric' })}<small>${fmt(e.date, { weekday: 'short', month: 'short' })}${e.end ? ' – ' + fmt(e.end, { day: 'numeric', month: 'short' }) : ''}</small></p>
         <p class="tl__title"><b>${esc(e.title)}</b><span>${esc(e.place)}${e.time ? ' · ' + esc(e.time) : ''}</span></p>
         <div class="tl__who"><div>${(e.who || []).map((w) => `<span class="chip">${esc(w)}</span>`).join('')}</div><p>${esc(e.how || '')}</p></div>
-        <div class="tl__go"><span class="tl__status">${esc(e.status || '')}</span><a class="btn btn--glass" href="${esc(href)}"${extLink(href)}>Details</a></div>
+        <div class="tl__go"><span class="tl__status">${e.sample ? 'Date to be confirmed' : esc(e.status || '')}</span><a class="btn btn--glass" href="${esc(href)}"${extLink(href)}>Details</a></div>
       </li>`;
     }).join('') || '<li class="tl__month">Nothing is booked yet. New dates appear here first.</li>';
   });
 
-  $$('select[data-events]').forEach((sel) => {
-    pick(sel.dataset.events, upcoming()).forEach((e) => sel.add(new Option(`${e.title} · ${when(e)}`, e.title)));
-  });
 
   // Downloads, Bitesize style.
   const icons = {
@@ -186,206 +166,40 @@
     });
   });
 
-  /* ---------- Forms ---------- */
-  // Validation uses the fields' own attributes (required, type, minlength, maxlength, pattern)
-  // and writes the message next to the field.
-  const messages = {
-    valueMissing: 'Please fill this in.',
-    typeMismatch: 'Please enter a valid email address.',
-    tooShort: (el) => `Please use at least ${el.minLength} characters.`,
-    tooLong: (el) => `Please keep this under ${el.maxLength} characters.`,
-    patternMismatch: (el) => el.dataset.hint || 'Please check the format.',
-    rangeUnderflow: (el) => `The minimum is ${el.min}.`,
-    rangeOverflow: (el) => `The maximum is ${el.max}.`,
+  /* ---------- Email links ---------- */
+  // No forms: every booking or question is a mailto link with a [YMT] subject, built here from the
+  // addresses in config.js. Each link also carries a plain mailto href so it works without JS.
+  // The body only holds prompts for the visitor to fill in their own email app.
+  const MAIL = {
+    retreat: { to: 'bookingsTo', cc: true, subject: 'Booking Enquiry · Retreat', body: ['School', 'Year group(s)', 'Roughly how many', 'Preferred dates'] },
+    village: { to: 'bookingsTo', cc: true, subject: 'Booking Enquiry · Village stay', body: ['Parish, school or group', 'Roughly how many', 'Preferred dates'] },
+    event: { to: 'enquiryTo', subject: 'Event Enquiry', body: ['Event', 'School, parish or group (if any)', 'Roughly how many'] },
+    details: { to: 'enquiryTo', subject: 'Event details', body: ['The event you signed up for'] },
+    volunteer: { to: 'enquiryTo', subject: 'Volunteering', body: ['What you would like to do', 'Your age', 'School or parish'] },
+    other: { to: 'enquiryTo', subject: 'General Enquiry', body: [] },
   };
-  const errorFor = (el) => {
-    const host = el.closest('.field') || el.closest('.check');
-    if (!host) return null;
-    let err = $('.field__error', host);
-    if (!err) {
-      err = document.createElement('span');
-      err.className = 'field__error';
-      err.id = `${el.name || 'f'}-err-${Math.random().toString(36).slice(2, 7)}`;
-      host.append(err);
-      el.setAttribute('aria-describedby', [el.getAttribute('aria-describedby'), err.id].filter(Boolean).join(' '));
-    }
-    return err;
+  const mailto = (kind, about) => {
+    const m = MAIL[kind] || MAIL.other;
+    const to = C[m.to] || C.enquiryTo;
+    const q = [];
+    if (m.cc && C.enquiryTo && C.enquiryTo !== to) q.push('cc=' + C.enquiryTo);
+    q.push('subject=' + encodeURIComponent(['[YMT] ' + m.subject, about].filter(Boolean).join(' · ')));
+    if (m.body.length) q.push('body=' + encodeURIComponent(m.body.map((l) => l + ': ').join('\n') + '\n\n'));
+    return `mailto:${to}?${q.join('&')}`;
   };
-  const checkField = (el) => {
-    if (el.type === 'email' && el.value && !EMAIL.test(el.value.trim())) el.setCustomValidity('email');
-    else el.setCustomValidity('');
-    const v = el.validity;
-    const err = errorFor(el);
-    const key = Object.keys(messages).find((k) => v[k]) || (v.customError ? 'typeMismatch' : null);
-    const msg = key ? (typeof messages[key] === 'function' ? messages[key](el) : messages[key]) : '';
-    if (el.type === 'radio' || el.type === 'checkbox') {
-      const group = el.closest('fieldset') || el.closest('.check');
-      const gErr = group && (($('.field__error', group)) || errorFor(el));
-      if (gErr) gErr.textContent = msg;
-    } else if (err) err.textContent = msg;
-    el.setAttribute('aria-invalid', String(!!msg));
-    return !msg;
-  };
-  const validate = (form) => {
-    const fields = $$('input, select, textarea', form).filter((el) => !el.closest('[hidden]') && !el.closest('.hp') && el.willValidate);
-    const seen = new Set();
-    let first = null;
-    fields.forEach((el) => {
-      if (el.type === 'radio') { if (seen.has(el.name)) return; seen.add(el.name); }
-      if (!checkField(el) && !first) first = el;
-    });
-    if (first) first.focus();
-    return !first;
-  };
-  $$('form[novalidate]').forEach((f) => f.addEventListener('change', (e) => { if (e.target.matches('[aria-invalid="true"]') || e.target.type === 'radio') checkField(e.target); }));
+  if (C.enquiryTo) $$('a[data-mail]').forEach((a) => { a.href = mailto(a.dataset.mail, a.dataset.mailAbout); });
 
-  const val = (f, n, max, multi) => clean(f.elements[n]?.value, max, multi);
-  const checked = (f, n) => $$(`[name="${n}"]:checked`, f).map((i) => clean(i.value, 80));
-  const isBot = (f) => !!(f.elements.website && f.elements.website.value);
-  const cool = (btn) => { btn.disabled = true; setTimeout(() => { btn.disabled = false; }, 6000); };
+  // Old ?topic= links to the enquire page land on the matching email.
+  const topic = new URLSearchParams(location.search).get('topic');
+  const picked = topic && $(`[data-mail-row="${CSS.escape(topic)}"]`);
+  if (picked) { picked.classList.add('is-picked'); picked.scrollIntoView({ block: 'center' }); }
 
-  // Delivery: a configured HTTPS endpoint if there is one, otherwise the visitor's email app.
-  const deliver = async ({ to, subject, fields }) => {
-    const endpoint = C.formEndpoint && safeUrl(C.formEndpoint);
-    if (endpoint) {
-      const res = await fetch(endpoint, {
-        method: 'POST', mode: 'cors', credentials: 'omit', referrerPolicy: 'strict-origin-when-cross-origin',
-        headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ to, subject, fields }),
-      });
-      if (!res.ok) throw new Error('send failed');
-      return 'sent';
-    }
-    const body = Object.entries(fields).filter(([, v]) => v).map(([k, v]) => `${k}: ${v}`).join('\n');
-    location.href = `mailto:${encodeURIComponent(to).replace(/%2C/g, ',').replace(/%40/g, '@')}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body + '\n\nSent from ymt.org')}`;
-    return 'mail';
-  };
-  const finish = (form, status, sentMsg, mailMsg) => {
-    const out = $('.form__done', form);
-    if (out) { out.textContent = status === 'sent' ? sentMsg : mailMsg; out.hidden = false; }
-  };
-  const fail = (form) => {
-    const out = $('.form__done', form);
-    if (out) { out.textContent = `That didn't send. Please email ${C.enquiryTo} directly.`; out.hidden = false; }
-  };
-
-  // Enquiry: the subject is set from the email address and the choices.
-  const enquiry = $('[data-enquiry]');
-  if (enquiry) {
-    const q = new URLSearchParams(location.search);
-    const pre = { role: { school: 'School staff', parent: 'A parent or carer', young: 'A young person', group: 'Parish or group leader' }, topic: { retreat: 'A retreat', village: 'Staying at the Village', event: 'An event', volunteer: 'Volunteering' } };
-    ['role', 'topic'].forEach((k) => {
-      const v = pre[k][q.get(k)];
-      const r = v && $$(`[name="${k}"]`, enquiry).find((x) => x.value === v);
-      if (r) r.checked = true;
-    });
-    const out = $('[data-subject]', enquiry);
-    const schoolLike = (d) => /(\.sch\.uk|\.ac\.uk|school|academy|college)/i.test(d);
-    const subjectFor = () => {
-      const email = val(enquiry, 'email', 254).toLowerCase();
-      const domain = email.split('@')[1] || '';
-      const role = checked(enquiry, 'role')[0] || '';
-      const topic = checked(enquiry, 'topic')[0] || '';
-      const isSchool = role === 'School staff' || schoolLike(domain);
-      const known = (C.knownSchoolDomains || []).includes(domain);
-      let type = 'General Enquiry';
-      if (topic === 'A retreat' || topic === 'Staying at the Village') type = 'Booking Enquiry';
-      else if (isSchool) type = known ? 'School Enquiry' : 'New School Enquiry';
-      const extra = type === 'Booking Enquiry' ? [topic, isSchool ? (known ? 'School' : 'New school') : ''] : [];
-      const who = val(enquiry, 'org', 120) || val(enquiry, 'name', 80);
-      return { type, isSchool, known, role, topic, subject: ['[YMT] ' + type, ...extra.filter(Boolean), who].filter(Boolean).join(' · ') };
-    };
-    const show = () => {
-      const s = subjectFor();
-      out.textContent = s.subject;
-      $('[data-school-row]', enquiry).hidden = !s.isSchool && s.role !== 'Parish or group leader';
-    };
-    enquiry.addEventListener('input', show);
-    enquiry.addEventListener('change', show);
-    show();
-    enquiry.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      if (isBot(enquiry) || !validate(enquiry)) return;
-      const s = subjectFor();
-      const btn = $('button[type="submit"]', enquiry); cool(btn);
-      try {
-        const status = await deliver({
-          to: s.type === 'Booking Enquiry' ? `${C.bookingsTo},${C.enquiryTo}` : C.enquiryTo,
-          subject: s.subject,
-          fields: {
-            Type: s.type, Name: val(enquiry, 'name', 80), Email: val(enquiry, 'email', 254), Phone: val(enquiry, 'phone', 30),
-            'I am': s.role, About: s.topic, 'School / parish / group': val(enquiry, 'org', 120), 'Known school': s.isSchool ? (s.known ? 'Yes' : 'No') : '',
-            'Group size': val(enquiry, 'size', 6), 'Preferred dates': val(enquiry, 'when', 120), Message: val(enquiry, 'message', 2000, true),
-          },
-        });
-        finish(enquiry, status, 'Thanks. Your enquiry has been sent and the team will reply by email.', `Your email app should now be open with the subject "${s.subject}". Press send to finish.`);
-      } catch { fail(enquiry); }
-    });
-  }
-
-  // Event updates (16+) and volunteer sign-up.
-  $$('[data-signup]').forEach((f) => f.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    if (isBot(f) || !validate(f)) return;
-    const kind = f.dataset.signup;
-    const event = val(f, 'event', 160);
-    const roles = checked(f, 'roles');
-    const subject = kind === 'updates' ? `[YMT] Event updates · ${event}` : `[YMT] Volunteer sign-up · ${roles.join(', ') || 'Any role'} · ${event || 'Any event'}`;
-    const btn = $('button[type="submit"]', f); cool(btn);
-    try {
-      const status = await deliver({
-        to: C.enquiryTo, subject,
-        fields: { Name: val(f, 'name', 80), Email: val(f, 'email', 254), Age: val(f, 'age', 10), 'School / parish': val(f, 'parish', 120), Event: event, Roles: roles.join(', '), Message: val(f, 'message', 2000, true) },
-      });
-      const sentMsg = kind === 'updates' ? 'Thanks. We will email you the times and kit list for your event.' : 'Thanks. The team will be in touch about next steps and safeguarding checks.';
-      finish(f, status, sentMsg, 'Your email app should now be open. Press send to finish.');
-    } catch { fail(f); }
-  }));
-
-  // Donations: a reference built from the gift, passed to Stripe and shown for bank transfers.
-  const give = $('[data-donate]');
-  if (give) {
-    const stripe = C.stripePaymentLink && safeUrl(C.stripePaymentLink, ['buy.stripe.com', 'donate.stripe.com']);
-    const card = $('[data-card]', give);
-    if (!stripe && card) { card.hidden = true; $('[data-card-off]', give).hidden = false; }
-    const bankBox = $('[data-bank]');
-    if (bankBox) {
-      if (C.bank && C.bank.sortCode) {
-        [['name', C.bank.name], ['sort', C.bank.sortCode], ['account', C.bank.account]].forEach(([k, v]) => { $(`[data-bank-${k}]`, bankBox).textContent = clean(v, 60); });
-        bankBox.hidden = false;
-      } else bankBox.hidden = true;
-    }
-    const codes = { 'Where it is needed most': 'GEN', 'Lourdes bursaries': 'LDS', 'The Village': 'VIL', 'The Internship': 'INT' };
-    const rand = Array.from(crypto.getRandomValues(new Uint8Array(3)), (b) => b.toString(36).padStart(2, '0')).join('').slice(0, 4).toUpperCase();
-    const stamp = new Date().toISOString().slice(2, 10).replace(/-/g, '');
-    const amount = () => {
-      const other = parseFloat(val(give, 'other', 8));
-      const a = Number.isFinite(other) && other > 0 ? other : parseFloat(checked(give, 'amount')[0] || '0');
-      return Math.min(Math.max(a, 0), 100000);
-    };
-    const monthly = () => checked(give, 'freq')[0] === 'Monthly';
-    const ref = () => `YMT-${codes[val(give, 'fund', 40)] || 'GEN'}${monthly() ? 'M' : ''}-${stamp}-${rand}`;
-    const show = () => {
-      $$('[data-ref]').forEach((o) => { o.textContent = ref(); });
-      const a = amount();
-      const giftAid = give.elements.giftaid.checked;
-      $('[data-total]', give).textContent = a ? `£${a.toFixed(a % 1 ? 2 : 0)}${monthly() ? ' a month' : ''}${giftAid ? ` · £${(a * 1.25).toFixed(2)} with Gift Aid` : ''}` : 'Choose an amount';
-    };
-    give.addEventListener('input', (e) => { if (e.target.name === 'other' && e.target.value) $$('[name="amount"]', give).forEach((r) => { r.checked = false; }); show(); });
-    give.addEventListener('change', (e) => { if (e.target.name === 'amount') give.elements.other.value = ''; show(); });
-    show();
-    give.addEventListener('submit', (e) => {
-      e.preventDefault();
-      if (!amount()) { toast('Please choose an amount.'); return; }
-      if (!validate(give) || !stripe) return;
-      const u = new URL(stripe.href);
-      u.searchParams.set('client_reference_id', ref());
-      const email = val(give, 'email', 254);
-      if (EMAIL.test(email)) u.searchParams.set('prefilled_email', email);
-      location.assign(u.href);
-    });
-    $$('[data-copy]').forEach((b) => b.addEventListener('click', () => {
-      navigator.clipboard?.writeText(ref()).then(() => toast('Reference copied: ' + ref()), () => toast(ref()));
-    }));
+  // Giving happens off the site. The Give button appears once config.js has a real giving URL;
+  // until then the page shows the email note instead.
+  const givingUrl = C.givingUrl && safeUrl(C.givingUrl);
+  if (givingUrl) {
+    $$('[data-giving]').forEach((a) => { a.href = givingUrl.href; a.hidden = false; });
+    $$('[data-giving-off]').forEach((n) => { n.hidden = true; });
   }
 
   /* ---------- Motion ---------- */
