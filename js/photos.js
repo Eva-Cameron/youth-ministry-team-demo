@@ -2,7 +2,8 @@
    assets/web/pop by tools/colour_pop.py), or a fine halftone on the home route cards (assets/web/dots,
    tools/halftone.py). Hovering it, or the card it sits in, eases it to full colour;
    a tap or click (or Enter / Space on a photo that isn't inside a link) holds it in colour, and a second tap,
-   Escape or picking another photo puts it back. The full-colour copy loads only when it's first wanted. */
+   Escape or picking another photo puts it back. The full-colour copy loads only when it's first wanted.
+   Groups of photos also take turns coming into colour on their own (see the end of this file). */
 (() => {
   'use strict';
   const POP = /\/assets\/web\/(pop|dots)\//;
@@ -87,4 +88,38 @@
     }
   }).observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['src'] });
   init();
+
+  /* Where three or more photos sit together (a row, a grid, a run of cards), they take turns: one eases into
+     colour, then the next, while the group is on screen. In the "Come away feeling" strip the photo in focus is
+     the one in colour. It rests while someone hovers or holds a photo in the group, and under reduced motion. */
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches || !('IntersectionObserver' in window)) return;
+  const groups = new Set();
+  const groupFor = (box) => {
+    // The nearest ancestor holding three or more photos in different children, inside one section.
+    for (let el = box.parentElement; el && !el.matches('main, section, body'); el = el.parentElement) {
+      const kids = [...el.children].filter((child) => child.matches('.pop') || child.querySelector('.pop'));
+      if (kids.length >= 3) return el;
+    }
+    return null;
+  };
+  const collect = () => document.querySelectorAll('.pop').forEach((box) => { const el = groupFor(box); if (el) groups.add(el); });
+  collect();
+  new MutationObserver(collect).observe(document.body, { childList: true, subtree: true });
+  // On screen: at least a third of the photo is inside the window.
+  const inView = (b) => { const r = b.getBoundingClientRect(); return r.width > 0 && r.bottom > r.height / 3 && r.top < innerHeight - r.height / 3; };
+  setInterval(() => {
+    if (document.hidden) return;
+    groups.forEach((el) => {
+      const boxes = [...el.querySelectorAll('.pop')].filter(inView);
+      const lit = el.querySelector('.pop.is-cycle');
+      if (!boxes.length || el.querySelector('.pop.is-hover, .pop.is-held')) { lit?.classList.remove('is-cycle'); return; }
+      const focus = el.querySelector('.feel__item.is-on .pop');
+      // Next along from the one lit now, among the photos on screen.
+      const next = focus || boxes[(boxes.indexOf(lit) + 1) % boxes.length];
+      if (next === lit) return;
+      lit?.classList.remove('is-cycle');
+      colour(next);
+      next.classList.add('is-cycle');
+    });
+  }, 2200);
 })();

@@ -358,7 +358,7 @@
       phones.forEach((ph) => {
         const b = ph.getBoundingClientRect();
         const near = Math.max(0, 1 - Math.abs((b.top + b.height / 2) / vh - .5) * 1.6);
-        const z = .76 + .38 * near * near * (3 - 2 * near);
+        const z = .92 + .2 * near * near * (3 - 2 * near);
         ph.style.setProperty('--z', z.toFixed(3));
         ph.style.zIndex = String(Math.round(z * 10));
       });

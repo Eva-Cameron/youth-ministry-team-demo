@@ -483,16 +483,16 @@ body[data-aud] .tl__item.is-next::before { background: var(--acc-on-dark); color
 .phone video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
 .phone__cap { --glass-fill: rgba(16, 12, 21, .7); position: absolute; left: var(--sp-2); right: var(--sp-2); bottom: var(--sp-2); padding: 9px var(--sp-3); font: 400 11px/1.3 var(--mono); text-transform: uppercase; border-radius: var(--r-sm); }
 @media (min-width: 1051px) {
-  .phones { position: relative; display: block; height: 150vh; padding: 0; overflow: visible; }
+  .phones { position: relative; display: block; height: 175vh; padding: 0; overflow: visible; }
   /* Every window plays; each zooms in as it nears the middle of the screen and back out as it leaves. */
   .phone { position: absolute; transform: translate3d(0, var(--py, 0px), 0) scale(var(--z, 1)); will-change: transform; }
-  .phone--hero { left: calc(50% - 60vh * 9 / 32); top: 14%; width: calc(60vh * 9 / 16); }
-  .phone--1 { left: 3%; top: 4%; width: 17vw; aspect-ratio: 4 / 3; }
-  .phone--2 { left: 23%; top: 38%; width: 11vw; }
-  .phone--3 { left: 5%; top: 64%; width: 14vw; aspect-ratio: 1; }
-  .phone--4 { left: 70%; top: 3%; width: 12vw; }
-  .phone--5 { left: 77%; top: 36%; width: 17vw; aspect-ratio: 4 / 3; }
-  .phone--6 { left: 66%; top: 66%; width: 11vw; }
+  .phone--hero { left: calc(50% - 74vh * 9 / 32); top: 12%; width: calc(74vh * 9 / 16); }
+  .phone--1 { left: 2%; top: 3%; width: 24vw; aspect-ratio: 4 / 3; }
+  .phone--2 { left: 18%; top: 34%; width: 15vw; }
+  .phone--3 { left: 3%; top: 66%; width: 19vw; aspect-ratio: 1; }
+  .phone--4 { left: 69%; top: 2%; width: 16vw; }
+  .phone--5 { left: 73%; top: 38%; width: 24vw; aspect-ratio: 4 / 3; }
+  .phone--6 { left: 65%; top: 64%; width: 15vw; }
 }
 
 /* Globe (internship): dark ground, purple only on the routes and the selected tag. */
@@ -623,6 +623,8 @@ body[data-feel="joy"] .shot:hover .shot__media img { transform: scale(1.05) rota
 .pop { display: block; position: relative; height: 100%; }
 .pop__full { position: absolute; inset: 0; z-index: 1; width: 100%; height: 100%; object-fit: cover; opacity: 0; pointer-events: none; transition: opacity .7s cubic-bezier(.22, 1, .36, 1); }
 .pop.is-hover .pop__full, .pop.is-held .pop__full { opacity: 1; }
+/* Taking turns in a group: a slower, gentler fade. */
+.pop.is-cycle .pop__full { opacity: 1; transition-duration: 1.4s; }
 .pop[role="button"] { cursor: pointer; transition: transform .45s cubic-bezier(.22, 1, .36, 1); }
 .pop[role="button"]:focus-visible { outline: 2px solid var(--focus, currentColor); outline-offset: 3px; }
 .pop.is-held { transform: translateY(-4px); }

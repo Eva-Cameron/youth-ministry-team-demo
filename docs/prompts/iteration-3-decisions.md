@@ -72,3 +72,5 @@ Eva's answers on the v2 brief (`docs/prompts/iteration-3-round-2.md` and the v2 
 ### Bookings form and TikTok (Eva, 2 November)
 - Bookings now go through an internal form on enquire.html, which emails the bookings team or the office (functions/api/enquire.js, Resend). Every booking button opens it with its topic chosen; the mailto links stay as a fallback. Routing and setup are in docs/forms-routing.md. This lifts the "no forms" rule from the first brief, as the v2 brief allowed.
 - TikTok (volunteer page): nothing is pinned any more. Every clip plays at once while on screen, and each window zooms in as it nears the middle of the screen and back out as it leaves (Eva, 2 November). The Pause clips button still stops them all.
+- Groups of three or more greyscale photos take turns easing into colour (one at a time, every 2.2 s, only while on screen; rests on hover and under reduced motion). In the "Come away feeling" strip the photo in focus is the one in colour (Eva, 2 November).
+- TikToks made bigger: the middle clip is 74vh tall, the side windows are about 40% wider, and the zoom only goes from 92% to 112% (Eva: "too small").
