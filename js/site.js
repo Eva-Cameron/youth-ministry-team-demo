@@ -36,6 +36,12 @@
 
   /* ---------- Nav ---------- */
   const nav = $('.nav');
+  // While a layer is open, everything else on the page is inert, so Tab stays inside it.
+  const isolate = (open, ...keep) => [...document.body.children].forEach((el) => {
+    if (el.tagName !== 'SCRIPT' && !keep.includes(el)) el.inert = open;
+  });
+  // The nav hides on scroll, so bring it back before focus returns to one of its buttons.
+  const refocus = (el) => { if (!(el instanceof HTMLElement)) return; if (nav && nav.contains(el)) nav.classList.remove('is-hidden'); el.focus(); };
   if (nav) {
     let lastY = scrollY;
     const onScroll = () => {
@@ -55,7 +61,8 @@
     if (dropBtn) {
       dropBtn.addEventListener('click', () => setDrop(dropBtn.getAttribute('aria-expanded') !== 'true'));
       document.addEventListener('click', (e) => { if (!e.target.closest('.nav__drop')) setDrop(false); });
-      document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && dropBtn.getAttribute('aria-expanded') === 'true') { setDrop(false); dropBtn.focus(); } });
+      document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && dropBtn.getAttribute('aria-expanded') === 'true') { setDrop(false); refocus(dropBtn); } });
+      $('.nav__drop', nav).addEventListener('focusout', (e) => { if (!e.relatedTarget?.closest?.('.nav__drop')) setDrop(false); });
     }
 
     const burger = $('.nav__burger', nav);
@@ -66,13 +73,18 @@
         burger.setAttribute('aria-expanded', String(open));
         sheet.classList.toggle('is-open', open);
         sheet.inert = !open;
+        isolate(open, nav, sheet);
         document.body.style.overflow = open ? 'hidden' : '';
       };
       sheet.inert = true;
       burger.addEventListener('click', () => setSheet(burger.getAttribute('aria-expanded') !== 'true'));
       $$('a', sheet).forEach((a) => a.addEventListener('click', () => setSheet(false)));
-      document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && sheet.classList.contains('is-open')) { setSheet(false); burger.focus(); } });
+      document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && sheet.classList.contains('is-open')) { setSheet(false); refocus(burger); } });
     }
+
+    // Mark the current page in the mobile sheet too, so the route you are on is visible there.
+    const here = location.pathname.split('/').pop() || './';
+    $$('.sheet a').forEach((a) => { if (a.getAttribute('href') === here) a.setAttribute('aria-current', 'page'); });
   }
 
   /* ---------- Latest panel ---------- */
@@ -80,8 +92,8 @@
   const tbc = (e) => (e.sample ? '<i class="tag tag--tbc">To be confirmed</i>' : '');
   const tag = (a) => `<i class="tag tag--${esc(a)}">${esc(D.audiences[a]?.name || a)}</i>`;
   const newsCard = (e) => {
-    const href = e.link || D.audiences[e.aud[0]]?.page || '#';
-    return `<a class="news-card" href="${esc(href)}"${extLink(href)}><img src="${esc(img(e.img))}" alt="" width="88" height="88" loading="lazy" decoding="async"><span><b>${esc(e.title)}</b><small>${tag(e.aud[0])}${esc(when(e))}${tbc(e)}</small></span></a>`;
+    const href = e.link || D.audiences[e.aud[0]]?.page || './';
+    return `<a class="news-card" href="${esc(href)}"${extLink(href)}><img src="${esc(img(e.img))}" alt="" width="88" height="88" loading="lazy" decoding="async"><span><b>${esc(e.title)}</b><small>${e.aud.map(tag).join('')}${esc(when(e))}${tbc(e)}</small></span></a>`;
   };
   const latest = $('[data-latest]');
   const latestBtn = $('[data-latest-open]');
@@ -95,14 +107,16 @@
       if (open) {
         back = document.activeElement;
         latest.hidden = false;
+        isolate(true, latest);
         document.body.style.overflow = 'hidden';
         requestAnimationFrame(() => requestAnimationFrame(() => latest.classList.add('is-open')));
         setTimeout(() => $('.latest__close', latest).focus(), 60);
       } else {
         latest.classList.remove('is-open');
+        isolate(false, latest);
         document.body.style.overflow = '';
         setTimeout(() => { if (!latest.classList.contains('is-open')) latest.hidden = true; }, reduce ? 0 : 380);
-        if (back instanceof HTMLElement) back.focus();
+        refocus(back);
       }
     };
     latestBtn.addEventListener('click', () => setLatest(latest.hidden));
@@ -127,7 +141,7 @@
       const m = fmt(e.date, { month: 'long', year: 'numeric' });
       const head = m !== month ? `<li class="tl__month">${m}</li>` : '';
       month = m;
-      const href = e.link || '#';
+      const href = e.link || D.audiences[e.aud[0]]?.page || './';
       return `${head}<li class="tl__item rise${i === 0 ? ' is-next' : ''}">
         <p class="tl__date">${fmt(e.date, { day: 'numeric' })}<small>${fmt(e.date, { weekday: 'short', month: 'short' })}${e.end ? ' – ' + fmt(e.end, { day: 'numeric', month: 'short' }) : ''}</small></p>
         <p class="tl__title"><b>${esc(e.title)}</b><span>${esc(e.place)}${e.time ? ' · ' + esc(e.time) : ''}</span></p>
