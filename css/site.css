@@ -320,19 +320,24 @@ a.tag::after { content: ""; position: absolute; inset: -13px -4px; }
    Without script the heroes keep their grain and the sections their plain ground. */
 .phero { background-image: var(--noise); background-blend-mode: overlay; }
 .phero--photo .phero__bg::after, .hero__scrim::after { content: ""; position: absolute; inset: 0; background: var(--noise); mix-blend-mode: overlay; opacity: 1; pointer-events: none; }
-.hero__scrim::after { opacity: .6; }
+/* Plain alpha, no blend mode: the home hero grain sits over moving video, and the photo heroes scroll. */
+.phero--photo .phero__bg::after, .hero__scrim::after { mix-blend-mode: normal; opacity: .35; }
+.hero__scrim::after { opacity: .22; }
 .section, .ethos, .who, .tiktok, .globe-sec, .foot { position: relative; isolation: isolate; }
-.terrain { position: absolute; left: 0; top: 0; z-index: -1; width: 100%; height: 100%; pointer-events: none; }
-.phero .terrain { -webkit-mask: radial-gradient(ellipse 50% 56% at 20% 74%, transparent 22%, #000 76%); mask: radial-gradient(ellipse 50% 56% at 20% 74%, transparent 22%, #000 76%); }
+.terrain { position: absolute; left: 0; top: 0; z-index: -1; width: 100%; height: 100%; overflow: hidden; pointer-events: none; }
+.terrain img { position: absolute; left: 0; top: 0; max-width: none; height: 100%; }
+/* The frame starts below the glass nav, so a drifting layer never sits under the nav's backdrop blur. */
+.phero .terrain { top: 84px; height: calc(100% - 84px); -webkit-mask: radial-gradient(ellipse 50% 56% at 20% 74%, transparent 22%, #000 76%); mask: radial-gradient(ellipse 50% 56% at 20% 74%, transparent 22%, #000 76%); }
 .who .terrain { height: min(90vh, 820px); -webkit-mask: linear-gradient(#000 40%, transparent); mask: linear-gradient(#000 40%, transparent); }
 .strata { position: absolute; left: 0; right: 0; top: 0; z-index: -1; height: calc(var(--section) * .74); pointer-events: none; }
 .strata svg { display: block; width: 100%; height: 100%; } /* translucent fills: the body grain shows through */
 @media (max-width: 900px) { .phero .terrain { -webkit-mask: linear-gradient(#000 18%, transparent 52%); mask: linear-gradient(#000 18%, transparent 52%); } }
 
 /* Confetti (js/confetti.js, primary only): never takes a tap. Still pieces sit in the downloads' texture,
-   behind the cards; the burst layer floats over the page but under the nav and every overlay. */
+   behind the cards. The burst layer flies over the nav (so the nav's blur never has to resample it) but under the
+   Latest panel and other dialogs; it never takes a tap. */
 .confetti { position: absolute; left: 0; top: 0; z-index: -1; width: 100%; height: 100%; pointer-events: none; }
-body > .confetti { position: fixed; z-index: 100; }
+body > .confetti { position: fixed; z-index: 125; }
 
 /* 11 Content blocks */
 /* Work grid: rows of mixed widths; each row shares one height. */

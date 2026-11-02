@@ -44,55 +44,68 @@
   // A line's wobble: one slow swell and a smaller ripple, so it reads as sediment, not a sine wave.
   const wobble = (x, row, t) => noise(x / 520 + t, row * .37) + .35 * noise(x / 170 - t * .6, row * .37 + 40);
 
-  /* Strata lines on canvas */
+  /* Strata lines: painted once on a canvas, shown as an image (cached like any photo, so scrolling stays cheap).
+     Where they drift, the image is a little wider than its frame and slides sideways a few pixels a second, a
+     transform the compositor handles without repainting. It stops off-screen, in a hidden tab, while the page is
+     scrolling and under reduced motion. */
+  const PAD = 72;
+  let scrolled = 0;
+  addEventListener('scroll', () => { scrolled = performance.now(); }, { passive: true });
   const lines = (host, o) => {
+    const drift = o.drift && !reduce;
+    const box = document.createElement('div');
+    box.className = 'terrain';
+    box.setAttribute('aria-hidden', 'true');
+    const img = document.createElement('img');
+    img.alt = '';
+    box.append(img);
+    host.prepend(box);
     const cv = document.createElement('canvas');
-    cv.className = 'terrain';
-    cv.setAttribute('aria-hidden', 'true');
-    host.prepend(cv);
     const g = cv.getContext('2d');
     const color = tok(o.color);
-    let w = 0, h = 0, t = 0, raf = 0, last = 0, visible = false;
-    const draw = () => {
-      g.clearRect(0, 0, w, h);
-      g.strokeStyle = color;
-      const rows = Math.ceil(h / o.gap) + 2;
-      for (let r = -1; r < rows; r++) {
-        // Every fifth line is a touch heavier, like the index lines on an OS map.
-        const index = (r + 100) % 5 === 0;
-        g.globalAlpha = o.alpha * (index ? 1.7 : 1);
-        g.lineWidth = index ? 1.2 : .7;
-        const base = r * o.gap + o.gap * .45 * noise(r * .61, 7.3);
-        g.beginPath();
-        for (let x = -8; x <= w + 8; x += 8) {
-          const y = base + o.amp * wobble(x, r, t);
-          if (x < 0) g.moveTo(x, y); else g.lineTo(x, y);
-        }
-        g.stroke();
-      }
-    };
-    const size = () => {
-      const r = cv.getBoundingClientRect();
+    const paint = () => {
+      const r = box.getBoundingClientRect();
       const dpr = Math.min(2, devicePixelRatio || 1);
-      w = Math.round(r.width); h = Math.round(r.height);
+      const w = Math.round(r.width) + (drift ? PAD : 0), h = Math.round(r.height);
       if (!w || !h) return;
+      img.style.width = w + 'px';
       cv.width = Math.round(w * dpr); cv.height = Math.round(h * dpr);
       g.setTransform(dpr, 0, 0, dpr, 0, 0);
-      draw();
+      g.strokeStyle = color;
+      const rows = Math.ceil(h / o.gap) + 2;
+      for (let row = -1; row < rows; row++) {
+        // Every fifth line is a touch heavier, like the index lines on an OS map.
+        const index = (row + 100) % 5 === 0;
+        g.globalAlpha = o.alpha * (index ? 1.7 : 1);
+        g.lineWidth = index ? 1.2 : .7;
+        const base = row * o.gap + o.gap * .45 * noise(row * .61, 7.3);
+        g.beginPath();
+        for (let x = -12; x <= w + 12; x += 12) g[x < 0 ? 'moveTo' : 'lineTo'](x, base + o.amp * wobble(x, row, 0));
+        g.stroke();
+      }
+      cv.toBlob((b) => { if (img.src) URL.revokeObjectURL(img.src); img.src = URL.createObjectURL(b); });
     };
-    // Drift: about 30 frames a second, a few pixels a minute. Stops off-screen, in a hidden tab and under reduced motion.
+    let lastW = 0;
+    new ResizeObserver(([e]) => { const w = Math.round(e.contentRect.width); if (w !== lastW || !img.src) { lastW = w; paint(); } }).observe(box);
+    if (!drift) return;
+    let raf = 0, visible = false, x = 0, last = 0;
     const tick = (now) => {
       raf = 0;
       if (!visible || document.hidden) return;
-      if (now - last > 33) { t += (now - last || 33) / 1000 * .004; last = now; draw(); }
+      // Only while nothing glass sits over it: the frame starts below the nav, and a scrolled page brings the nav
+      // over the moving layer, which would make its backdrop blur repaint every frame.
+      if (now - scrolled > 200 && box.getBoundingClientRect().top >= 76) {
+        x += Math.min(now - last, 100) / 1000 * 2.4;
+        // Slides across the spare width and back on a cosine, so it slows to rest at each turn (at most 1.2px a second).
+        img.style.transform = `translate3d(${(-PAD / 2 * (1 - Math.cos(x / PAD))).toFixed(2)}px, 0, 0)`;
+      }
+      last = now;
       raf = requestAnimationFrame(tick);
     };
-    const run = () => { if (o.drift && !reduce && visible && !document.hidden && !raf) { last = performance.now(); raf = requestAnimationFrame(tick); } };
-    new ResizeObserver(size).observe(cv);
+    const run = () => { if (visible && !document.hidden && !raf) { last = performance.now(); raf = requestAnimationFrame(tick); } };
     if ('IntersectionObserver' in window) new IntersectionObserver(([e]) => { visible = e.isIntersecting; run(); }).observe(host);
     document.addEventListener('visibilitychange', run);
   };
-
   /* Strata bands as SVG: drawn once in a 1440 × 100 box and stretched to fit, so resizing costs nothing. */
   const NS = 'http://www.w3.org/2000/svg';
   const curve = (depth, row, amp) => {

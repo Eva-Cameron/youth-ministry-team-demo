@@ -52,7 +52,9 @@
       if (y < lastY - 4) nav.classList.remove('is-hidden');
       lastY = y;
     };
-    addEventListener('scroll', onScroll, { passive: true });
+    // Scroll work runs once per frame, in requestAnimationFrame.
+    let navTick = false;
+    addEventListener('scroll', () => { if (!navTick) { navTick = true; requestAnimationFrame(() => { navTick = false; onScroll(); }); } }, { passive: true });
     onScroll();
 
     const dropBtn = $('.nav__drop > button', nav);

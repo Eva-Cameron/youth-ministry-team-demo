@@ -91,7 +91,7 @@
 .chapter blockquote p { font: 400 clamp(30px, 3.2vw, 50px)/1.12 var(--display); letter-spacing: -.025em; max-width: 20ch; }
 .chapter blockquote .sw { opacity: var(--so, 1); transition: opacity .2s linear; }
 .chapter blockquote footer { margin-top: 18px; font: 400 12px var(--mono); text-transform: uppercase; opacity: .7; }
-.story__frame { position: sticky; top: 90px; border-radius: var(--r-lg); box-shadow: var(--shadow-2); background: var(--ink); height: calc(100vh - 120px); height: calc(100svh - 120px); align-self: start; overflow: hidden; }
+.story__frame { position: sticky; top: 90px; border-radius: var(--r-lg); box-shadow: var(--shadow-1); background: var(--ink); height: calc(100vh - 120px); height: calc(100svh - 120px); align-self: start; overflow: hidden; }
 .story__frame img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transform: scale(1.06); transition: opacity .9s ease, transform 1.6s var(--ease); }
 .story__frame img.is-on { opacity: 1; transform: scale(1); }
 .story__frame figcaption { position: absolute; left: 12px; bottom: 12px; padding: 10px 14px; font: 400 11px var(--mono); text-transform: uppercase; }
