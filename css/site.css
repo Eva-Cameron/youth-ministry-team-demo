@@ -126,7 +126,7 @@ body[data-aud="primary"] { --glow-a: var(--pink); --glow-b: var(--butter); --glo
 body[data-aud="secondary"] { --glow-a: var(--blue-light); --glow-b: var(--red); --glow-c: var(--blue-light); --duo-dark: var(--duo-secondary-dark); --duo-light: var(--blue-light); --acc: var(--blue); --acc-ink: var(--white); --acc-2: var(--red); --acc-on-dark: var(--blue-light); }
 body[data-aud="secondary"][data-tone="red"] { --acc: var(--red); --acc-2: var(--butter); --acc-on-dark: var(--butter); }
 body[data-aud="volunteer"] { --glow-a: var(--purple-text); --glow-b: var(--lilac); --glow-c: var(--purple); --duo-dark: var(--duo-volunteer-dark); --duo-light: var(--lilac); --acc: var(--purple-text); --acc-ink: var(--ink); --acc-2: var(--lilac); }
-body[data-aud="everyone"] { --glow-a: var(--mint); --glow-b: var(--stone); --glow-c: var(--mint); --duo-dark: var(--duo-everyone-dark); --duo-light: var(--mint); --acc: var(--mint); --acc-ink: var(--ink); --acc-2: var(--stone); }
+body[data-aud="everyone"] { --glow-a: var(--mint); --glow-b: #9fc98f; --glow-c: var(--mint); --duo-dark: var(--duo-everyone-dark); --duo-light: var(--mint); --acc: var(--mint); --acc-ink: var(--ink); --acc-2: var(--stone); }
 
 /* 3 Base */
 *, *::before, *::after { box-sizing: border-box; }
@@ -342,8 +342,11 @@ a.tag::after { content: ""; position: absolute; inset: -13px -4px; }
    and wavy sediment bands into the top padding of each section that follows another, so they never sit under running text.
    Without script the heroes keep their grain and the sections their plain ground. */
 /* Heroes: the page's own grainy ground (Eva, 2 Nov: no solid colour blocks), with its accent light turned up:
-   a pool of the route colour top right and another low on the left, under a heavier grain. */
-.phero { background-image: var(--grain), var(--grain), radial-gradient(60vmax 52vmax at 90% 8%, color-mix(in oklab, var(--glow-a) 62%, transparent), transparent 66%), radial-gradient(55vmax 45vmax at 2% 100%, color-mix(in oklab, var(--glow-c) 50%, transparent), transparent 70%), radial-gradient(40vmax 30vmax at 55% 60%, color-mix(in oklab, var(--glow-b) 22%, transparent), transparent 70%); }
+   a strong pool of the route colour top right, another low on the left and a wash of it across, under the grain. */
+.phero { background-image: var(--grain), radial-gradient(62vmax 56vmax at 90% 6%, color-mix(in oklab, var(--hero-a, var(--glow-a)) 88%, transparent), transparent 68%), radial-gradient(58vmax 48vmax at 0% 100%, color-mix(in oklab, var(--hero-c, var(--glow-c)) 78%, transparent), transparent 72%), radial-gradient(46vmax 34vmax at 55% 58%, color-mix(in oklab, var(--hero-b, var(--glow-b)) 42%, transparent), transparent 72%), linear-gradient(color-mix(in oklab, var(--acc-on-dark) 16%, transparent), color-mix(in oklab, var(--acc-on-dark) 16%, transparent)); }
+/* Pastel routes go muddy on the dark ground, so their headers glow in deeper versions of the same colours. */
+body[data-aud="primary"] .phero { --hero-a: #ec6a9c; --hero-b: #f59a5b; --hero-c: #b07ae8; }
+body[data-aud="everyone"] .phero { --hero-a: #5fbf8a; --hero-b: #c9b46a; --hero-c: #3f9f86; }
 .phero--photo { background-image: none; }
 .section, .ethos, .who, .tiktok, .globe-sec, .foot { position: relative; isolation: isolate; }
 .terrain { position: absolute; left: 0; top: 0; z-index: -1; width: 100%; height: 100%; overflow: hidden; pointer-events: none; }
