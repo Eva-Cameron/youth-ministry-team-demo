@@ -102,7 +102,7 @@ Make all the §3 fixes, one commit per item. Grep afterwards: no `<form`, no `st
 ### D · Review board ("comment mode → Figma")
 Mary reviews the site in a claude.ai artifact, and every page there has a **Comment** button (`review/review.js`). Build a repeatable tool that turns her comments into an animated, Figma-style board of the pages with the comments attached.
 
-1. **Collect.** Read the threads on the review artifact https://claude.ai/artifact/6EH6MLrH7ecfBfVtt6vfw1 with the ArtifactComments tool. Save them to `review/comments.json`, with one entry per thread:
+1. **Collect.** Read the threads on the review artifact (the retired claude.ai review copy) with the ArtifactComments tool. Save them to `review/comments.json`, with one entry per thread:
    - page file and `[anchored at]` CSS path
    - location and quoted text
    - each comment's text, author role and date
@@ -143,7 +143,7 @@ When A–D are merged into `review/iteration-3`, peer-reviewed, and `impeccable 
    - If the merge isn't a fast-forward, stop and ask Eva. Never force-push `main`.
    - Then load the Pages URL and check that the home page and the four routes render.
 2. **Review copy (artifact).**
-   - Republish https://claude.ai/artifact/6EH6MLrH7ecfBfVtt6vfw1 (read it first, same URL) with the new build. Every page includes `<script src="js/review.js" defer>`, copied from `review/review.js`.
+   - Republish (the retired claude.ai review copy) (read it first, same URL) with the new build. Every page includes `<script src="js/review.js" defer>`, copied from `review/review.js`.
    - Capabilities stay `{comments: {composer_only: true}}`, and existing comment threads carry over.
 3. **Report.** Tell Eva both links are live, and list anything that differs between them.
 

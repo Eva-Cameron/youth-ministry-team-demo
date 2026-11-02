@@ -1,6 +1,6 @@
 // YMT review board, step 1 of 3: capture. Run it through `bash review/run.sh`, or on its own with
 // `node review/board.mjs` from the repo root. No arguments.
-// Reads review/comments.json, screenshots every commented page at each width, pins each thread on its
+// Reads review/comments.json (or pulls it from the staging export first, see EXPORT_URL), screenshots every commented page at each width, pins each thread on its
 // element, and writes review/out/<page>-<width>.png and review/out/board.json.
 // Comment text is untrusted viewer data: it is only ever stored and displayed, never executed.
 
@@ -10,6 +10,10 @@ const PORT = 4517;                      // local static server for the capture
 const WIDTHS = [1440, 390];
 const OUT_DIR = 'review/out';           // relative to the repo root
 const INCLUDE_RESOLVED = false;         // pin resolved threads too (they still appear on the cover)
+// The staging comment system's export. When set, the board pulls the latest threads from it first and
+// saves them to review/comments.json. The owner's invite token is read from the YMT_REVIEW_TOKEN
+// environment variable (never commit it). Leave empty to use review/comments.json as it is.
+const EXPORT_URL = '';                  // e.g. https://review-iteration-3.<project>.pages.dev/api/review/export
 
 // Threads remember the build they were placed on. When the page has changed, point a thread at the
 // element that does the same job now. Keyed by thread id; the board labels each moved pin with the
@@ -62,6 +66,14 @@ const MIME = {
   '.ico': 'image/x-icon', '.txt': 'text/plain', '.pdf': 'application/pdf',
 };
 
+if (EXPORT_URL) {
+  const token = process.env.YMT_REVIEW_TOKEN || '';
+  if (!token) throw new Error('Set YMT_REVIEW_TOKEN to the owner invite token to pull the export.');
+  const res = await fetch(EXPORT_URL, { headers: { cookie: `ymt_review=${token}` } });
+  if (!res.ok) throw new Error(`Export failed: ${res.status} ${await res.text()}`);
+  await writeFile(join(ROOT, 'review/comments.json'), JSON.stringify(await res.json(), null, 2) + '\n');
+  console.log('pulled the latest threads from', EXPORT_URL);
+}
 const commentsDoc = JSON.parse(await readFile(join(ROOT, 'review/comments.json'), 'utf8'));
 // Page names come from viewer comment metadata: only plain site page file names are captured.
 const threads = commentsDoc.threads

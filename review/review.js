@@ -1,82 +1,111 @@
-/* Review mode, with an inspector for picking what to comment on. Not part of the live site.
-   - In the claude.ai review copy, Comment opens claude.ai's own composer on the picked element, so the
-     thread reaches the review board.
-   - On staging copies (GitHub Pages, Cloudflare previews, localhost) the same inspector saves comments in
-     this browser, pins them on the page, and exports them in the review/comments.json format.
-   Outside those two places nothing renders, so it never shows on ymt.org. */
+/* Review layer for staging (staging only: remove at launch). Invited reviewers tap Comment, point at
+   any element (an inspector labels it), and leave a thread pinned to it. Threads are shared through
+   /api/review/* (Cloudflare Pages Functions + D1). Production ymt.org never shows it. */
 (async () => {
-  const REVIEW_COPY_URL = 'https://claude.ai/artifact/6EH6MLrH7ecfBfVtt6vfw1';
-  const STAGING_HOSTS = ['github.io', 'pages.dev', 'localhost', '127.0.0.1'];
-  const STORE = 'ymt-review-comments';
+  // ---- Settings ----
+  // The Cloudflare staging site where comments live. The GitHub Pages mirror links here.
+  const STAGING_URL = 'PLACEHOLDER_STAGING_URL';
+  const API = '/api/review';
+  // -------------------
 
-  const inClaude = !!(window.claude && typeof window.claude.use === 'function');
-  const onStaging = STAGING_HOSTS.some((host) => location.hostname === host || location.hostname.endsWith('.' + host));
-  if (!inClaude && !onStaging) return;
-  let composer = null;
-  if (inClaude) {
-    const comments = await window.claude.use('comments');
-    if (!comments || typeof comments.openComposer !== 'function') return;
-    composer = comments;
-  }
+  const host = location.hostname;
+  const isStagingHost = host === 'localhost' || host === '127.0.0.1' || host.endsWith('.pages.dev');
+  const isMirror = host.endsWith('github.io');
+  if (!isStagingHost && !isMirror) return;
+  // Cloudflare Pages serves /primary.html as /primary, so page names are normalised to the file.
+  const last = location.pathname.split('/').pop();
+  const here = !last ? 'index.html' : last.endsWith('.html') ? last : last + '.html';
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   const style = document.createElement('style');
   style.textContent = `
-    .rv { position: fixed; z-index: 2147483000; right: calc(16px + env(safe-area-inset-right, 0px)); bottom: calc(16px + env(safe-area-inset-bottom, 0px)); display: grid; justify-items: end; gap: 10px; font: 500 14px/1.3 var(--sans, system-ui, sans-serif); color: var(--ink, #100c15); }
+    .rv { position: fixed; z-index: 2147483000; right: calc(16px + env(safe-area-inset-right, 0px)); bottom: calc(16px + env(safe-area-inset-bottom, 0px)); display: grid; justify-items: end; gap: 10px; font: 500 14px/1.35 var(--sans, system-ui, sans-serif); color: var(--ink, #100c15); }
     .rv__bar { display: flex; gap: 8px; }
-    .rv__btn { display: inline-flex; align-items: center; gap: 10px; min-height: 48px; padding: 0 20px; border: 0; border-radius: 999px; background: var(--white, #fff); color: var(--ink, #100c15); font: inherit; font-weight: 600; cursor: pointer; box-shadow: 0 6px 24px rgba(16, 12, 21, .35), 0 0 0 1px rgba(16, 12, 21, .12); }
-    .rv__btn:focus-visible, .rv button:focus-visible, .rv a:focus-visible, .rv textarea:focus-visible { outline: 3px solid var(--gold, #f2c24a); outline-offset: 3px; }
+    .rv__btn { display: inline-flex; align-items: center; gap: 10px; min-height: 48px; padding: 0 20px; border: 0; border-radius: 999px; background: rgba(255, 255, 255, .86); color: var(--ink, #100c15); font: inherit; font-weight: 600; text-decoration: none; cursor: pointer; box-shadow: 0 6px 24px rgba(16, 12, 21, .35), inset 0 0 0 1px rgba(255, 255, 255, .7); backdrop-filter: blur(14px) saturate(150%); -webkit-backdrop-filter: blur(14px) saturate(150%); }
+    @supports not (backdrop-filter: blur(1px)) { .rv__btn { background: #fff; } }
     .rv__btn svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2; }
     .rv__btn[aria-pressed="true"] { background: var(--gold, #f2c24a); }
-    .rv__btn--count { padding: 0 16px; }
-    .rv__card { width: min(360px, calc(100vw - 32px)); max-height: min(60vh, 520px); overflow: auto; padding: 16px; border-radius: 16px; background: var(--ink, #100c15); color: var(--white, #fff); box-shadow: 0 10px 40px rgba(16, 12, 21, .45), 0 0 0 1px rgba(255, 255, 255, .14); }
-    .rv__card b { display: block; margin-bottom: 6px; }
-    .rv__card p { margin: 0 0 10px; color: rgba(255, 255, 255, .8); }
+    .rv :focus-visible { outline: 3px solid var(--gold, #f2c24a); outline-offset: 3px; }
+    .rv__card { width: min(380px, calc(100vw - 32px)); max-height: min(64vh, 560px); overflow: auto; padding: 16px; border-radius: 16px; background: var(--ink, #100c15); color: #fff; box-shadow: 0 10px 40px rgba(16, 12, 21, .45), 0 0 0 1px rgba(255, 255, 255, .14); }
+    .rv__card h2 { margin: 0 0 8px; font: 700 16px/1.2 var(--sans, system-ui, sans-serif); }
+    .rv__card p { margin: 0 0 10px; color: rgba(255, 255, 255, .82); }
     .rv__row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
-    .rv__ghost, .rv__solid { display: inline-flex; align-items: center; min-height: 40px; padding: 0 14px; border-radius: 999px; font: inherit; font-weight: 600; text-decoration: none; cursor: pointer; }
+    .rv__ghost, .rv__solid { display: inline-flex; align-items: center; min-height: 44px; padding: 0 16px; border-radius: 999px; font: inherit; font-weight: 600; text-decoration: none; cursor: pointer; }
     .rv__ghost { border: 1px solid rgba(255, 255, 255, .5); background: transparent; color: inherit; }
-    .rv__solid { border: 0; background: var(--white, #fff); color: var(--ink, #100c15); }
-    .rv__list { display: grid; gap: 10px; margin: 0; padding: 0; list-style: none; }
-    .rv__list li { display: grid; grid-template-columns: 28px 1fr; gap: 10px; padding-top: 10px; border-top: 1px solid rgba(255, 255, 255, .14); }
-    .rv__list li.is-done { opacity: .55; }
-    .rv__num, .rv-pin { display: inline-grid; place-items: center; width: 28px; height: 28px; border-radius: 50%; background: var(--gold, #f2c24a); color: var(--ink, #100c15); font: 700 13px/1 var(--mono, ui-monospace, monospace); }
-    .rv__where { display: block; margin-bottom: 2px; font: 400 11px/1.3 var(--mono, ui-monospace, monospace); text-transform: uppercase; color: rgba(255, 255, 255, .6); }
-    .rv__text { white-space: pre-wrap; overflow-wrap: anywhere; }
-    .rv textarea { width: 100%; min-height: 96px; margin: 6px 0 0; padding: 10px 12px; border: 0; border-radius: 10px; background: #fff; color: #100c15; font: 400 15px/1.4 var(--sans, system-ui, sans-serif); resize: vertical; }
+    .rv__ghost[aria-pressed="true"] { background: #fff; color: #100c15; }
+    .rv__solid { border: 0; background: #fff; color: #100c15; }
+    .rv__where { display: block; margin-bottom: 6px; font: 400 11px/1.3 var(--mono, ui-monospace, monospace); text-transform: uppercase; color: rgba(255, 255, 255, .62); }
+    .rv__list { display: grid; gap: 10px; margin: 8px 0 0; padding: 0; list-style: none; }
+    .rv__list > li { display: grid; grid-template-columns: 30px 1fr; gap: 10px; padding-top: 10px; border-top: 1px solid rgba(255, 255, 255, .14); }
+    .rv__list > li.is-done { opacity: .6; }
+    .rv__msg { margin: 0 0 8px; }
+    .rv__msg b { font-weight: 700; }
+    .rv__msg small { color: rgba(255, 255, 255, .6); }
+    .rv__msg div, .rv__text { white-space: pre-wrap; overflow-wrap: anywhere; }
+    .rv__num, .rv-pin { display: inline-grid; place-items: center; width: 30px; height: 30px; border-radius: 50%; background: var(--gold, #f2c24a); color: #100c15; font: 700 13px/1 var(--mono, ui-monospace, monospace); }
+    .rv textarea { box-sizing: border-box; width: 100%; min-height: 96px; margin: 6px 0 0; padding: 10px 12px; border: 0; border-radius: 10px; background: #fff; color: #100c15; font: 400 15px/1.4 var(--sans, system-ui, sans-serif); resize: vertical; }
     .rv label { display: block; font-weight: 600; }
+    .rv__err { color: #ffb4ab; }
     html.rv-picking, html.rv-picking * { cursor: crosshair !important; }
-    .rv-box { position: fixed; z-index: 2147482990; pointer-events: none; border: 2px solid var(--gold, #f2c24a); border-radius: 4px; background: rgba(242, 194, 74, .14); box-shadow: 0 0 0 9999px rgba(16, 12, 21, .12); transition: all .08s linear; }
-    .rv-chip { position: fixed; z-index: 2147482995; pointer-events: none; max-width: min(420px, calc(100vw - 16px)); padding: 5px 9px; border-radius: 6px; background: var(--ink, #100c15); color: #fff; font: 500 12px/1.3 var(--mono, ui-monospace, monospace); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; box-shadow: 0 4px 16px rgba(0, 0, 0, .35); }
+    .rv-box { position: fixed; z-index: 2147482990; pointer-events: none; border: 2px solid var(--gold, #f2c24a); border-radius: 4px; background: rgba(242, 194, 74, .14); }
+    .rv-chip { position: fixed; z-index: 2147482995; pointer-events: none; max-width: min(440px, calc(100vw - 16px)); padding: 5px 9px; border-radius: 6px; background: #100c15; color: #fff; font: 500 12px/1.3 var(--mono, ui-monospace, monospace); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; box-shadow: 0 4px 16px rgba(0, 0, 0, .35); }
     .rv-chip i { font-style: normal; color: var(--gold, #f2c24a); }
-    .rv-pin { position: absolute; z-index: 2147482980; transform: translate(-50%, -50%); border: 0; box-shadow: 0 2px 10px rgba(16, 12, 21, .4), 0 0 0 2px #fff; cursor: pointer; }
+    .rv-pin { position: absolute; z-index: 2147482980; transform: translate(-50%, -50%); border: 0; box-shadow: 0 2px 10px rgba(16, 12, 21, .4), 0 0 0 2px #fff; cursor: pointer; animation: rv-pop .3s cubic-bezier(.16, 1, .3, 1) both; }
     .rv-pin.is-done { background: #c9c3cf; }
     .rv-flash { outline: 3px solid var(--gold, #f2c24a) !important; outline-offset: 3px !important; }
-    @media (prefers-reduced-motion: reduce) { .rv-box { transition: none; } }
+    @keyframes rv-pop { from { transform: translate(-50%, -50%) scale(.4); opacity: 0; } }
+    @media (prefers-reduced-motion: reduce) { .rv-pin { animation: none; } }
   `;
   document.head.appendChild(style);
 
-  /* ---------- Inspector: what you are pointing at, labelled like devtools ---------- */
-  const PICKABLE = 'h1, h2, h3, h4, p, li, figure, img, video, blockquote, a, button, address, dl, .who__card, .info__card, .shot, .bite, .tl__item, .news-card, .label, .feel__line, .phero__photo, section';
-  const own = (node) => node instanceof Element && !!node.closest('.rv, .rv-pin, .rv-box, .rv-chip');
-  const targetFor = (node) => {
-    if (!(node instanceof Element) || own(node)) return null;
-    return node.closest(PICKABLE) || node;
+  const make = (tag, cls, text) => { const n = document.createElement(tag); if (cls) n.className = cls; if (text != null) n.textContent = text; return n; };
+  const icon = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16v11H9l-5 4z"/></svg>';
+  const box = make('div', 'rv');
+  box.setAttribute('data-uncommentable', '');
+  document.body.appendChild(box);
+
+  // On phones the home film's own controls sit in this corner, so the bar waits until it scrolls away.
+  const film = document.querySelector('.hero');
+  let pickingNow = false;
+  if (film && 'IntersectionObserver' in window && matchMedia('(max-width: 700px)').matches) {
+    new IntersectionObserver(([entry]) => { box.hidden = entry.intersectionRatio > 0.3 && !pickingNow; }, { threshold: [0, 0.3, 1] }).observe(film);
+  }
+
+  /* ---------- GitHub Pages mirror: point to the staging site ---------- */
+  if (isMirror) {
+    if (STAGING_URL.startsWith('PLACEHOLDER')) return;
+    const link = make('a', 'rv__btn');
+    link.href = STAGING_URL.replace(/\/$/, '') + '/' + here;
+    link.innerHTML = icon + '<span>Leave feedback</span>';
+    box.appendChild(link);
+    return;
+  }
+
+  /* ---------- Who is reviewing ---------- */
+  const call = async (path, options = {}) => {
+    const res = await fetch(API + path, { credentials: 'same-origin', ...options, headers: { 'content-type': 'application/json', 'x-review': '1', ...(options.headers || {}) } });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) throw Object.assign(new Error(data.error || 'Something went wrong. Please try again.'), { status: res.status });
+    return data;
   };
+  let me = null;
+  try { me = await call('/me'); } catch { me = null; }
+  if (!me) {
+    // Staging without an invite cookie: say how to get in, and nothing else.
+    if (!new URLSearchParams(location.search).has('review')) return;
+    const note = make('div', 'rv__card');
+    note.append(make('h2', '', 'Comments'), make('p', '', 'Open the invite link Eva sent you to leave comments on this site.'));
+    box.appendChild(note);
+    return;
+  }
+
+  /* ---------- Inspector ---------- */
+  const PICKABLE = 'h1, h2, h3, h4, p, li, figure, img, video, blockquote, a, button, address, dl, .who__card, .info__card, .shot, .bite, .tl__item, .news-card, .feel__line, .phero__photo, section';
+  const own = (node) => node instanceof Element && !!node.closest('.rv, .rv-pin, .rv-box, .rv-chip');
+  const targetFor = (node) => (!(node instanceof Element) || own(node) ? null : node.closest(PICKABLE) || node);
   const kindOf = (el) => {
-    if (el.matches('.who__card')) return 'Route card';
-    if (el.matches('.bite')) return 'Download';
-    if (el.matches('.tl__item')) return 'Event';
-    if (el.matches('.news-card')) return 'Latest card';
-    if (el.matches('.info__card')) return 'Info card';
-    if (el.matches('.label')) return 'Section label';
-    if (el.matches('h1, h2, h3, h4')) return 'Heading';
-    if (el.matches('img, figure, .shot, .phero__photo')) return 'Photo';
-    if (el.matches('video')) return 'Video';
-    if (el.matches('a.btn, button, a[data-mail]')) return 'Button';
-    if (el.matches('a')) return 'Link';
-    if (el.matches('blockquote')) return 'Quote';
-    if (el.matches('li')) return 'List item';
-    if (el.matches('section')) return 'Section';
-    return 'Text';
+    const kinds = [['.who__card', 'Route card'], ['.bite', 'Download'], ['.tl__item', 'Event'], ['.news-card', 'Latest card'], ['.info__card', 'Info card'], ['h1, h2, h3, h4', 'Heading'], ['img, figure, .shot, .phero__photo', 'Photo'], ['video', 'Video'], ['a.btn, button, a[data-mail]', 'Button'], ['a', 'Link'], ['blockquote', 'Quote'], ['li', 'List item'], ['section', 'Section']];
+    return (kinds.find(([sel]) => el.matches(sel)) || [0, 'Text'])[1];
   };
   const labelOf = (el) => {
     const img = el.matches('img') ? el : el.querySelector('img');
@@ -87,209 +116,192 @@
     const parts = [];
     for (let node = el; node && node !== document.body && parts.length < 8; node = node.parentElement) {
       if (node.id) { parts.unshift('#' + CSS.escape(node.id)); break; }
-      const tag = node.tagName.toLowerCase();
-      const cls = [...node.classList].filter((c) => !c.startsWith('rv') && !['in', 'rise', 'words', 'is-on', 'is-open'].includes(c))[0];
-      const siblings = node.parentElement ? [...node.parentElement.children].filter((s) => s.tagName === node.tagName) : [];
-      const nth = siblings.length > 1 ? `:nth-of-type(${siblings.indexOf(node) + 1})` : '';
-      parts.unshift(tag + (cls ? '.' + CSS.escape(cls) : '') + nth);
+      const cls = [...node.classList].filter((c) => !c.startsWith('rv') && !['in', 'rise', 'words', 'is-on', 'is-open', 'is-pressed'].includes(c))[0];
+      const same = node.parentElement ? [...node.parentElement.children].filter((s) => s.tagName === node.tagName) : [];
+      parts.unshift(node.tagName.toLowerCase() + (cls ? '.' + CSS.escape(cls) : '') + (same.length > 1 ? `:nth-of-type(${same.indexOf(node) + 1})` : ''));
     }
     return parts.join(' > ');
   };
-
-  const hoverBox = document.createElement('div'); hoverBox.className = 'rv-box'; hoverBox.hidden = true;
-  const chip = document.createElement('div'); chip.className = 'rv-chip'; chip.hidden = true;
+  const hoverBox = make('div', 'rv-box'); hoverBox.hidden = true;
+  const chip = make('div', 'rv-chip'); chip.hidden = true;
   document.body.append(hoverBox, chip);
-  let picking = false;
   let hovered = null;
   const showHover = (el) => {
     hovered = el;
     if (!el) { hoverBox.hidden = true; chip.hidden = true; return; }
     const r = el.getBoundingClientRect();
     Object.assign(hoverBox.style, { left: r.left + 'px', top: r.top + 'px', width: r.width + 'px', height: r.height + 'px' });
-    chip.textContent = '';
-    const kind = document.createElement('i'); kind.textContent = kindOf(el);
     const text = labelOf(el);
-    chip.append(kind, document.createTextNode(`${text ? ' · ' + text : ''} · ${Math.round(r.width)}×${Math.round(r.height)}`));
+    chip.replaceChildren(make('i', '', kindOf(el)), document.createTextNode(`${text ? ' · ' + text : ''} · ${Math.round(r.width)}×${Math.round(r.height)}`));
     chip.style.left = Math.max(8, Math.min(r.left, innerWidth - 300)) + 'px';
     chip.style.top = (r.top > 34 ? r.top - 30 : r.bottom + 6) + 'px';
     hoverBox.hidden = false; chip.hidden = false;
   };
 
-  /* ---------- Panel ---------- */
-  const box = document.createElement('div');
-  box.className = 'rv';
-  box.setAttribute('data-uncommentable', '');
-  box.innerHTML = `
-    <div class="rv__card" data-rv-card hidden></div>
-    <div class="rv__bar">
-      ${inClaude ? '' : '<button type="button" class="rv__btn rv__btn--count" aria-expanded="false" data-rv-list>Comments <span data-rv-count>0</span></button>'}
-      <button type="button" class="rv__btn" aria-pressed="false" data-rv-pick>
-        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16v11H9l-5 4z"/></svg>
-        <span data-rv-label>Comment</span>
-      </button>
-    </div>`;
-  document.body.appendChild(box);
-  const pickBtn = box.querySelector('[data-rv-pick]');
-  const pickLabel = box.querySelector('[data-rv-label]');
-  const card = box.querySelector('[data-rv-card]');
-  const listBtn = box.querySelector('[data-rv-list]');
-
-  const make = (tag, cls, text) => { const n = document.createElement(tag); if (cls) n.className = cls; if (text != null) n.textContent = text; return n; };
+  /* ---------- Bar, card and drawer ---------- */
+  const bar = make('div', 'rv__bar');
+  const drawerBtn = make('button', 'rv__btn'); drawerBtn.type = 'button'; drawerBtn.setAttribute('aria-expanded', 'false');
+  const pickBtn = make('button', 'rv__btn'); pickBtn.type = 'button'; pickBtn.setAttribute('aria-pressed', 'false');
+  pickBtn.innerHTML = icon; const pickLabel = make('span', '', 'Comment'); pickBtn.append(pickLabel);
+  bar.append(drawerBtn, pickBtn);
+  const card = make('div', 'rv__card'); card.hidden = true; card.setAttribute('role', 'dialog'); card.setAttribute('aria-label', 'Comments');
+  box.append(card, bar);
   const showCard = (...children) => { card.replaceChildren(...children); card.hidden = false; };
-  const hideCard = () => { card.hidden = true; card.replaceChildren(); listBtn?.setAttribute('aria-expanded', 'false'); };
+  const hideCard = () => { card.hidden = true; card.replaceChildren(); drawerBtn.setAttribute('aria-expanded', 'false'); };
+  const error = (err) => make('p', 'rv__err', err.message || String(err));
 
-  const setPicking = (on) => {
-    picking = on;
-    document.documentElement.classList.toggle('rv-picking', on);
-    pickBtn.setAttribute('aria-pressed', String(on));
-    pickLabel.textContent = on ? 'Pick what to change · Esc to stop' : 'Comment';
-    if (!on) showHover(null);
-  };
-
-  // First time Comment is pressed: say how it works (never on page load, so it covers nothing).
-  const firstTip = () => {
-    let seen = false;
-    try { seen = localStorage.getItem('ymt-review-tip') === '1'; } catch { seen = false; }
-    if (seen) return;
-    try { localStorage.setItem('ymt-review-tip', '1'); } catch {}
-    showCard(make('b', '', 'Review mode'), make('p', '', 'Point at anything (a heading, a photo, a button) and click it, then write what you would like changed. Esc stops.'));
-    setTimeout(() => { if (card.querySelector('b')?.textContent === 'Review mode') hideCard(); }, 4500);
-  };
-
-  /* ---------- Local comments (staging) ---------- */
-  const load = () => { try { return JSON.parse(localStorage.getItem(STORE) || '[]'); } catch { return []; } };
-  const save = (all) => { try { localStorage.setItem(STORE, JSON.stringify(all)); } catch {} };
-  const here = location.pathname.split('/').pop() || 'index.html';
-  const pinLayer = [];
-
-  const renderPins = () => {
-    pinLayer.splice(0).forEach((p) => p.remove());
-    if (inClaude) return;
-    const all = load();
-    if (listBtn) listBtn.querySelector('[data-rv-count]').textContent = String(all.filter((t) => t.status === 'open').length);
-    all.forEach((t, i) => {
-      if (t.page !== here) return;
-      let el = null;
-      try { el = t.anchor ? document.querySelector(t.anchor) : null; } catch { el = null; }
-      if (!el) return;
+  let threads = [];
+  let filter = 'open';
+  const pins = [];
+  const anchorEl = (t) => { try { return document.querySelector(t.anchor); } catch { return null; } };
+  const render = () => {
+    pins.splice(0).forEach((p) => p.remove());
+    const open = threads.filter((t) => t.status === 'open').length;
+    drawerBtn.textContent = `Comments on this page (${open})`;
+    threads.forEach((t, i) => {
+      const el = anchorEl(t);
+      if (!el || (filter !== 'all' && t.status !== filter)) return;
       const r = el.getBoundingClientRect();
       const pin = make('button', 'rv-pin' + (t.status === 'resolved' ? ' is-done' : ''), String(i + 1));
       pin.type = 'button';
-      pin.setAttribute('aria-label', `Comment ${i + 1}: ${t.comments[0].text.slice(0, 80)}`);
-      pin.style.left = (r.left + scrollX + Math.min(r.width - 14, 18)) + 'px';
-      pin.style.top = (r.top + scrollY + Math.min(r.height - 14, 18)) + 'px';
-      pin.addEventListener('click', () => openList(t.id));
+      pin.setAttribute('aria-label', `Comment ${i + 1} by ${t.comments[0]?.author || 'a reviewer'}: ${(t.comments[0]?.text || '').slice(0, 80)}`);
+      pin.style.left = (r.left + scrollX + Math.min(r.width / 2, 20)) + 'px';
+      pin.style.top = (r.top + scrollY + Math.min(r.height / 2, 20)) + 'px';
+      pin.addEventListener('click', () => openThread(t.id));
       document.body.appendChild(pin);
-      pinLayer.push(pin);
+      pins.push(pin);
     });
   };
+  const refresh = async () => {
+    try { threads = (await call(`/threads?page=${encodeURIComponent(here)}`)).threads; } catch { threads = []; }
+    render();
+  };
+  const message = (c) => {
+    const m = make('div', 'rv__msg');
+    const who = make('div'); who.append(make('b', '', c.author), make('small', '', ` · ${c.role} · ${c.date}`));
+    m.append(who, make('div', '', c.text));
+    return m;
+  };
 
-  const exportDoc = () => ({ source: `staging browser comments from ${location.origin}`, exported: new Date().toISOString(), threads: load() });
-  const openList = (focusId) => {
-    const all = load();
+  const openThread = (id) => {
+    const t = threads.find((x) => x.id === id);
+    if (!t) return;
+    const n = threads.indexOf(t) + 1;
+    const el = anchorEl(t);
+    if (el) { el.classList.add('rv-flash'); setTimeout(() => el.classList.remove('rv-flash'), 1600); }
+    const head = make('span', 'rv__where', `#${n} · ${t.location || t.anchor}${t.status === 'resolved' ? ' · resolved' : ''}`);
+    const msgs = t.comments.map(message);
+    const label = make('label', '', 'Your reply'); const area = make('textarea'); area.id = 'rv-reply'; area.maxLength = 2000; label.htmlFor = 'rv-reply';
+    const send = make('button', 'rv__solid', 'Reply'); send.type = 'button';
+    const close = make('button', 'rv__ghost', 'Close'); close.type = 'button'; close.addEventListener('click', () => { hideCard(); pickBtn.focus(); });
+    const row = make('div', 'rv__row'); row.append(send);
+    if (me.role === 'owner') {
+      const toggle = make('button', 'rv__ghost', t.status === 'resolved' ? 'Reopen' : 'Resolve'); toggle.type = 'button';
+      toggle.addEventListener('click', async () => { try { await call(`/threads/${t.id.slice(1)}/resolve`, { method: 'POST', body: JSON.stringify({ status: t.status === 'resolved' ? 'open' : 'resolved' }) }); await refresh(); openThread(id); } catch (err) { card.append(error(err)); } });
+      const del = make('button', 'rv__ghost', 'Delete as spam'); del.type = 'button';
+      del.addEventListener('click', async () => { if (!confirm('Delete this thread for everyone?')) return; try { await call(`/threads/${t.id.slice(1)}`, { method: 'DELETE' }); await refresh(); hideCard(); } catch (err) { card.append(error(err)); } });
+      row.append(toggle, del);
+    }
+    row.append(close);
+    send.addEventListener('click', async () => {
+      const text = area.value.trim(); if (!text) { area.focus(); return; }
+      send.disabled = true;
+      try { await call(`/threads/${t.id.slice(1)}/replies`, { method: 'POST', body: JSON.stringify({ text }) }); await refresh(); openThread(id); } catch (err) { send.disabled = false; card.append(error(err)); }
+    });
+    showCard(head, ...msgs, label, area, row);
+  };
+
+  const openDrawer = () => {
+    const tabs = make('div', 'rv__row');
+    [['open', 'Open'], ['resolved', 'Resolved'], ['all', 'All']].forEach(([value, text]) => {
+      const b = make('button', 'rv__ghost', text); b.type = 'button'; b.setAttribute('aria-pressed', String(filter === value));
+      b.addEventListener('click', () => { filter = value; render(); openDrawer(); });
+      tabs.append(b);
+    });
     const list = make('ol', 'rv__list');
-    all.forEach((t, i) => {
+    threads.forEach((t, i) => {
+      if (filter !== 'all' && t.status !== filter) return;
       const li = make('li', t.status === 'resolved' ? 'is-done' : '');
       const body = make('div');
-      body.append(make('span', 'rv__where', `${t.page} · ${t.location}`), make('div', 'rv__text', t.comments[0].text));
-      const row = make('div', 'rv__row');
-      const go = make('a', 'rv__ghost', 'Show');
-      go.href = t.page === here ? '#' : `${t.page}#rv-${t.id}`;
-      go.addEventListener('click', (e) => {
-        if (t.page !== here) return;
-        e.preventDefault();
-        let el = null; try { el = document.querySelector(t.anchor); } catch { el = null; }
-        if (el) { el.scrollIntoView({ block: 'center' }); el.classList.add('rv-flash'); setTimeout(() => el.classList.remove('rv-flash'), 1600); }
-      });
-      const done = make('button', 'rv__ghost', t.status === 'resolved' ? 'Reopen' : 'Done'); done.type = 'button';
-      done.addEventListener('click', () => { const next = load(); next[i].status = next[i].status === 'resolved' ? 'open' : 'resolved'; save(next); renderPins(); openList(); });
-      const del = make('button', 'rv__ghost', 'Delete'); del.type = 'button';
-      del.addEventListener('click', () => { const next = load(); next.splice(i, 1); save(next); renderPins(); openList(); });
-      row.append(go, done, del);
-      body.append(row);
+      body.append(make('span', 'rv__where', t.location || t.anchor), make('div', 'rv__text', `${t.comments[0]?.author}: ${t.comments[0]?.text || ''}`));
+      const view = make('button', 'rv__ghost', `Open (${t.comments.length})`); view.type = 'button';
+      view.addEventListener('click', () => { anchorEl(t)?.scrollIntoView({ block: 'center', behavior: reduce ? 'auto' : 'smooth' }); openThread(t.id); });
+      const r = make('div', 'rv__row'); r.append(view); body.append(r);
       li.append(make('span', 'rv__num', String(i + 1)), body);
-      if (t.id === focusId) li.style.outline = '2px solid var(--gold, #f2c24a)';
       list.append(li);
     });
-    const actions = make('div', 'rv__row');
-    const copy = make('button', 'rv__solid', 'Copy as JSON'); copy.type = 'button';
-    copy.addEventListener('click', () => navigator.clipboard?.writeText(JSON.stringify(exportDoc(), null, 2)).then(() => { copy.textContent = 'Copied'; }, () => { copy.textContent = 'Copy blocked: use Download'; }));
-    const dl = make('a', 'rv__ghost', 'Download'); dl.download = 'comments.json';
-    dl.href = URL.createObjectURL(new Blob([JSON.stringify(exportDoc(), null, 2)], { type: 'application/json' }));
-    const review = make('a', 'rv__ghost', 'Review copy'); review.href = REVIEW_COPY_URL; review.target = '_blank'; review.rel = 'noopener';
+    const empty = list.children.length ? [] : [make('p', '', filter === 'open' ? 'No open comments on this page. Tap Comment to add one.' : 'Nothing here yet.')];
     const close = make('button', 'rv__ghost', 'Close'); close.type = 'button'; close.addEventListener('click', hideCard);
-    actions.append(copy, dl, review, close);
-    const intro = make('p', '', all.length ? 'Saved in this browser. Export them for the review board, or leave them on the review copy so the team sees them.' : 'No comments yet. Tap Comment and click anything on the page.');
-    showCard(make('b', '', `Comments (${all.length})`), intro, list, actions);
-    listBtn?.setAttribute('aria-expanded', 'true');
+    const foot = make('div', 'rv__row'); foot.append(close);
+    showCard(make('h2', '', `Comments on this page (${threads.length})`), make('p', '', `Signed in as ${me.name} (${me.role}).`), tabs, ...empty, list, foot);
+    drawerBtn.setAttribute('aria-expanded', 'true');
   };
-  listBtn?.addEventListener('click', () => (card.hidden || !card.querySelector('.rv__list') ? openList() : hideCard()));
+  drawerBtn.addEventListener('click', () => (drawerBtn.getAttribute('aria-expanded') === 'true' ? hideCard() : openDrawer()));
 
-  const compose = (el) => {
+  // Turnstile, only on a reviewer's first comment and only once Eva has added keys.
+  const turnstile = async (into) => {
+    if (!me.turnstile) return null;
+    if (!window.turnstile) {
+      await new Promise((resolve, reject) => { const s = document.createElement('script'); s.src = 'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit'; s.onload = resolve; s.onerror = reject; document.head.appendChild(s); });
+    }
+    return new Promise((resolve) => { const slot = make('div'); into.append(slot); window.turnstile.render(slot, { sitekey: me.turnstile, callback: resolve, 'error-callback': () => resolve(null), 'expired-callback': () => resolve(null) }); });
+  };
+
+  const compose = async (el) => {
     const where = `${kindOf(el)}${labelOf(el) ? ' · ' + labelOf(el) : ''}`;
     const label = make('label', '', 'What would you like changed?');
-    const area = make('textarea'); area.maxLength = 2000; area.id = 'rv-text'; label.htmlFor = 'rv-text';
-    const ok = make('button', 'rv__solid', 'Save comment'); ok.type = 'button';
+    const area = make('textarea'); area.id = 'rv-text'; area.maxLength = 2000; label.htmlFor = 'rv-text';
+    const post = make('button', 'rv__solid', 'Post comment'); post.type = 'button';
     const cancel = make('button', 'rv__ghost', 'Cancel'); cancel.type = 'button';
-    const row = make('div', 'rv__row'); row.append(ok, cancel);
+    const row = make('div', 'rv__row'); row.append(post, cancel);
     showCard(make('span', 'rv__where', where), label, area, row);
     el.classList.add('rv-flash');
     area.focus();
     const finish = () => { el.classList.remove('rv-flash'); hideCard(); pickBtn.focus(); };
     cancel.addEventListener('click', finish);
-    ok.addEventListener('click', () => {
-      const text = area.value.trim();
-      if (!text) { area.focus(); return; }
-      const all = load();
-      all.push({ id: 'local-' + Date.now().toString(36), page: here, anchor: cssPath(el), location: where, quote: labelOf(el), status: 'open', sentToClaude: false, comments: [{ role: 'owner', date: new Date().toISOString().slice(0, 10), text }] });
-      save(all);
-      renderPins();
-      finish();
+    const check = turnstile(card).catch(() => null);
+    post.addEventListener('click', async () => {
+      const text = area.value.trim(); if (!text) { area.focus(); return; }
+      post.disabled = true;
+      try {
+        const body = { page: here, anchor: cssPath(el), location: where, quote: labelOf(el), viewport: innerWidth, text, turnstile: await check };
+        await call('/threads', { method: 'POST', body: JSON.stringify(body) });
+        me.turnstile = null; // checked once
+        await refresh();
+        finish();
+      } catch (err) { post.disabled = false; card.append(error(err)); }
     });
   };
 
   /* ---------- Picking ---------- */
-  pickBtn.addEventListener('click', () => { hideCard(); setPicking(!picking); if (picking) firstTip(); });
-  document.addEventListener('pointermove', (event) => {
-    if (!picking) return;
-    const target = targetFor(event.target);
-    if (target !== hovered) showHover(target);
-  }, true);
-  addEventListener('scroll', () => { if (picking && hovered) showHover(hovered); }, { passive: true });
-  document.addEventListener('click', async (event) => {
-    if (!picking || own(event.target)) return;
+  const setPicking = (on) => {
+    pickingNow = on;
+    document.documentElement.classList.toggle('rv-picking', on);
+    pickBtn.setAttribute('aria-pressed', String(on));
+    pickLabel.textContent = on ? 'Tap what to change · Esc to stop' : 'Comment';
+    if (!on) showHover(null);
+  };
+  pickBtn.addEventListener('click', () => { hideCard(); setPicking(!pickingNow); });
+  document.addEventListener('pointermove', (event) => { if (pickingNow) { const t = targetFor(event.target); if (t !== hovered) showHover(t); } }, true);
+  addEventListener('scroll', () => { if (pickingNow && hovered) showHover(hovered); }, { passive: true });
+  document.addEventListener('click', (event) => {
+    if (!pickingNow || own(event.target)) return;
     const target = targetFor(event.target);
     if (!target) return;
     event.preventDefault();
     event.stopPropagation();
     setPicking(false);
-    if (!inClaude) { compose(target); return; }
-    try {
-      const result = await composer.openComposer({ element: target });
-      if (!result.opened) showCard(make('p', '', 'Finish or close the comment that is already open, then try again.'));
-    } catch (err) {
-      if (err && ['unavailable', 'not_granted', 'capability_disabled', 'capability_removed'].includes(err.code)) box.hidden = true;
-      else showCard(make('p', '', 'That comment could not be opened. Please try again in a moment.'));
-    }
+    compose(target);
   }, true);
   document.addEventListener('keydown', (event) => {
     if (event.key !== 'Escape') return;
-    // Only when the review tool is in use, so Escape still closes the site's own panels normally.
-    if (picking) setPicking(false);
+    if (pickingNow) setPicking(false);
     else if (!card.hidden && box.contains(document.activeElement)) { hideCard(); pickBtn.focus(); }
   });
 
-  renderPins();
-  addEventListener('load', renderPins);
+  await refresh();
+  addEventListener('load', render);
   let resizeTimer;
-  addEventListener('resize', () => { clearTimeout(resizeTimer); resizeTimer = setTimeout(renderPins, 150); });
-  // Reveal animations move things after load; settle the pins once they have played.
-  setTimeout(renderPins, 1500);
-
-  // On phones the home film's own controls (pause, Who it's for) sit in this corner, so the bar waits
-  // until the film has scrolled mostly out of view.
-  const film = document.querySelector('.hero');
-  if (film && 'IntersectionObserver' in window && matchMedia('(max-width: 700px)').matches) {
-    new IntersectionObserver(([entry]) => { box.hidden = entry.intersectionRatio > 0.3 && !picking; }, { threshold: [0, 0.3, 1] }).observe(film);
-  }
+  addEventListener('resize', () => { clearTimeout(resizeTimer); resizeTimer = setTimeout(render, 150); });
+  setTimeout(render, 1500); // reveals move things after load
 })();

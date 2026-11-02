@@ -9,7 +9,7 @@ The impeccable skill is installed in this repo. It is the design authority for a
 
 # Build the YMT comment system
 
-Our client Mary reviews the YMT site inside a claude.ai artifact: https://claude.ai/artifact/6EH6MLrH7ecfBfVtt6vfw1. Every page there has a **Comment** button (`review/review.js`). She taps it, taps an element, and leaves a comment pinned to that element. Build the system that turns those comments into:
+Our client Mary reviews the YMT site inside a claude.ai artifact: (the retired claude.ai review copy). Every page there has a **Comment** button (`review/review.js`). She taps it, taps an element, and leaves a comment pinned to that element. Build the system that turns those comments into:
 1. a Figma file of the pages with the comments attached,
 2. an animated, Figma-style board (an HTML page plus an MP4), and
 3. a closed loop: once each fix lands, reply in its thread and resolve it.

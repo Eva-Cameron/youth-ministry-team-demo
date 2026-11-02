@@ -104,7 +104,7 @@ Make all the §3 fixes, one commit per item. Grep afterwards: no `<form`, no `st
 ### D · Review board ("comment mode → Figma")
 Mary reviews the site in a claude.ai artifact, and every page there has a **Comment** button (`review/review.js`). Build a repeatable tool that turns her comments into an animated, Figma-style board of the pages with the comments attached.
 
-1. **Collect.** Read the threads on the review artifact https://claude.ai/artifact/6EH6MLrH7ecfBfVtt6vfw1 with the ArtifactComments tool. Save them to `review/comments.json`, with one entry per thread:
+1. **Collect.** Read the threads on the review artifact (the retired claude.ai review copy) with the ArtifactComments tool. Save them to `review/comments.json`, with one entry per thread:
    - page file and `[anchored at]` CSS path
    - location and quoted text
    - each comment's text, author role and date
