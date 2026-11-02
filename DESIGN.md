@@ -189,6 +189,8 @@ A dark, warm-black neutral with pastel and saturated route accents. Shades are k
 ### Named Rules
 **The Route Owns the Colour Rule.** Accents change only through `--acc`, `--acc-ink` and `--acc-2` on `body[data-aud]` or `body[data-feel]`. Never colour one page by hand.
 
+**The Accent Runs Down the Page Rule.** On route pages the accent doesn't stop at the hero. It colours the section label rules, the timeline's Next marker and the large timeline dates. It is used as text only at large sizes, where Signal Blue on Ink (3.4:1) passes.
+
 **The AA Rule.** Every text and background pair passes WCAG AA (4.5:1 for body text, 3:1 for large text and UI). White never sits on Blossom Pink, Mint, Butter, Sky or Purple Text, and ink never sits on Signal Blue or Stage Red.
 
 **The Focus Follows the Ground Rule.** The focus ring is a 3px outline in `--focus` at a 3px offset. It is white on the dark ground; light surfaces (light glass, download cards, the white photo band) set it to ink, and route heroes set it to `--acc-ink`.
@@ -199,7 +201,7 @@ A dark, warm-black neutral with pastel and saturated route accents. Shades are k
 **Body Font:** Satoshi (with Helvetica Neue, Arial), roman and italic
 **Label/Mono Font:** Space Mono (with Courier New)
 
-**Character:** Space Grotesk's squared, slightly quirky geometry gives the headings energy without shouting. Satoshi is warm and clear for long reading, even for younger readers, and its italic carries quotes and statement lines, the roles a serif once held. Space Mono files everything: dates, section numbers, tags.
+**Character:** Space Grotesk's squared, slightly quirky geometry gives the headings energy without shouting. Satoshi is warm and clear for long reading, even for younger readers, and its italic carries testimonials and pull quotes. Space Mono files everything: dates, section numbers, tags.
 
 All three faces are self-hosted woff2 in `assets/fonts`. Space Grotesk and Space Mono are subset to Latin; Satoshi ships unmodified, as its licence requires. Only the display face and the regular body face are preloaded.
 
@@ -208,6 +210,9 @@ All three faces are self-hosted woff2 in `assets/fonts`. Space Grotesk and Space
 - **Grave display** (300, same size, 0.95, -0.03em): page `h1`s in the grave register only.
 - **Wordmark** (700 Space Grotesk, uppercase, -0.05em in the home hero; -0.07em for the footer name): the YMT wordmark.
 - **Headline** (700, clamp(38px, 5vw, 80px), 0.95, -0.04em): section `h2`s and timeline dates.
+- **Statement** (400–500 Space Grotesk, clamp(32px, 4.2vw, 72px), 1.04–1.1, -0.03em to -0.035em): the home ethos line, the mission quote. Secondary words sit in Text 2, and emphasis comes from 700 white, not italic.
+- **Card headline** (700 Space Grotesk, clamp(30px, 3.1vw, 50px), 1, -0.04em): the home route cards.
+- **Subheading** (500 Space Grotesk, clamp(22px, 1.9vw, 28px), 1.15, -0.02em): story chapter titles.
 - **Title** (500 Satoshi, clamp(22px, 1.9vw, 28px), 1.15, -0.02em): card titles, row titles, info cards.
 - **Lede** (400 Satoshi, clamp(18px, 1.3vw, 21px), 1.5, max 44ch): the paragraph under a heading.
 - **Body** (400 Satoshi, 17px, 1.55, max 62ch): prose and descriptions.
@@ -216,6 +221,10 @@ All three faces are self-hosted woff2 in `assets/fonts`. Space Grotesk and Space
 
 ### Named Rules
 **The Three Faces Rule.** Space Grotesk, Satoshi and Space Mono only. Registers change weight, size and pace, never the family.
+
+**The No Eyebrow Rule.** Headings carry their own weight. No small labels sit above a heading. Metadata such as an age range goes under the heading as `.phero__meta`. The ruled section label row is a divider, not an eyebrow.
+
+**The Drawn Arrow Rule.** Arrows are the one stroked SVG (`M5 12h13M13 6l6 6-6 6`), inline or through the `--arrow` mask. Never use Unicode arrow glyphs.
 
 ## Layout
 
