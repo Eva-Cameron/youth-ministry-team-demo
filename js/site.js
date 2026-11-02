@@ -168,6 +168,15 @@
       <div class="bite__foot"><span class="bite__time">${esc(r.time)}</span>${read || `<a class="bite__dl" href="resources/${esc(r.id)}.pdf" download><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg>PDF</a>`}</div>
     </article>`;
   };
+  // Route heroes show the next event for their audience, so they never advertise one that has passed.
+  $$('[data-next]').forEach((fig) => {
+    const e = pick(fig.dataset.next, upcoming())[0];
+    if (!e) return;
+    const image = $('img', fig);
+    image.src = img(e.img);
+    $('figcaption', fig).innerHTML = `<small>Next${e.sample ? ' · to be confirmed' : ''}</small><b>${esc(e.title)}</b><span>${esc(when(e))} · ${esc(e.place)}</span>`;
+  });
+
   $$('[data-resources]').forEach((box) => { box.innerHTML = pick(box.dataset.resources, D.resources).map(bite).join(''); });
   // Download filter on the resources page.
   $$('[data-filter]').forEach((bar) => {

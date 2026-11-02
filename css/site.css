@@ -257,6 +257,7 @@ a.tag::after { content: ""; position: absolute; inset: -13px -4px; }
 .phero__photo { position: relative; height: min(64vh, 640px); aspect-ratio: 4 / 5; }
 .phero__photo img { width: 100%; height: 100%; object-fit: cover; }
 .phero__photo figcaption { position: absolute; left: var(--sp-3); right: var(--sp-3); bottom: var(--sp-3); padding: 14px var(--sp-4); }
+.phero__photo figcaption small { display: block; margin-bottom: 4px; font: 400 var(--fs-xs)/1.3 var(--mono); text-transform: uppercase; }
 .phero__photo figcaption b { display: block; font: 600 15px/1.3 var(--sans); }
 .phero__photo figcaption span { font: 400 var(--fs-sm)/1.35 var(--sans); }
 .phero--photo { --focus: var(--white); background: var(--night); color: var(--white); }
