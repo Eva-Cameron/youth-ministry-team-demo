@@ -133,7 +133,7 @@
   .chapter__img { display: block; width: 100%; aspect-ratio: 4 / 3; object-fit: cover; border-radius: var(--r-md); }
 }
 @media (max-width: 680px) {
-  .label { grid-template-columns: 38px minmax(0, 1fr) auto; gap: 10px; font-size: 11px; }
+  .label { grid-template-columns: 38px max-content minmax(0, 1fr); gap: 10px var(--sp-4); font-size: 11px; }
   .feel { height: 300vh; }
   .feel__item { --fw: 54vw; }
   .who__card { top: calc(76px + var(--k) * 14px); min-height: 78svh; grid-template-columns: minmax(0, 1fr); grid-template-rows: none; align-content: start; }

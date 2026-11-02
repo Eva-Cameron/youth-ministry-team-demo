@@ -156,8 +156,9 @@ button, input, select, textarea { font: inherit; color: inherit; }
 }
 
 /* 5 Type */
-.label { display: grid; grid-template-columns: 74px minmax(0, 1fr) auto; gap: var(--sp-4); align-items: center; padding-top: var(--sp-3); margin-bottom: var(--sp-6); border-top: 1px solid var(--line); font: 400 var(--fs-xs)/1.3 var(--mono); text-transform: uppercase; }
-.label span:last-child { text-align: right; }
+/* The ruled label row is a divider: number, name, then the note close beside them in the muted tone, so it is read. */
+.label { display: grid; grid-template-columns: 74px max-content minmax(0, 1fr); gap: var(--sp-4) var(--sp-6); align-items: baseline; padding-top: var(--sp-3); margin-bottom: var(--sp-6); border-top: 1px solid var(--line); font: 400 var(--fs-xs)/1.3 var(--mono); text-transform: uppercase; }
+.label span:nth-child(3) { color: var(--text-2); }
 .h1 { font: 700 var(--fs-3xl)/.95 var(--display); letter-spacing: -.035em; text-wrap: balance; }
 .h2 { font: 700 var(--fs-2xl)/1 var(--display); letter-spacing: -.03em; text-wrap: balance; }
 .h3 { font: 500 var(--fs-lg)/var(--lh-snug) var(--sans); letter-spacing: -.02em; }
@@ -165,7 +166,7 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .kicker { font: 400 var(--fs-xs)/1.3 var(--mono); text-transform: uppercase; }
 .muted { color: var(--text-2); }
 .small { font-size: var(--fs-sm); }
-@media (max-width: 680px) { .label { grid-template-columns: 38px minmax(0, 1fr) auto; gap: var(--sp-2); font-size: 11px; } }
+@media (max-width: 680px) { .label { grid-template-columns: 38px max-content minmax(0, 1fr); gap: var(--sp-2) var(--sp-4); font-size: 11px; } }
 
 /* 6 Controls */
 .btn { display: inline-flex; align-items: center; justify-content: center; gap: var(--sp-2); min-height: 48px; padding: 0 var(--sp-5); border: 0; border-radius: 999px; background: var(--white); color: var(--ink); font: 600 16px/1 var(--sans); text-decoration: none; white-space: nowrap; cursor: pointer; transition: transform .2s var(--ease), background-color .2s ease, color .2s ease; }
@@ -313,11 +314,20 @@ a.tag::after { content: ""; position: absolute; inset: -13px -4px; }
   .phero__photo { height: auto; width: min(100%, 420px); }
 }
 
-/* Texture: a fine grain on heroes. (Eva asked for no curly contour lines; straight strata bands
-   at section changes come from workstream C.) */
+/* Texture: grain everywhere (body), and strata. js/terrain.js draws near-straight strata lines on a canvas behind
+   each route hero (a clearing stays behind the hero words) and wavy sediment bands into the top padding of each
+   section that follows another, so they never sit under running text. No closed contour loops anywhere.
+   Without script the heroes keep their grain and the sections their plain ground. */
 .phero { background-image: var(--noise); background-blend-mode: overlay; }
 .phero--photo .phero__bg::after, .hero__scrim::after { content: ""; position: absolute; inset: 0; background: var(--noise); mix-blend-mode: overlay; opacity: 1; pointer-events: none; }
 .hero__scrim::after { opacity: .6; }
+.section, .ethos, .who, .tiktok, .globe-sec, .foot { position: relative; isolation: isolate; }
+.terrain { position: absolute; left: 0; top: 0; z-index: -1; width: 100%; height: 100%; pointer-events: none; }
+.phero .terrain { -webkit-mask: radial-gradient(ellipse 50% 56% at 20% 74%, transparent 22%, #000 76%); mask: radial-gradient(ellipse 50% 56% at 20% 74%, transparent 22%, #000 76%); }
+.who .terrain { height: min(90vh, 820px); -webkit-mask: linear-gradient(#000 40%, transparent); mask: linear-gradient(#000 40%, transparent); }
+.strata { position: absolute; left: 0; right: 0; top: 0; z-index: -1; height: calc(var(--section) * .74); pointer-events: none; }
+.strata svg { display: block; width: 100%; height: 100%; } /* translucent fills: the body grain shows through */
+@media (max-width: 900px) { .phero .terrain { -webkit-mask: linear-gradient(#000 18%, transparent 52%); mask: linear-gradient(#000 18%, transparent 52%); } }
 
 /* 11 Content blocks */
 /* Work grid: rows of mixed widths; each row shares one height. */
