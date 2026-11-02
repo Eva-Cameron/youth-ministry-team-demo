@@ -7,17 +7,16 @@
 /* The mark draws itself in clean outlines, hatches in, settles into the solid logo, then the
    card lifts straight up. Shapes are traced from assets/images/logo.png; --i staggers them. */
 .intro__mark { width: clamp(170px, 24vw, 340px); overflow: visible; color: var(--white); }
-.intro__mark use { --d: calc(var(--i) * 85ms); }
-.intro__lines use { fill: none; stroke: currentColor; stroke-width: 5; stroke-linejoin: round; stroke-dasharray: 1; stroke-dashoffset: 1; animation: intro-draw .6s var(--ease) var(--d) forwards, intro-out .3s ease 1.35s forwards; }
-.intro__hatch use { opacity: 0; animation: intro-in .35s ease calc(.45s + var(--d)) forwards, intro-out .3s ease 1.35s forwards; }
-.intro__solid use { fill: currentColor; opacity: 0; animation: intro-in .35s var(--ease) calc(1.15s + var(--d) / 3) forwards; }
+.intro__mark use { --d: calc(var(--i) * 60ms); }
+.intro__lines use { fill: none; stroke: currentColor; stroke-width: 5; stroke-linejoin: round; stroke-dasharray: 1; stroke-dashoffset: 1; animation: intro-draw .45s var(--ease) var(--d) forwards, intro-out .25s ease 1s forwards; }
+.intro__hatch use { opacity: 0; animation: intro-in .3s ease calc(.3s + var(--d)) forwards, intro-out .25s ease 1s forwards; }
+.intro__solid use { fill: currentColor; opacity: 0; animation: intro-in .3s var(--ease) calc(.85s + var(--d) / 3) forwards; }
 .intro__meta { position: absolute; right: var(--gutter); bottom: max(24px, env(safe-area-inset-bottom)); left: var(--gutter); display: flex; justify-content: space-between; border-top: 1px solid var(--line); padding-top: 10px; font-family: var(--mono); font-size: .72rem; text-transform: uppercase; opacity: 0; animation: intro-in .5s ease .3s forwards; }
 @keyframes intro-draw { to { stroke-dashoffset: 0; } }
 @keyframes intro-in { to { opacity: 1; } }
 @keyframes intro-out { to { opacity: 0; } }
 @keyframes intro-failsafe { to { visibility: hidden; } }
 /* The hero sits under the glass nav now, so its own sub-links step down a little. */
-.hero .hero__subnav a { text-decoration: none; }
 
 /* Feel registers. Each kind of event moves at its own pace:
    gentle  Primary: soft pink, a soft ease-out, nothing sudden.
@@ -58,7 +57,7 @@
 }
 
 /* The pinned row of photos: white frame, the middle photo names the feeling, the rest fade. */
-.feel { position: relative; height: 320vh; }
+.feel { position: relative; height: 220vh; }
 .feel__stick { position: sticky; top: 0; height: 100vh; height: 100svh; overflow: hidden; display: grid; grid-template-rows: auto minmax(0, 1fr) auto; padding: clamp(100px, 13vh, 150px) 0 clamp(28px, 5vh, 56px); background: var(--white); color: var(--ink); --focus: var(--ink); }
 .feel__line { text-align: center; font: 600 clamp(24px, 2.6vw, 40px)/1.1 var(--display); letter-spacing: -.03em; padding-inline: var(--gutter); color: rgba(16, 12, 21, .62); }
 .feel__mask { display: inline-block; overflow: hidden; vertical-align: bottom; padding-bottom: .08em; margin-bottom: -.08em; }
@@ -83,8 +82,8 @@
 /* 02 Our story: long text on the left, the photo on the right swaps as each chapter passes. */
 .story__grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: clamp(32px, 5vw, 96px); }
 .story__chapters { display: grid; }
-.chapter { min-height: 72vh; display: grid; align-content: center; gap: 18px; padding-block: 10vh; }
-.chapter:first-child { padding-top: 0; min-height: 60vh; align-content: start; }
+.chapter { min-height: 56vh; display: grid; align-content: center; gap: 18px; padding-block: 7vh; }
+.chapter:first-child { padding-top: 0; min-height: 46vh; align-content: start; }
 .chapter__title { font: 600 clamp(22px, 1.9vw, 28px)/1.15 var(--display); letter-spacing: -.015em; }
 .chapter__img { display: none; }
 .chapter p { font: 400 clamp(20px, 1.6vw, 24px)/1.55 var(--sans); max-width: 36ch; }
@@ -135,7 +134,7 @@
 }
 @media (max-width: 680px) {
   .label { grid-template-columns: 38px minmax(0, 1fr) auto; gap: 10px; font-size: 11px; }
-  .feel { height: 300vh; }
+  .feel { height: 210vh; }
   .feel__item { --fw: 54vw; }
   .who__card { top: calc(76px + var(--k) * 14px); min-height: 78svh; grid-template-columns: minmax(0, 1fr); grid-template-rows: none; align-content: start; }
   .who__body, .who__link, .who__art { grid-column: 1; grid-row: auto; }

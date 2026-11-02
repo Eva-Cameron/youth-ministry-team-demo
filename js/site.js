@@ -264,14 +264,14 @@
     const text = h.textContent.trim();
     h.setAttribute('aria-label', text);
     h.innerHTML = text.split(/\s+/).map((w) => `<span class="w" aria-hidden="true"><span>${esc(w)}</span></span>`).join(' ');
-    staggered($$('.w > span', h), 55);
+    staggered($$('.w > span', h), 28);
     h.classList.add('words');
   });
   const parts = $$('.rise, .words, .shot, [data-rise] > *');
   if (!reduce && 'IntersectionObserver' in window) {
     const io = new IntersectionObserver((entries) => {
       entries.filter((x) => x.isIntersecting).forEach((x, i) => {
-        if (!x.target.classList.contains('words')) x.target.style.setProperty('--delay', i * 70 + 'ms');
+        if (!x.target.classList.contains('words')) x.target.style.setProperty('--delay', i * 35 + 'ms');
         x.target.classList.add('in');
         io.unobserve(x.target);
       });
@@ -285,20 +285,29 @@
   const clipsBtn = $('[data-clips-toggle]');
   let clipsPaused = reduce;
   const onScreen = new Set();
+  // Only the lead clip (the pinned one in the TikTok stage) autoplays.
+  const lead = (v) => !v.closest('.phone') || !!v.closest('.phone--hero');
   if (vids.length && !reduce && 'IntersectionObserver' in window) {
     const vio = new IntersectionObserver((es) => es.forEach((x) => {
       const v = x.target;
-      if (x.isIntersecting) { onScreen.add(v); if (!v.src) { v.src = v.dataset.src; v.load(); } if (!clipsPaused) v.play().catch(() => {}); }
+      if (x.isIntersecting) { onScreen.add(v); if (!v.src) { v.src = v.dataset.src; v.load(); } if (!clipsPaused && lead(v)) v.play().catch(() => {}); }
       else { onScreen.delete(v); if (!v.paused) v.pause(); }
     }), { rootMargin: '200px 0px' });
     vids.forEach((v) => vio.observe(v));
+    // The rest play while pointed at or focused, so the page never decodes every clip at once.
+    vids.filter((v) => !lead(v)).forEach((v) => {
+      const host = v.closest('a') || v;
+      const play = () => { if (!clipsPaused) v.play().catch(() => {}); };
+      host.addEventListener('pointerenter', play); host.addEventListener('focusin', play);
+      host.addEventListener('pointerleave', () => v.pause()); host.addEventListener('focusout', () => v.pause());
+    });
   }
   if (clipsBtn) {
     const setClips = () => { clipsBtn.setAttribute('aria-pressed', String(clipsPaused)); clipsBtn.textContent = clipsPaused ? 'Play clips' : 'Pause clips'; };
     clipsBtn.hidden = reduce;
     clipsBtn.addEventListener('click', () => {
       clipsPaused = !clipsPaused;
-      vids.forEach((v) => { if (clipsPaused) v.pause(); else if (onScreen.has(v)) v.play().catch(() => {}); });
+      vids.forEach((v) => { if (clipsPaused) v.pause(); else if (onScreen.has(v) && lead(v)) v.play().catch(() => {}); });
       setClips();
     });
     setClips();

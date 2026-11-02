@@ -298,8 +298,7 @@ a.tag::after { content: ""; position: absolute; inset: -13px -4px; }
 /* Texture: a fine grain on heroes. (Eva asked for no curly contour lines; straight strata bands
    at section changes come from workstream C.) */
 .phero { background-image: var(--noise); background-blend-mode: overlay; }
-.phero--photo .phero__bg::after, .hero__scrim::after { content: ""; position: absolute; inset: 0; background: var(--noise); mix-blend-mode: overlay; opacity: 1; pointer-events: none; }
-.hero__scrim::after { opacity: .6; }
+.phero--photo .phero__bg::after { content: ""; position: absolute; inset: 0; background: var(--noise); mix-blend-mode: overlay; opacity: 1; pointer-events: none; }
 
 /* 11 Content blocks */
 /* Work grid: rows of mixed widths; each row shares one height. */
@@ -519,13 +518,13 @@ body[data-feel="joy"] .shot:hover .shot__media img { transform: scale(1.05) rota
 .phero__photo figcaption, .story__count { z-index: 3; }
 
 /* 14 Motion: content is visible at rest; it moves only once on screen. */
-.js .rise.in { animation: rise .8s var(--ease) both; animation-delay: var(--delay, 0ms); }
+.js .rise.in { animation: rise .5s var(--ease) both; animation-delay: var(--delay, 0ms); }
 @keyframes rise { from { opacity: 0; transform: translateY(24px); } }
 @keyframes still { from { opacity: 0; filter: blur(8px); } }
 @keyframes pop { from { opacity: 0; transform: translateY(20px) scale(.96) rotate(-1deg); } }
 .w { display: inline-block; overflow: hidden; vertical-align: top; padding-bottom: .08em; margin-bottom: -.08em; }
 .w > span { display: inline-block; }
-.js .words.in .w > span { animation: word .9s var(--ease) both; animation-delay: var(--delay, 0ms); }
+.js .words.in .w > span { animation: word .55s var(--ease) both; animation-delay: var(--delay, 0ms); }
 @keyframes word { from { transform: translateY(105%); } }
 .toast { position: fixed; left: 50%; bottom: 20px; z-index: 250; max-width: min(520px, calc(100vw - 32px)); padding: 14px 18px; background: rgba(16, 12, 21, .84); box-shadow: inset 0 0 0 1px var(--glass-line); backdrop-filter: var(--blur); -webkit-backdrop-filter: var(--blur); font: 500 15px var(--sans); opacity: 0; transform: translate(-50%, 20px); pointer-events: none; transition: opacity .25s ease, transform .35s var(--ease); }
 .toast.is-on { opacity: 1; transform: translate(-50%, 0); }
