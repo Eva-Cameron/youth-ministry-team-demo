@@ -248,7 +248,7 @@ a.tag::after { content: ""; position: absolute; inset: -13px -4px; }
 .phero { --focus: var(--acc-ink); position: relative; isolation: isolate; display: grid; align-items: end; min-height: min(100svh, 940px); padding: 120px 0 clamp(var(--sp-6), 5vw, var(--sp-8)); background: var(--acc); color: var(--acc-ink); overflow: clip; }
 .phero__grid { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: var(--sp-6) clamp(var(--sp-6), 4vw, var(--sp-8)); align-items: end; }
 .phero h1 { margin-bottom: var(--sp-5); max-width: 12ch; }
-.phero__meta { display: flex; flex-wrap: wrap; gap: 6px var(--sp-4); margin-bottom: var(--sp-5); font: 400 13px var(--mono); text-transform: uppercase; }
+.phero__meta { display: flex; flex-wrap: wrap; gap: 6px var(--sp-4); margin-bottom: var(--sp-5); font: 400 13px/1.5 var(--mono); }
 .phero__lede { font: 400 var(--fs-md)/1.45 var(--sans); max-width: 42ch; margin-bottom: var(--sp-6); }
 .phero__actions { display: flex; flex-wrap: wrap; gap: 10px; }
 .phero__actions .btn--main { background: var(--acc-ink); color: var(--acc); }
