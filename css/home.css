@@ -103,6 +103,11 @@
 .who__stack { display: grid; gap: 24px; padding-inline: max(var(--gutter), env(safe-area-inset-left, 0px)); max-width: 1480px; margin: 0 auto; }
 .who__card { --k: 0; position: sticky; top: calc(90px + var(--k) * 22px); min-height: min(76vh, 700px); display: grid; grid-template-columns: minmax(120px, .5fr) minmax(0, 1.3fr) minmax(0, 1fr); grid-template-rows: auto minmax(0, 1fr); gap: 20px clamp(24px, 3vw, 56px); padding: clamp(22px, 2.6vw, 40px); border-radius: var(--r-lg); background: var(--f-bg); color: var(--f-fg); box-shadow: var(--shadow-2); overflow: hidden; text-decoration: none; }
 /* The cards stack over each other, so the focus ring sits inside the card in its own ink. */
+/* Each route card's photo takes its route's two tones (site.css, Duotone). */
+.who__card[data-feel="gentle"] { --duo-dark: var(--duo-primary-dark); --duo-light: var(--pink); }
+.who__card[data-feel="open"] { --duo-dark: var(--duo-secondary-dark); --duo-light: var(--blue-light); }
+.who__card[data-feel="serve"] { --duo-dark: var(--duo-volunteer-dark); --duo-light: var(--lilac); }
+.who__card[data-feel="home"] { --duo-dark: var(--duo-everyone-dark); --duo-light: var(--mint); }
 .who__card:focus-visible { outline-color: var(--f-fg); outline-offset: -8px; }
 .who__card:nth-child(2) { --k: 1; } .who__card:nth-child(3) { --k: 2; } .who__card:nth-child(4) { --k: 3; }
 .who__tag { font: 400 12px/1.3 var(--mono); text-transform: uppercase; padding-top: .6em; }
@@ -112,14 +117,11 @@
 .who__link span { display: inline-flex; transition: transform .3s var(--ease); }
 .who__link svg { width: .9em; height: .9em; stroke: currentColor; fill: none; stroke-width: 2.4; }
 .who__card:hover .who__link span { transform: translate(6px, 4px); }
-.who__art { grid-column: 2; grid-row: 2; align-self: end; display: block; width: min(100%, 460px); max-height: 40vh; aspect-ratio: 4 / 3; background: var(--f-acc); -webkit-mask-position: center; mask-position: center; -webkit-mask-size: cover; mask-size: cover; -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat; }
+.who__art { grid-column: 2; grid-row: 2; align-self: end; display: block; width: min(100%, 460px); max-height: 40vh; aspect-ratio: 4 / 3; border-radius: var(--r-md); }
+.who__art img { width: 100%; height: 100%; object-fit: cover; }
 .who__card.in h3 { animation: var(--f-anim); }
 .who__card[data-feel="serve"] { box-shadow: inset 0 0 0 1px var(--purple-line), var(--shadow-2); }
 .who__card[data-feel="home"].in .who__art { animation: f-rest 1.6s both; }
-.art--retreat-prayer { -webkit-mask-image: url("../assets/web/dots-retreat-prayer.webp"); mask-image: url("../assets/web/dots-retreat-prayer.webp"); }
-.art--youth-group { -webkit-mask-image: url("../assets/web/dots-youth-group.webp"); mask-image: url("../assets/web/dots-youth-group.webp"); }
-.art--interns { -webkit-mask-image: url("../assets/web/dots-interns.webp"); mask-image: url("../assets/web/dots-interns.webp"); }
-.art--village-chalet { -webkit-mask-image: url("../assets/web/dots-village-chalet.webp"); mask-image: url("../assets/web/dots-village-chalet.webp"); }
 
 
 @media (max-width: 900px) {

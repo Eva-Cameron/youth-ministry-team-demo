@@ -32,6 +32,13 @@
   --purple-line: #a561d5;
   --purple-text: #a561d5;
   --plum: #2a1530;
+  /* Duotone darks: each route's photos map from its dark to its light tone. */
+  --duo-primary-dark: #3d1630;
+  --duo-secondary-dark: #0d1240;
+  --duo-volunteer-dark: #1f1040;
+  --duo-everyone-dark: #18281e;
+  --duo-dark: var(--ink-2);
+  --duo-light: var(--stone);
   --gold: #f2c24a;
   --night: #120c1c;
 
@@ -98,11 +105,11 @@
   --acc-on-dark: var(--acc);
   color-scheme: dark;
 }
-body[data-aud="primary"] { --acc: var(--pink); --acc-ink: var(--ink); --acc-2: var(--butter); }
-body[data-aud="secondary"] { --acc: var(--blue); --acc-ink: var(--white); --acc-2: var(--red); --acc-on-dark: var(--blue-light); }
+body[data-aud="primary"] { --duo-dark: var(--duo-primary-dark); --duo-light: var(--pink); --acc: var(--pink); --acc-ink: var(--ink); --acc-2: var(--butter); }
+body[data-aud="secondary"] { --duo-dark: var(--duo-secondary-dark); --duo-light: var(--blue-light); --acc: var(--blue); --acc-ink: var(--white); --acc-2: var(--red); --acc-on-dark: var(--blue-light); }
 body[data-aud="secondary"][data-tone="red"] { --acc: var(--red); --acc-2: var(--butter); --acc-on-dark: var(--butter); }
-body[data-aud="volunteer"] { --acc: var(--purple-text); --acc-ink: var(--ink); --acc-2: var(--lilac); }
-body[data-aud="everyone"] { --acc: var(--mint); --acc-ink: var(--ink); --acc-2: var(--stone); }
+body[data-aud="volunteer"] { --duo-dark: var(--duo-volunteer-dark); --duo-light: var(--lilac); --acc: var(--purple-text); --acc-ink: var(--ink); --acc-2: var(--lilac); }
+body[data-aud="everyone"] { --duo-dark: var(--duo-everyone-dark); --duo-light: var(--mint); --acc: var(--mint); --acc-ink: var(--ink); --acc-2: var(--stone); }
 
 /* 3 Base */
 *, *::before, *::after { box-sizing: border-box; }
@@ -501,6 +508,15 @@ body[data-feel="grave"] .phero h1 { font-weight: 400; letter-spacing: -.025em; l
 body[data-feel="grave"] .rise.in { animation-name: still; animation-duration: 1.8s; }
 body[data-feel="joy"] .rise.in { animation-name: pop; animation-duration: .6s; animation-timing-function: var(--ease); }
 body[data-feel="joy"] .shot:hover .shot__media img { transform: scale(1.05) rotate(-1deg); }
+
+/* Duotone: photos render in their route's two tones (dark shadows, light highlights) under a fine
+   grain, so imagery and colour read as one system. The image is greyscale and multiplied onto the
+   light tone; a lighten layer lifts the shadows to the dark tone. */
+.shot__media, .phero__photo, .read__img, .article__img, .who__art, .story__frame { position: relative; isolation: isolate; overflow: hidden; background: var(--duo-light); }
+.shot__media img, .phero__photo img, .read__img img, .article__img img, .who__art img, .story__frame img { filter: grayscale(1) contrast(1.08); mix-blend-mode: multiply; }
+.shot__media::after, .phero__photo::after, .read__img::after, .article__img::after, .who__art::after, .story__frame::after { content: ""; position: absolute; inset: 0; z-index: 1; background: var(--duo-dark); mix-blend-mode: lighten; pointer-events: none; }
+.shot__media::before, .phero__photo::before, .read__img::before, .article__img::before, .who__art::before, .story__frame::before { content: ""; position: absolute; inset: 0; z-index: 2; background: var(--noise); opacity: .7; mix-blend-mode: overlay; pointer-events: none; }
+.phero__photo figcaption, .story__count { z-index: 3; }
 
 /* 14 Motion: content is visible at rest; it moves only once on screen. */
 .js .rise.in { animation: rise .8s var(--ease) both; animation-delay: var(--delay, 0ms); }
