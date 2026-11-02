@@ -36,6 +36,7 @@
 
   /* ---------- Nav ---------- */
   const nav = $('.nav');
+  const here = location.pathname.split('/').pop() || './';
   // While a layer is open, everything else on the page is inert, so Tab stays inside it.
   const isolate = (open, ...keep) => [...document.body.children].forEach((el) => {
     if (el.tagName !== 'SCRIPT' && !keep.includes(el)) el.inert = open;
@@ -83,7 +84,6 @@
     }
 
     // Mark the current page in the mobile sheet too, so the route you are on is visible there.
-    const here = location.pathname.split('/').pop() || './';
     $$('.sheet a').forEach((a) => { if (a.getAttribute('href') === here) a.setAttribute('aria-current', 'page'); });
   }
 
@@ -141,12 +141,13 @@
       const m = fmt(e.date, { month: 'long', year: 'numeric' });
       const head = m !== month ? `<li class="tl__month">${m}</li>` : '';
       month = m;
+      // A Details button that would reload the page you are on is left out.
       const href = e.link || D.audiences[e.aud[0]]?.page || './';
       return `${head}<li class="tl__item rise${i === 0 ? ' is-next' : ''}">
         <p class="tl__date">${fmt(e.date, { day: 'numeric' })}<small>${fmt(e.date, { month: 'short' })}${e.end ? ' – ' + fmt(e.end, { day: 'numeric', month: 'short' }) : ' · ' + fmt(e.date, { weekday: 'short' })}</small></p>
         <p class="tl__title"><b>${esc(e.title)}</b><span>${esc(e.place)}${e.time ? ' · ' + esc(e.time) : ''}</span></p>
         <div class="tl__who"><div>${(e.who || []).map((w) => `<span class="chip">${esc(w)}</span>`).join('')}</div><p>${esc(e.how || '')}</p></div>
-        <div class="tl__go"><span class="tl__status">${e.sample ? 'Date to be confirmed' : esc(e.status || '')}</span><a class="btn btn--glass" href="${esc(href)}"${extLink(href)}>Details</a></div>
+        <div class="tl__go"><span class="tl__status">${e.sample ? 'Date to be confirmed' : esc(e.status || '')}</span>${href === here ? '' : `<a class="btn btn--glass" href="${esc(href)}"${extLink(href)}>Details<span class="sr"> about ${esc(e.title)}</span></a>`}</div>
       </li>`;
     }).join('') || '<li class="tl__month">Nothing is booked yet. New dates appear here first.</li>';
   });
