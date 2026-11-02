@@ -1,4 +1,4 @@
-/* Colour-pop photos: at rest a photo is greyscale with one colour family left in (pre-rendered into
+/* Colour-pop photos: at rest a photo is greyscale with (by default) plain greyscale (pre-rendered into
    assets/web/pop by tools/colour_pop.py), or a fine halftone on the home route cards (assets/web/dots,
    tools/halftone.py). Hovering it, or the card it sits in, eases it to full colour;
    a tap or click (or Enter / Space on a photo that isn't inside a link) holds it in colour, and a second tap,

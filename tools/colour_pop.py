@@ -31,6 +31,7 @@ PHOTOS = {
     "youth-council-field": (40, 30),
     "youth-group": (215, 46),
 }
+KEEP_COLOUR = False  # False: plain greyscale at rest (Eva, 2 Nov); True: keep each photo's colour family below
 SOFT = 24            # degrees over which the colour fades out at each side of the range
 MIN_SATURATION = 70  # 0-255: greys and pale skin below this stay grey
 FEATHER = 0.004      # mask blur, as a share of the photo's width
@@ -67,6 +68,6 @@ for name, (hue, width, *rest) in PHOTOS.items():
         mask = ImageChops.multiply(mask, value_band.point(value_lut))
         mask = mask.filter(ImageFilter.GaussianBlur(max(1, photo.width * FEATHER)))
         grey = ImageOps.autocontrast(ImageOps.grayscale(photo), cutoff=0.5).convert("RGB")
-        Image.composite(photo, grey, mask).save(out / path.name, "WEBP", quality=QUALITY, method=6)
+        (Image.composite(photo, grey, mask) if KEEP_COLOUR else grey).save(out / path.name, "WEBP", quality=QUALITY, method=6)
         done += 1
 print(f"{done} photos written to {out.relative_to(repo)}")

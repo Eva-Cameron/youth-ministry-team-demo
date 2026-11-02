@@ -66,3 +66,5 @@ Eva's answers on the v2 brief (`docs/prompts/iteration-3-round-2.md` and the v2 
 - The story frame shows every photo again: the colour-pop wrapper was breaking its crossfade, so it's left out of it.
 - Route cards on home: a fine halftone in each route's colours (`tools/halftone.py`), filling the card under the words, with full colour on hover. This reverses the earlier "no dots" for these four frames only.
 - Under every hero, the bands now step down in solid tints from the hero colour into the page, instead of translucent grey.
+
+- Photos at rest are now plain greyscale; the kept colour is gone (Eva, 2 November). They still turn full colour on hover or tap. `KEEP_COLOUR` in `tools/colour_pop.py` brings the kept colour back.
