@@ -1,171 +1,181 @@
 <title>YMT Review Board</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <style>
-/* Layout: a Figma-style infinite canvas. A thin tool bar on top, the board in the middle, the current thread spelled out underneath. */
-@font-face { font-family: "Syne"; font-weight: 400 800; font-display: block; src: url("data:font/woff2;base64,/*FONT_SYNE*/") format("woff2"); }
+/* Layout: a calm design canvas. A slim tool bar, the board (pages laid out as frames with pins and glass callouts), and the current thread spelled out underneath. Under reduced motion the same content becomes a plain scrolling page. */
 @font-face { font-family: "Satoshi"; font-weight: 300 900; font-display: block; src: url("data:font/woff2;base64,/*FONT_SATOSHI*/") format("woff2"); }
 @font-face { font-family: "Space Mono"; font-weight: 400; font-display: block; src: url("data:font/woff2;base64,/*FONT_MONO*/") format("woff2"); }
 :root {
-  --canvas: #efede9;
-  --dot: #c9c4bc;
-  --chrome: #fbfaf8;
-  --ink: #1d1a22;
-  --muted: #625d6a;
-  --line: #dedad3;
-  --section: #e5e2dc;
-  --note-open: #ffe27a;
-  --note-done: #e3e2de;
-  --note-ink: #1d1a22;
-  --note-muted: #59545f;
-  --pin-open: #f2b200;
-  --pin-done: #74707b;
-  --wire-open: #c99300;
-  --wire-done: #a29fa6;
-  --focus: #1d1a22;
-  --display: "Syne", "Satoshi", system-ui, sans-serif;
+  --canvas: #f6f4ef;
+  --dot: #d3cec5;
+  --chrome: #fdfcfa;
+  --ink: #1f1b24;
+  --muted: #5f5a66;
+  --line: #e2ded6;
+  --frame-label: #6a6570;
+  --glass-fill: rgb(255 255 255 / 0.86);
+  --glass-edge: rgb(255 255 255 / 0.9);
+  --glass-shadow: 0 18px 44px rgb(31 27 36 / 0.16), 0 2px 6px rgb(31 27 36 / 0.08);
+  --open: #f2b200;
+  --open-soft: #fff1bf;
+  --done: #77737d;
+  --done-soft: #e6e3de;
+  --gutter: rgb(31 27 36 / 0.04);
+  --focus: #1f1b24;
   --ui: "Satoshi", system-ui, -apple-system, "Segoe UI", sans-serif;
   --mono: "Space Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --canvas: #19171c; --dot: #3a3540; --chrome: #221f26; --ink: #f1eef4; --muted: #aaa3b2;
-    --line: #34303a; --section: #24212a; --wire-done: #77737c; --focus: #ffe27a; color-scheme: dark;
+    --canvas: #18161b; --dot: #37323d; --chrome: #201d24; --ink: #f2eff5; --muted: #aba4b3; --line: #322e38;
+    --frame-label: #a39dab; --glass-fill: rgb(32 29 37 / 0.82); --glass-edge: rgb(255 255 255 / 0.18);
+    --glass-shadow: 0 18px 44px rgb(0 0 0 / 0.45), 0 2px 6px rgb(0 0 0 / 0.3);
+    --open-soft: #4a3d12; --done-soft: #34313a; --gutter: rgb(255 255 255 / 0.04); --focus: #f2b200; color-scheme: dark;
   }
 }
 :root[data-theme="dark"] {
-  --canvas: #19171c; --dot: #3a3540; --chrome: #221f26; --ink: #f1eef4; --muted: #aaa3b2;
-  --line: #34303a; --section: #24212a; --wire-done: #77737c; --focus: #ffe27a; color-scheme: dark;
+  --canvas: #18161b; --dot: #37323d; --chrome: #201d24; --ink: #f2eff5; --muted: #aba4b3; --line: #322e38;
+  --frame-label: #a39dab; --glass-fill: rgb(32 29 37 / 0.82); --glass-edge: rgb(255 255 255 / 0.18);
+  --glass-shadow: 0 18px 44px rgb(0 0 0 / 0.45), 0 2px 6px rgb(0 0 0 / 0.3);
+  --open-soft: #4a3d12; --done-soft: #34313a; --gutter: rgb(255 255 255 / 0.04); --focus: #f2b200; color-scheme: dark;
 }
 html, body { height: 100%; }
-body { background: var(--canvas); color: var(--ink); font-family: var(--ui); overflow: hidden; }
+body { background: var(--canvas); color: var(--ink); font-family: var(--ui); }
 body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--chrome); }
-.app { height: 100%; display: grid; grid-template-rows: auto 1fr auto; }
+.paper { position: fixed; inset: 0; pointer-events: none; z-index: 1; opacity: 0.35; mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.45 0 0 0 0 0.42 0 0 0 0 0.38 0 0 0 0.16 0'/%3E%3C/filter%3E%3Crect width='220' height='220' filter='url(%23n)'/%3E%3C/svg%3E"); }
+:root[data-theme="dark"] .paper { mix-blend-mode: screen; opacity: 0.12; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .paper { mix-blend-mode: screen; opacity: 0.12; } }
 
-.bar {
-  display: flex; flex-wrap: wrap; align-items: center; gap: 8px 20px; justify-content: space-between;
-  padding-block: 10px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
-  background: var(--chrome); color: var(--ink); border-bottom: 1px solid var(--line); position: relative; z-index: 2;
+.app { height: 100%; display: grid; grid-template-rows: auto 1fr auto; position: relative; }
+.bar, .caption {
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+  background: var(--chrome); color: var(--ink); position: relative; z-index: 3;
 }
-.bar__file { display: flex; align-items: baseline; gap: 12px; min-width: 0; flex-wrap: wrap; }
-.bar__file b { font-family: var(--display); font-weight: 700; font-size: 1.05rem; letter-spacing: -0.01em; }
-.bar__file span { font-family: var(--mono); font-size: 0.72rem; color: var(--muted); letter-spacing: 0.04em; }
+.bar { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 20px; justify-content: space-between; padding-block: 10px; border-bottom: 1px solid var(--line); }
+.bar__file { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; min-width: 0; }
+.bar__file b { font-weight: 700; font-size: 1rem; letter-spacing: -0.01em; }
+.bar__file span { font: 0.72rem var(--mono); color: var(--muted); }
 .ctrls { display: flex; align-items: center; gap: 6px; }
 .ctrls button {
   font: 600 0.82rem/1 var(--ui); color: var(--ink); background: transparent; border: 1px solid var(--line);
-  border-radius: 8px; min-height: 36px; min-width: 36px; padding: 0 12px; cursor: pointer; display: inline-flex; align-items: center; gap: 6px;
+  border-radius: 10px; min-height: 40px; min-width: 40px; padding: 0 12px; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 6px;
 }
-.ctrls button:hover { background: var(--section); }
+.ctrls button:hover { background: var(--canvas); }
 .ctrls button:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
 .ctrls svg { width: 14px; height: 14px; fill: currentColor; }
-.ctrls .count { font: 0.75rem var(--mono); color: var(--muted); min-width: 5.5ch; text-align: center; font-variant-numeric: tabular-nums; }
+.ctrls .count { font: 0.75rem var(--mono); color: var(--muted); min-width: 6ch; text-align: center; font-variant-numeric: tabular-nums; }
+.caption { display: grid; grid-template-columns: auto 1fr; gap: 4px 16px; align-items: baseline; padding-block: 12px; border-top: 1px solid var(--line); min-height: 3.4em; }
+.caption__tag { font: 0.72rem var(--mono); letter-spacing: 0.05em; text-transform: uppercase; color: var(--muted); white-space: nowrap; }
+.caption__text { font-size: 0.98rem; line-height: 1.45; min-width: 0; max-width: 92ch; overflow-wrap: anywhere; }
+.caption__text small { display: block; color: var(--muted); font-size: 0.84rem; }
 
-.stage {
-  position: relative; overflow: hidden; cursor: grab; touch-action: none;
-  background-color: var(--canvas);
-  background-image: radial-gradient(circle at center, var(--dot) 1.1px, transparent 1.4px);
-}
+/* ---------- Canvas ---------- */
+.stage { position: relative; overflow: hidden; cursor: grab; touch-action: none;
+  background-color: var(--canvas); background-image: radial-gradient(circle at center, var(--dot) 1.1px, transparent 1.5px); }
 .stage.is-dragging { cursor: grabbing; }
 .world { position: absolute; left: 0; top: 0; transform-origin: 0 0; will-change: transform; }
+.label { position: absolute; font: 26px/1 var(--mono); color: var(--frame-label); white-space: nowrap; }
+.label b { font: 700 34px/1 var(--ui); color: var(--ink); letter-spacing: -0.01em; margin-right: 16px; }
+.frame { position: absolute; background: #100c15; border-radius: 6px; overflow: hidden; box-shadow: 0 1px 0 rgb(0 0 0 / 0.04), 0 20px 50px rgb(31 27 36 / 0.14); }
+.frame img { display: block; max-width: none; }
+.gutter { position: absolute; border-radius: 14px; background: var(--gutter); border: 1.5px dashed var(--line); }
+.gutter__title { position: absolute; left: 0; right: 0; top: 18px; text-align: center; font: 18px var(--mono); color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; }
 
-.frame-label { position: absolute; font: 700 28px/1 var(--mono); color: var(--muted); white-space: nowrap; }
-.section { position: absolute; background: var(--section); border-radius: 12px; }
-.section__name { position: absolute; left: 0; top: -84px; font: 700 52px/1 var(--display); color: var(--ink); white-space: nowrap; letter-spacing: -0.01em; }
-.shot { position: absolute; background: #100c15; box-shadow: 0 12px 40px rgb(16 12 21 / 0.18); overflow: hidden; }
-.shot img { display: block; max-width: none; }
-
-.cover { position: absolute; background: var(--chrome); color: var(--ink); border-radius: 24px; padding: 88px; width: 1000px; box-shadow: 0 12px 40px rgb(16 12 21 / 0.08); }
-.cover__kicker { font: 14px var(--mono); letter-spacing: 0.08em; color: var(--muted); text-transform: uppercase; }
-.cover h1 { font: 700 72px/1 var(--display); margin: 22px 0 22px; letter-spacing: -0.015em; }
-.cover p { font-size: 22px; line-height: 1.4; color: var(--muted); margin: 0 0 36px; max-width: 46ch; }
+.cover { position: absolute; width: 1000px; box-sizing: border-box; padding: 84px; border-radius: 28px; background: var(--chrome); color: var(--ink); box-shadow: 0 20px 50px rgb(31 27 36 / 0.1); }
+.kicker { font: 15px var(--mono); letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+.cover h1 { font-weight: 800; font-size: 76px; line-height: 1; letter-spacing: -0.025em; margin: 22px 0; text-wrap: balance; }
+.cover > p { font-size: 23px; line-height: 1.45; color: var(--muted); margin: 0 0 34px; max-width: 46ch; }
 .todo { list-style: none; margin: 0; padding: 0; }
-.todo li { display: grid; grid-template-columns: 30px auto 1fr; gap: 20px; align-items: start; padding: 22px 0; border-top: 1px solid var(--line); }
-.todo .box { width: 30px; height: 30px; border-radius: 8px; border: 2.5px solid var(--wire-open); box-sizing: border-box; display: grid; place-items: center; }
-.todo .done .box { background: var(--pin-done); border-color: var(--pin-done); }
+.todo li { display: grid; grid-template-columns: 32px auto 1fr; gap: 20px; align-items: start; padding: 22px 0; border-top: 1px solid var(--line); }
+.todo .box { width: 32px; height: 32px; box-sizing: border-box; border-radius: 9px; border: 2.5px solid var(--open); display: grid; place-items: center; }
+.todo .done .box { background: var(--done); border-color: var(--done); }
 .todo .box svg { width: 18px; height: 18px; fill: none; stroke: #fff; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
-.todo .num { font: 700 15px/1 var(--mono); padding: 6px 10px; border-radius: 99px; background: var(--note-open); color: var(--note-ink); }
-.todo .done .num { background: var(--note-done); }
-.todo q { display: block; font-weight: 500; font-size: 22px; line-height: 1.3; min-width: 0; overflow-wrap: anywhere; }
+.todo .num { font: 700 16px/1 var(--mono); padding: 7px 11px; border-radius: 99px; background: var(--open-soft); color: var(--ink); }
+.todo .done .num { background: var(--done-soft); }
+.todo q { display: block; font-weight: 500; font-size: 23px; line-height: 1.3; overflow-wrap: anywhere; }
 .todo .done q { color: var(--muted); text-decoration: line-through; text-decoration-thickness: 1px; }
-.todo small { display: block; font: 13px var(--mono); color: var(--muted); margin-top: 6px; }
+.todo small { display: block; font: 14px/1.4 var(--mono); color: var(--muted); margin-top: 6px; }
 
-.note {
-  position: absolute; width: 440px; box-sizing: border-box; padding: 24px; border-radius: 4px;
-  background: var(--note-open); color: var(--note-ink); box-shadow: 0 6px 16px rgb(26 20 13 / 0.18);
-  display: flex; flex-direction: column; gap: 12px;
-  opacity: 0; transform: translateY(14px) rotate(-1.2deg); transition: opacity 0.35s ease-out, transform 0.45s cubic-bezier(0.2, 0.8, 0.2, 1);
-}
-.note.is-done { background: var(--note-done); }
-.note.is-gone { outline: 2px dashed var(--pin-done); outline-offset: -2px; }
-.note.on { opacity: 1; transform: none; }
-.note.is-current { box-shadow: 0 0 0 4px var(--wire-open), 0 10px 26px rgb(26 20 13 / 0.24); }
-.note.is-done.is-current { box-shadow: 0 0 0 4px var(--pin-done), 0 10px 26px rgb(26 20 13 / 0.24); }
-.note__head { font: 700 14px/1 var(--mono); letter-spacing: 0.04em; }
-.note__say { font-weight: 500; font-size: 22px; line-height: 1.28; overflow-wrap: anywhere; }
-.note__say .rest { visibility: hidden; }
-.note__say .caret[hidden] { display: none; }
-.note__say .caret { display: inline-block; width: 2px; height: 1em; background: var(--note-ink); vertical-align: -0.12em; margin: 0 -1px; }
-.note__meta { font: 13px var(--mono); color: var(--note-muted); }
-.note__more { display: none; flex-direction: column; gap: 10px; }
-.note__more.on { display: flex; animation: note-more 0.4s ease-out; }
-@keyframes note-more { from { opacity: 0; } }
-.note__reply { font-size: 14px; line-height: 1.4; color: var(--note-muted); }
-.note__reply b { display: block; font: 12px var(--mono); margin-bottom: 2px; font-weight: 400; }
-.note__moved { font-size: 13px; line-height: 1.35; font-style: italic; color: var(--note-muted); }
-
-.pin {
-  position: absolute; border-radius: 50%; display: grid; place-items: center; box-sizing: border-box;
-  background: var(--pin-open); color: var(--note-ink); border: 4px solid #fff; box-shadow: 0 4px 12px rgb(0 0 0 / 0.35);
-  font: 700 24px/1 var(--mono); transform: scale(0); transition: transform 0.38s cubic-bezier(0.34, 1.56, 0.64, 1);
-}
-.pin.is-done { background: var(--pin-done); color: #fff; }
+.pin { position: absolute; width: 52px; height: 52px; margin: -26px 0 0 -26px; border-radius: 50% 50% 50% 6px; box-sizing: border-box;
+  display: grid; place-items: center; background: var(--open); color: #1f1b24; border: 3px solid #fff;
+  box-shadow: 0 6px 16px rgb(0 0 0 / 0.3); font: 700 22px/1 var(--mono);
+  transform: scale(0); transform-origin: 0 100%; transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1); }
+.pin.is-done { background: var(--done); color: #fff; }
+.pin.is-small { width: 40px; height: 40px; margin: -20px 0 0 -20px; font-size: 17px; }
 .pin.on { transform: scale(1); }
-.pin.is-current::after { content: ""; position: absolute; inset: -14px; border-radius: 50%; border: 3px solid var(--pin-open); opacity: 0.7; }
-.pin.is-done.is-current::after { border-color: #fff; }
+.pin.is-current { box-shadow: 0 0 0 6px rgb(242 178 0 / 0.35), 0 6px 16px rgb(0 0 0 / 0.3); }
+.pin.is-done.is-current { box-shadow: 0 0 0 6px rgb(119 115 125 / 0.35), 0 6px 16px rgb(0 0 0 / 0.3); }
 
-.wires { position: absolute; left: 0; top: 0; overflow: visible; pointer-events: none; }
-.wires path { fill: none; stroke-width: 3; stroke-linecap: round; stroke-dasharray: 1 1; stroke-dashoffset: 1; transition: stroke-dashoffset 0.6s ease-out; }
-.wires path.on { stroke-dashoffset: 0; }
-.wires .is-open { stroke: var(--wire-open); }
-.wires .is-done { stroke: var(--wire-done); }
+.callout { position: absolute; width: 420px; box-sizing: border-box; padding: 22px 24px; border-radius: 18px;
+  background: var(--glass-fill); color: var(--ink); border: 1px solid var(--glass-edge);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.5), var(--glass-shadow);
+  -webkit-backdrop-filter: blur(18px) saturate(1.4); backdrop-filter: blur(18px) saturate(1.4);
+  display: flex; flex-direction: column; gap: 10px;
+  opacity: 0; transform: translateX(var(--from, -24px)) scale(0.94); transform-origin: var(--origin, left) center;
+  transition: opacity 0.35s ease-out, transform 0.55s cubic-bezier(0.16, 1, 0.3, 1); }
+@supports not (backdrop-filter: blur(1px)) { .callout { background: var(--chrome); } }
+.callout.on { opacity: 1; transform: none; }
+.callout__head { display: flex; align-items: center; gap: 10px; font: 700 14px/1 var(--mono); letter-spacing: 0.05em; }
+.chip { padding: 5px 9px; border-radius: 99px; background: var(--open-soft); font-weight: 700; }
+.is-done .chip { background: var(--done-soft); }
+.callout__say { font-weight: 500; font-size: 23px; line-height: 1.3; overflow-wrap: anywhere; }
+.callout__say .rest { visibility: hidden; }
+.callout__say .caret { display: inline-block; width: 2px; height: 1em; background: currentColor; vertical-align: -0.12em; margin: 0 -1px; }
+.callout__say .caret[hidden] { display: none; }
+.callout__meta { font: 13px var(--mono); color: var(--muted); }
+.callout__more { display: none; flex-direction: column; gap: 8px; }
+.callout__more.on { display: flex; animation: more-in 0.4s ease-out; }
+@keyframes more-in { from { opacity: 0; } }
+.callout__reply { font-size: 15px; line-height: 1.45; color: var(--muted); }
+.callout__reply b { display: block; font: 12px var(--mono); margin-bottom: 2px; }
+.callout__moved { font-size: 14px; line-height: 1.4; font-style: italic; color: var(--muted); }
 
-.caption {
-  display: grid; grid-template-columns: auto 1fr; gap: 4px 16px; align-items: baseline;
-  padding-block: 12px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
-  background: var(--chrome); color: var(--ink); border-top: 1px solid var(--line); min-height: 3.2em; position: relative; z-index: 2;
-}
-.caption__tag { font: 0.72rem var(--mono); letter-spacing: 0.05em; text-transform: uppercase; color: var(--muted); white-space: nowrap; }
-.caption__text { font-size: 0.95rem; line-height: 1.4; min-width: 0; overflow-wrap: anywhere; max-width: 90ch; }
-.caption__text small { display: block; color: var(--muted); font-size: 0.82rem; }
-@media (max-width: 560px) {
-  .caption { grid-template-columns: 1fr; }
-  .bar__file span { display: none; }
-}
+/* ---------- Reduced motion: a plain scrolling page ---------- */
+.static { display: none; }
+.is-static .app { display: block; height: auto; }
+.is-static .stage, .is-static .ctrls, .is-static .caption { display: none; }
+.is-static .bar { position: sticky; top: env(safe-area-inset-top, 0px); }
+.is-static .static { display: block; position: relative; z-index: 2; padding-block: 32px 64px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+.static__inner { max-width: 1320px; margin: 0 auto; display: flex; flex-direction: column; gap: 48px; }
+.static .cover { position: static; width: auto; max-width: 900px; padding: clamp(24px, 5vw, 56px); }
+.static .cover h1 { font-size: clamp(34px, 6vw, 60px); }
+.static .cover > p, .static .todo q { font-size: clamp(17px, 2vw, 21px); }
+.spage h2 { font-weight: 700; font-size: clamp(24px, 3vw, 34px); margin: 0 0 6px; letter-spacing: -0.01em; }
+.spage > p { margin: 0 0 20px; color: var(--muted); font-family: var(--mono); font-size: 13px; }
+.sframes { display: grid; grid-template-columns: minmax(0, 3fr) minmax(0, 1fr); gap: 24px; align-items: start; }
+.sframe figcaption { font: 13px var(--mono); color: var(--frame-label); margin-bottom: 8px; }
+.sframe figure { margin: 0; }
+.sshot { position: relative; border-radius: 6px; overflow: hidden; box-shadow: 0 12px 32px rgb(31 27 36 / 0.12); }
+.sshot img { display: block; width: 100%; height: auto; }
+.sshot .pin { transform: none; width: 32px; height: 32px; margin: -16px 0 0 -16px; font-size: 14px; border-width: 2px; }
+.snotes { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 320px), 1fr)); gap: 16px; margin-bottom: 24px; }
+.snotes .callout { position: static; width: auto; opacity: 1; transform: none; }
+.snotes .callout__more { display: flex; }
+@media (max-width: 720px) { .sframes { grid-template-columns: 1fr; } .caption { grid-template-columns: 1fr; } .bar__file span { display: none; } }
 body.is-recording, body.is-recording .stage { cursor: none; }
-
-@media (prefers-reduced-motion: reduce) {
-  .note, .pin, .wires path { transition: none; }
-  .note__more.on { animation: none; }
-}
+@media (prefers-reduced-motion: reduce) { .pin, .callout { transition: none; } .callout__more.on { animation: none; } }
 </style>
 
+<div class="paper" aria-hidden="true"></div>
 <div class="app">
   <header class="bar">
     <div class="bar__file"><b id="file-title">YMT review</b><span id="file-meta"></span></div>
     <div class="ctrls" role="group" aria-label="Board playback">
-      <button type="button" id="btn-prev" aria-label="Previous step"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M11 2 4 8l7 6z"/></svg></button>
-      <button type="button" id="btn-play" aria-label="Pause"><svg viewBox="0 0 16 16" aria-hidden="true" id="icon-play"><path d="M4 2h3v12H4zM9 2h3v12H9z"/></svg><span id="play-label">Pause</span></button>
-      <button type="button" id="btn-next" aria-label="Next step"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="m5 2 7 6-7 6z"/></svg></button>
-      <span class="count" id="step-count" aria-live="off">1 / 1</span>
-      <button type="button" id="btn-fit">Overview</button>
+      <button type="button" id="btn-prev" aria-label="Previous"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M11 2 4 8l7 6z"/></svg></button>
+      <button type="button" id="btn-play" aria-label="Pause"><svg viewBox="0 0 16 16" aria-hidden="true"><path id="icon-play" d="M4 2h3v12H4zM9 2h3v12H9z"/></svg><span id="play-label">Pause</span></button>
+      <button type="button" id="btn-next" aria-label="Next"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="m5 2 7 6-7 6z"/></svg></button>
+      <span class="count" id="step-count">1 / 1</span>
     </div>
   </header>
-  <main class="stage" id="stage" aria-label="Review board: page screenshots with comment pins. Drag to pan, scroll or pinch to zoom.">
+  <main class="stage" id="stage" aria-label="Review board. Drag to pan, scroll to zoom, arrow keys to step.">
     <div class="world" id="world"></div>
   </main>
   <footer class="caption" aria-live="polite">
     <span class="caption__tag" id="cap-tag"></span>
     <div class="caption__text" id="cap-text"></div>
   </footer>
+  <div class="static" id="static"><div class="static__inner" id="static-inner"></div></div>
 </div>
 
 <script id="board-data" type="application/json">/*BOARD_DATA*/null</script>
@@ -181,150 +191,189 @@ body.is-recording, body.is-recording .stage { cursor: none; }
   const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
   const when = (iso) => { const [day, time] = iso.split('T'); const [year, month, date] = day.split('-'); return `${Number(date)} ${months[Number(month) - 1]} ${year}${time ? ', ' + time : ''}`; };
   const clip = (text, max) => text.length > max ? text.slice(0, max).replace(/\s+\S*$/, '') + '…' : text;
-
-  const stage = $('stage'), world = $('world');
-  const allPins = board.pages.flatMap((page) => page.pins.map((pin) => ({ ...pin, page: page.page })));
-  const openCount = allPins.filter((pin) => pin.status === 'open').length;
+  const ownerOf = (thread) => thread.comments.find((comment) => comment.role !== 'claude') || thread.comments[0];
+  const [MAIN_W, SIDE_W] = board.widths;
+  const openCount = board.threads.filter((thread) => thread.status === 'open').length;
   $('file-title').textContent = board.title;
-  $('file-meta').textContent = `${allPins.length} threads · ${openCount} open · ${board.pages.length} page${board.pages.length > 1 ? 's' : ''}`;
+  $('file-meta').textContent = `${board.threads.length} threads · ${openCount} open · ${board.counts.pinned} pinned`;
 
-  // ---------- Cover: every thread as a to-do ----------
-  const cover = el('section', 'cover');
-  cover.style.left = '0px'; cover.style.top = '0px';
-  cover.append(el('div', 'cover__kicker', `Review board · comments collected ${when(board.collected)}`), el('h1', '', board.title));
-  cover.append(el('p', '', `${allPins.length} threads on ${board.pages.length} page${board.pages.length > 1 ? 's' : ''}: ${openCount} open, ${allPins.length - openCount} resolved. Threads were placed on an earlier build; moved pins say where they now sit.`));
-  const todo = el('ul', 'todo');
-  for (const pin of allPins) {
-    const owner = pin.comments.find((comment) => comment.role === 'owner') || pin.comments[0];
-    const item = el('li', pin.status === 'open' ? '' : 'done');
-    const box = el('span', 'box');
-    if (pin.status !== 'open') box.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>';
-    const body = el('div');
-    body.append(el('q', '', owner.text), el('small', '', `${pin.page} · ${owner.role} · ${when(owner.date)} · ${pin.status === 'open' ? 'open' : 'resolved'}${pin.at.desktop.x === null ? ' · not on this page now' : ''}`));
-    item.append(box, el('span', 'num', `#${pin.n}`), body);
-    todo.append(item);
+  const makeCover = () => {
+    const cover = el('section', 'cover');
+    cover.setAttribute('aria-label', 'To-do list');
+    cover.append(el('div', 'kicker', `Review board · collected ${when(board.collected)}`), el('h1', '', board.title));
+    const scope = board.includeResolved ? 'Every thread is pinned on its page.' : 'Open threads are pinned on their pages; resolved ones are ticked off here.';
+    cover.append(el('p', '', `${board.threads.length} threads: ${openCount} open, ${board.threads.length - openCount} resolved. ${scope}`));
+    const list = el('ul', 'todo');
+    for (const thread of board.threads) {
+      const owner = ownerOf(thread);
+      const done = thread.status !== 'open';
+      const item = el('li', done ? 'done' : '');
+      const box = el('span', 'box');
+      if (done) box.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>';
+      box.setAttribute('role', 'img');
+      box.setAttribute('aria-label', done ? 'Resolved' : 'Open');
+      const body = el('div');
+      body.append(el('q', '', owner.text), el('small', '', `${thread.page} · ${owner.role} · ${when(owner.date)} · ${done ? 'resolved' : 'open'}`));
+      item.append(box, el('span', 'num', `#${thread.n}`), body);
+      list.append(item);
+    }
+    cover.append(list);
+    return cover;
+  };
+
+  const makeCallout = (pin, side) => {
+    const owner = ownerOf(pin);
+    const done = pin.status !== 'open';
+    const moved = pin.at[MAIN_W].x === null;
+    const box = el('article', `callout${done ? ' is-done' : ''}`);
+    const head = el('div', 'callout__head');
+    head.append(el('span', '', `#${pin.n}`), el('span', 'chip', done ? 'Resolved' : 'Open'));
+    if (moved) head.append(el('span', '', 'element moved'));
+    const say = el('div', 'callout__say');
+    const typed = el('span', 'typed', owner.text), caret = el('span', 'caret'), rest = el('span', 'rest');
+    caret.hidden = true;
+    say.append(typed, caret, rest);
+    const more = el('div', 'callout__more');
+    for (const reply of pin.comments.filter((comment) => comment !== owner)) {
+      const line = el('div', 'callout__reply');
+      line.append(el('b', '', `${reply.role} · ${when(reply.date)}`), document.createTextNode(clip(reply.text.replace(/\n+/g, ' '), 240)));
+      more.append(line);
+    }
+    if (pin.override) more.append(el('div', 'callout__moved', `${moved ? '' : 'Pin moved: '}${pin.override.reason}`));
+    else if (moved) more.append(el('div', 'callout__moved', 'Its element has changed since the comment was placed, so the pin waits here.'));
+    box.append(head, say, el('div', 'callout__meta', `${owner.role} · ${when(owner.date)}`), more);
+    if (side === 'left') { box.style.setProperty('--from', '24px'); box.style.setProperty('--origin', 'right'); }
+    return { box, typed, caret, rest, more, text: owner.text };
+  };
+
+  const makePin = (pin, small) => {
+    const dot = el('div', `pin${pin.status === 'open' ? '' : ' is-done'}${small ? ' is-small' : ''}`, String(pin.n));
+    dot.setAttribute('role', 'img');
+    dot.setAttribute('aria-label', `Comment ${pin.n}`);
+    return dot;
+  };
+
+  // ---------- Reduced motion: everything visible, one scrolling page ----------
+  if (reduce) {
+    document.documentElement.classList.add('is-static');
+    const inner = $('static-inner');
+    inner.append(makeCover());
+    for (const page of board.pages) {
+      const section = el('section', 'spage');
+      section.append(el('h2', '', page.page), el('p', '', `${page.title} · ${page.pins.length} pinned`));
+      const frames = el('div', 'sframes');
+      for (const width of board.widths) {
+        const frame = page.frames[width];
+        const wrap = el('div', 'sframe');
+        const figure = el('figure');
+        figure.append(el('figcaption', '', `${width === MAIN_W ? 'Desktop' : 'Mobile'} · ${width}px`));
+        const shot = el('div', 'sshot');
+        const img = el('img');
+        img.src = frame.src; img.alt = `${page.page} at ${width}px`; img.width = frame.width; img.height = frame.height; img.loading = 'lazy';
+        shot.append(img);
+        for (const pin of page.pins) {
+          const spot = pin.at[width];
+          if (!spot || spot.x === null) continue;
+          const dot = makePin(pin, true);
+          dot.style.left = (spot.x / frame.width * 100) + '%';
+          dot.style.top = (spot.y / frame.height * 100) + '%';
+          shot.append(dot);
+        }
+        figure.append(shot);
+        wrap.append(figure);
+        frames.append(wrap);
+      }
+      const notes = el('div', 'snotes');
+      for (const pin of page.pins) {
+        const view = makeCallout(pin, 'right');
+        notes.append(view.box);
+      }
+      section.append(notes, frames);
+      inner.append(section);
+    }
+    window.boardReady = true;
+    window.boardDone = true;
+    return;
   }
-  cover.append(todo);
+
+  // ---------- Canvas ----------
+  const stage = $('stage'), world = $('world');
+  const cover = makeCover();
+  cover.style.left = '0px'; cover.style.top = '0px';
   world.append(cover);
 
-  // ---------- Sections: same geometry as the Figma file ----------
-  const FRAME_Y = 200, NOTE_X = 80, NOTE_W = 440, DESK_X = NOTE_X + NOTE_W + 200, GAP = 240;
-  const steps = [];
-  const sectionRects = [];
-  const pinViews = new Map();
-  let sectionX = 1000 + GAP;
-  const pending = [];
+  const FRAME_Y = 140, GUTTER_W = 200, GAP = 120;
+  const steps = [{ kind: 'cover' }];
+  const views = [];
+  let sectionX = 1000 + 260;
   for (const page of board.pages) {
-    const desk = page.frames.desktop, mob = page.frames.mobile;
-    const mobX = DESK_X + desk.width + GAP;
-    const width = mobX + mob.width + 120, height = FRAME_Y + Math.max(desk.height, mob.height) + 160;
-    const section = el('div', 'section');
-    Object.assign(section.style, { left: sectionX + 'px', top: '0px', width: width + 'px', height: height + 'px' });
-    section.append(el('div', 'section__name', `${page.page} · ${page.title}`));
-    const frames = {};
-    for (const [view, frame, fx] of [['desktop', desk, DESK_X], ['mobile', mob, mobX]]) {
-      const label = el('div', 'frame-label', `${view === 'desktop' ? 'Desktop' : 'Mobile'} · ${frame.width}px`);
-      label.style.left = fx + 'px'; label.style.top = (FRAME_Y - 64) + 'px';
-      const shot = el('div', 'shot');
-      Object.assign(shot.style, { left: fx + 'px', top: FRAME_Y + 'px', width: frame.width + 'px', height: frame.height + 'px' });
+    const main = page.frames[MAIN_W], side = page.frames[SIDE_W];
+    const gutterX = sectionX + main.width + 40;
+    const sideX = gutterX + GUTTER_W + GAP;
+    const frameX = { [MAIN_W]: sectionX, [SIDE_W]: sideX };
+    const title = el('div', 'label');
+    title.append(el('b', '', page.page), document.createTextNode(page.title));
+    title.style.left = sectionX + 'px'; title.style.top = '0px';
+    world.append(title);
+    for (const width of board.widths) {
+      const frame = page.frames[width];
+      const label = el('div', 'label', `${width === MAIN_W ? 'Desktop' : 'Mobile'} · ${width}px`);
+      label.style.left = frameX[width] + 'px'; label.style.top = (FRAME_Y - 48) + 'px';
+      const shot = el('div', 'frame');
+      Object.assign(shot.style, { left: frameX[width] + 'px', top: FRAME_Y + 'px', width: frame.width + 'px', height: frame.height + 'px' });
       const img = el('img');
-      img.alt = `${page.page} at ${frame.width}px wide`;
-      img.width = frame.width; img.height = frame.height; img.src = frame.src; img.decoding = 'async';
+      img.src = frame.src; img.alt = `${page.page} at ${width}px`; img.width = frame.width; img.height = frame.height; img.decoding = 'async';
       shot.append(img);
-      section.append(label, shot);
-      frames[view] = { node: shot, x: fx };
+      world.append(label, shot);
     }
-    const wires = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-    wires.setAttribute('class', 'wires'); wires.setAttribute('width', width); wires.setAttribute('height', height);
-    section.append(wires);
-    world.append(section);
-    sectionRects.push({ x: sectionX, y: 0, w: width, h: height });
-    steps.push({ kind: 'page', rect: { x: sectionX, y: -120, w: width, h: Math.min(height, 2600) + 120 }, page });
+    const movedPins = page.pins.filter((pin) => pin.at[MAIN_W].x === null);
+    const gutter = el('div', 'gutter');
+    Object.assign(gutter.style, { left: gutterX + 'px', top: FRAME_Y + 'px', width: GUTTER_W + 'px', height: Math.max(360, 140 + movedPins.length * 120) + 'px' });
+    gutter.append(el('div', 'gutter__title', 'element moved'));
+    if (movedPins.length) world.append(gutter);
 
-    const ordered = [...page.pins].sort((one, two) => (one.at.desktop.y ?? 1e9) - (two.at.desktop.y ?? 1e9));
-    for (const pin of ordered) {
-      const open = pin.status === 'open';
-      const gone = pin.at.desktop.x === null;
-      const owner = pin.comments.find((comment) => comment.role === 'owner') || pin.comments[0];
-      const note = el('article', `note${open ? '' : ' is-done'}${gone ? ' is-gone' : ''}`);
-      note.append(el('div', 'note__head', `#${pin.n} · ${open ? 'OPEN' : 'RESOLVED'}${gone ? ' · NOT ON THIS PAGE NOW' : ''}`));
-      const say = el('div', 'note__say');
-      const typed = el('span', 'typed'), caret = el('span', 'caret'), rest = el('span', 'rest', owner.text);
-      caret.hidden = true;
-      say.append(typed, caret, rest);
-      note.append(say, el('div', 'note__meta', `${owner.role} · ${when(owner.date)}`));
-      const more = el('div', 'note__more');
-      for (const reply of pin.comments.filter((comment) => comment !== owner)) {
-        const line = el('div', 'note__reply');
-        line.append(el('b', '', `${reply.role} · ${when(reply.date)}`), document.createTextNode(clip(reply.text.replace(/\n+/g, ' '), 260)));
-        more.append(line);
+    const topH = 1400;
+    steps.push({ kind: 'page', page, rect: { x: sectionX - 40, y: -40, w: sideX + side.width - sectionX + 80, h: topH } });
+    let movedIndex = 0;
+    for (const pin of page.pins) {
+      const spot = pin.at[MAIN_W];
+      const moved = spot.x === null;
+      const pinX = moved ? gutterX + GUTTER_W / 2 : sectionX + spot.x;
+      const pinY = moved ? FRAME_Y + 110 + movedIndex++ * 120 : FRAME_Y + spot.y;
+      const place = moved || spot.x + 470 < main.width ? 'right' : 'left';
+      const view = makeCallout(pin, place);
+      view.box.style.left = (place === 'right' ? pinX + 40 : pinX - 40 - 420) + 'px';
+      view.box.style.top = (pinY - 36) + 'px';
+      const dot = makePin(pin, false);
+      dot.style.left = pinX + 'px'; dot.style.top = pinY + 'px';
+      const dots = [dot];
+      world.append(dot, view.box);
+      const sideSpot = pin.at[SIDE_W];
+      let sideRect = null;
+      if (sideSpot && sideSpot.x !== null) {
+        const small = makePin(pin, true);
+        small.style.left = (sideX + sideSpot.x) + 'px'; small.style.top = (FRAME_Y + sideSpot.y) + 'px';
+        world.append(small);
+        dots.push(small);
+        sideRect = { x: sideX - 60, y: FRAME_Y + sideSpot.y - 420, w: side.width + 120, h: 840 };
       }
-      if (pin.override) more.append(el('div', 'note__moved', `${gone ? '' : 'Pin moved: '}${pin.override.reason}`));
-      note.append(more);
-      section.append(note);
-      const views = { note, typed, caret, rest, more, text: owner.text, pins: [], wire: null, open };
-      for (const [view, size] of [['desktop', 52], ['mobile', 40]]) {
-        const spot = pin.at[view];
-        if (!spot || spot.x === null) continue;
-        const dot = el('div', `pin${open ? '' : ' is-done'}`, String(pin.n));
-        Object.assign(dot.style, { left: (spot.x - size / 2) + 'px', top: (spot.y - size / 2) + 'px', width: size + 'px', height: size + 'px', fontSize: Math.round(size * 0.46) + 'px', borderWidth: size > 44 ? '4px' : '3px' });
-        dot.setAttribute('aria-label', `Comment ${pin.n}`);
-        frames[view].node.append(dot);
-        views.pins.push(dot);
-      }
-      pinViews.set(pin.n, views);
-      pending.push({ pin, views, sectionX, wires, gone });
-      steps.push({ kind: 'pin', n: pin.n, pin, page, sectionX, chars: owner.text.length });
+      Object.assign(view, { dots, pin });
+      views.push(view);
+      const left = Math.min(pinX, place === 'right' ? pinX : pinX - 460) - 80;
+      steps.push({ kind: 'pin', page, view, rect: { x: left, y: pinY - 330, w: 460 + 160 + 40, h: 660 }, chars: view.text.length });
+      if (sideRect) steps.push({ kind: 'side', page, view, rect: sideRect });
     }
-    sectionX += width + GAP;
+    steps.push({ kind: 'scan', page, x: sectionX - 40, w: sideX + side.width - sectionX + 80, top: FRAME_Y - 60, bottom: FRAME_Y + main.height });
+    sectionX = sideX + side.width + 360;
   }
-
-  // Once fonts are in, measure the notes and stack them beside their pins, then wire them up.
-  const layout = () => {
-    // Measure every note at its full size so the stack never overlaps once replies appear.
-    pending.forEach((item) => item.views.more.classList.add('on'));
-    let nextY = FRAME_Y;
-    for (const item of pending) {
-      const { pin, views, wires, gone } = item;
-      const wantY = gone ? nextY : FRAME_Y + pin.at.desktop.y - 40;
-      const top = Math.max(wantY, nextY);
-      const h = views.note.offsetHeight;
-      views.note.style.left = NOTE_X + 'px'; views.note.style.top = top + 'px';
-      nextY = top + h + 40;
-      item.noteRect = { x: item.sectionX + NOTE_X, y: top, w: NOTE_W, h };
-      if (!gone) {
-        const x1 = NOTE_X + NOTE_W, y1 = top + 40, x2 = DESK_X + pin.at.desktop.x, y2 = FRAME_Y + pin.at.desktop.y;
-        const mid = (x2 - x1) / 2;
-        const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-        path.setAttribute('d', `M${x1} ${y1} C${x1 + mid} ${y1} ${x2 - mid} ${y2} ${x2} ${y2}`);
-        path.setAttribute('pathLength', '1');
-        path.setAttribute('class', views.open ? 'is-open' : 'is-done');
-        wires.append(path);
-        views.wire = path;
-        item.pinRect = { x: item.sectionX + x2 - 260, y: y2 - 200, w: 520, h: 400 };
-      }
-      if (pending.indexOf(item) === pending.length - 1 || pending[pending.indexOf(item) + 1].sectionX !== item.sectionX) nextY = FRAME_Y;
-    }
-    for (const step of steps) {
-      if (step.kind !== 'pin') continue;
-      const item = pending.find((entry) => entry.pin.n === step.n);
-      const rects = [item.noteRect, item.pinRect].filter(Boolean);
-      const x = Math.min(...rects.map((r) => r.x)) - 60, y = Math.min(...rects.map((r) => r.y)) - 60;
-      const x2 = Math.max(...rects.map((r) => r.x + r.w)) + 60, y2 = Math.max(...rects.map((r) => r.y + r.h)) + 60;
-      step.rect = { x, y, w: x2 - x, h: y2 - y };
-    }
-    pending.forEach((item) => item.views.more.classList.remove('on'));
-    const right = Math.max(...sectionRects.map((r) => r.x + r.w));
-    const coverH = cover.offsetHeight;
-    steps.unshift({ kind: 'cover', rect: { x: -60, y: -60, w: 1120, h: coverH + 120 } });
-    steps.push({ kind: 'end', rect: { x: -60, y: -160, w: right + 120, h: Math.max(...sectionRects.map((r) => r.h)) + 220 } });
-  };
+  steps.push({ kind: 'end' });
 
   // ---------- Camera ----------
   const cam = { x: 0, y: 0, s: 1 };
+  const coverRect = () => ({ x: -60, y: -60, w: 1120, h: cover.offsetHeight + 120 });
   const fit = (rect) => {
-    const w = stage.clientWidth, h = stage.clientHeight, pad = 0.92;
-    const s = Math.min((w * pad) / rect.w, (h * pad) / rect.h, 1.1);
+    const w = stage.clientWidth, h = stage.clientHeight;
+    const s = Math.min((w * 0.9) / rect.w, (h * 0.9) / rect.h, 1.4);
     return { x: rect.x + rect.w / 2, y: rect.y + rect.h / 2, s };
   };
   const apply = () => {
@@ -332,78 +381,96 @@ body.is-recording, body.is-recording .stage { cursor: none; }
     const tx = w / 2 - cam.x * cam.s, ty = h / 2 - cam.y * cam.s;
     world.style.transform = `translate(${tx}px, ${ty}px) scale(${cam.s})`;
     let gap = 24 * cam.s;
-    while (gap < 12) gap *= 2;
+    while (gap < 14) gap *= 2;
     stage.style.backgroundSize = `${gap}px ${gap}px`;
     stage.style.backgroundPosition = `${tx % gap}px ${ty % gap}px`;
   };
   const ease = (t) => t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
 
-  // ---------- Timeline ----------
-  const GLIDE = 1.4, POP = GLIDE + 0.05, TYPE_AT = GLIDE + 0.5, CPS = 40, HOLD = 1.1;
+  // ---------- Timeline (seconds) ----------
+  const GLIDE = 1.6, POP = GLIDE + 0.05, SLIDE = GLIDE + 0.35, TYPE_AT = GLIDE + 0.75, CPS = 36, HOLD = 1.6;
   const duration = (step) => {
-    if (step.kind === 'cover') return 2.6;
-    if (step.kind === 'page') return GLIDE + 1.2;
-    if (step.kind === 'end') return GLIDE + 2.4;
-    return TYPE_AT + step.chars / CPS + 0.4 + HOLD;
-  };
-  let index = 0, elapsed = 0, playing = false, free = false, from = { ...cam }, last = 0;
-  const pinOrder = steps.filter((step) => step.kind === 'pin');
-
-  const setPinState = (views, phase, chars) => {
-    // phase: 0 hidden, 1 shown in full, 2 animating (chars typed so far)
-    const visible = phase > 0;
-    views.pins.forEach((dot) => dot.classList.toggle('on', visible));
-    if (views.wire) views.wire.classList.toggle('on', visible);
-    views.note.classList.toggle('on', visible);
-    const count = phase === 1 ? views.text.length : Math.max(0, Math.min(views.text.length, chars));
-    if (views.typed.textContent.length !== count) {
-      views.typed.textContent = views.text.slice(0, count);
-      views.rest.textContent = views.text.slice(count);
+    switch (step.kind) {
+      case 'cover': return 3.4;
+      case 'page': return GLIDE + 3;
+      case 'pin': return TYPE_AT + step.chars / CPS + 0.4 + HOLD;
+      case 'side': return GLIDE + 1.8;
+      case 'scan': return step.length;
+      default: return GLIDE + 3.4;
     }
-    views.caret.hidden = !(phase === 2 && count < views.text.length);
-    views.more.classList.toggle('on', phase === 1 || (phase === 2 && count >= views.text.length));
+  };
+  // The whole-page scan stretches so a short round still makes a 30–45 s tour.
+  const scans = steps.filter((step) => step.kind === 'scan');
+  const others = steps.filter((step) => step.kind !== 'scan').reduce((sum, step) => sum + duration(step), 0);
+  scans.forEach((step) => { step.length = Math.max(5, Math.min(14, (34 - others) / scans.length)); });
+  const targetFor = (step, k) => {
+    if (step.kind === 'cover' || step.kind === 'end') return fit(coverRect());
+    if (step.kind === 'scan') {
+      const viewW = stage.clientWidth, viewH = stage.clientHeight;
+      const s = Math.min((viewW * 0.94) / step.w, 0.9);
+      const half = viewH / 2 / s;
+      return { x: step.x + step.w / 2, y: step.top + half + (Math.max(step.top + half, step.bottom - half) - step.top - half) * k, s };
+    }
+    return fit(step.rect);
+  };
+
+  let index = 0, elapsed = 0, playing = false, free = false, from = { ...cam }, last = 0;
+  const setView = (view, phase, chars) => {
+    const visible = phase > 0;
+    view.dots.forEach((dot) => dot.classList.toggle('on', visible));
+    view.box.classList.toggle('on', phase === 1 || (phase === 2 && chars >= 0));
+    const count = phase === 1 ? view.text.length : Math.max(0, Math.min(view.text.length, chars));
+    if (view.typed.textContent.length !== count) {
+      view.typed.textContent = view.text.slice(0, count);
+      view.rest.textContent = view.text.slice(count);
+    }
+    view.caret.hidden = !(phase === 2 && count < view.text.length);
+    view.more.classList.toggle('on', phase === 1 || (phase === 2 && count >= view.text.length));
   };
 
   const caption = (step) => {
     const tag = $('cap-tag'), text = $('cap-text');
     text.textContent = '';
-    if (step.kind === 'cover') { tag.textContent = 'To-do'; text.textContent = `${allPins.length} threads to work through, ${openCount} still open.`; return; }
-    if (step.kind === 'end') { tag.textContent = 'All pins'; text.textContent = 'Every thread on its page. Yellow is open, grey is resolved.'; return; }
-    if (step.kind === 'page') { tag.textContent = step.page.page; text.textContent = `${step.page.title}: ${step.page.pins.length} thread${step.page.pins.length > 1 ? 's' : ''}.`; return; }
-    const pin = step.pin;
-    const owner = pin.comments.find((comment) => comment.role === 'owner') || pin.comments[0];
-    tag.textContent = `#${pin.n} · ${pin.status}`;
+    if (step.kind === 'cover' || step.kind === 'end') { tag.textContent = 'To-do'; text.textContent = `${board.threads.length} threads, ${openCount} still open.`; return; }
+    if (step.kind === 'page') { tag.textContent = step.page.page; text.textContent = `${step.page.title}: ${step.page.pins.length} pinned at ${board.widths.join(' and ')} px.`; return; }
+    if (step.kind === 'scan') { tag.textContent = step.page.page; text.textContent = 'The whole page as captured, top to bottom.'; return; }
+    const pin = step.view.pin;
+    const owner = ownerOf(pin);
+    tag.textContent = `#${pin.n} · ${pin.status}${step.kind === 'side' ? ` · ${SIDE_W}px` : ''}`;
     text.append(document.createTextNode(`“${owner.text}”`));
-    const small = el('small', '', `${step.page.page} · ${pin.location || 'whole page'} · ${owner.role}, ${when(owner.date)}${pin.override ? ' · ' + pin.override.reason : ''}`);
-    text.append(small);
+    text.append(el('small', '', `${step.page.page} · ${pin.location || 'whole page'} · ${owner.role}, ${when(owner.date)}${pin.override ? ' · ' + pin.override.reason : ''}`));
   };
 
   const render = () => {
     const step = steps[index];
-    const t = Math.min(1, elapsed / GLIDE);
     if (!free) {
-      const to = fit(step.rect);
-      const k = ease(t);
-      const distance = Math.hypot(to.x - from.x, to.y - from.y) * Math.min(from.s, to.s) / Math.hypot(stage.clientWidth, stage.clientHeight);
-      const dip = 1 / (1 + Math.min(2.5, distance * 0.6) * Math.sin(Math.PI * k));
-      cam.s = Math.exp(Math.log(from.s) + (Math.log(to.s) - Math.log(from.s)) * k) * dip;
-      cam.x = from.x + (to.x - from.x) * k;
-      cam.y = from.y + (to.y - from.y) * k;
+      const glide = step.kind === 'scan' ? 0 : Math.min(1, elapsed / GLIDE);
+      const k = ease(glide);
+      const to = step.kind === 'scan' ? targetFor(step, ease(Math.min(1, elapsed / step.length))) : targetFor(step);
+      if (step.kind === 'scan') {
+        const blend = ease(Math.min(1, elapsed / 1.2));
+        cam.s = from.s + (to.s - from.s) * blend; cam.x = from.x + (to.x - from.x) * blend; cam.y = from.y + (to.y - from.y) * blend;
+      } else {
+        const distance = Math.hypot(to.x - from.x, to.y - from.y) * Math.min(from.s, to.s) / Math.hypot(stage.clientWidth, stage.clientHeight);
+        const dip = 1 / (1 + Math.min(2, distance * 0.5) * Math.sin(Math.PI * k));
+        cam.s = Math.exp(Math.log(from.s) + (Math.log(to.s) - Math.log(from.s)) * k) * dip;
+        cam.x = from.x + (to.x - from.x) * k;
+        cam.y = from.y + (to.y - from.y) * k;
+      }
       apply();
     }
-    const current = step.kind === 'pin' ? pinOrder.indexOf(step) : (step.kind === 'end' ? pinOrder.length : -1);
-    pinOrder.forEach((pinStep, order) => {
-      const views = pinViews.get(pinStep.n);
-      let phase = 0, chars = 0;
-      if (order < current) phase = 1;
+    const current = step.view ? views.indexOf(step.view) : (['scan', 'end'].includes(step.kind) ? views.length : -1);
+    views.forEach((view, order) => {
+      let phase = 0, chars = -1;
+      if (order < current || (order === current && step.kind === 'side')) phase = 1;
       else if (order === current && step.kind === 'pin') {
         if (elapsed >= duration(step) - HOLD) phase = 1;
-        else if (elapsed >= POP) { phase = 2; chars = Math.floor((elapsed - TYPE_AT) * CPS); }
-      } else if (step.kind === 'end') phase = 1;
-      setPinState(views, phase, chars);
-      const isCurrent = order === current && step.kind === 'pin';
-      views.note.classList.toggle('is-current', isCurrent);
-      views.pins.forEach((dot) => dot.classList.toggle('is-current', isCurrent));
+        else if (elapsed >= POP) { phase = 2; chars = elapsed >= SLIDE ? Math.floor((elapsed - TYPE_AT) * CPS) : -1; }
+      }
+      if (phase === 2 && chars < 0) { view.dots.forEach((dot) => dot.classList.add('on')); view.box.classList.remove('on'); }
+      else setView(view, phase, chars);
+      const isCurrent = order === current && step.view === view;
+      view.dots.forEach((dot) => dot.classList.toggle('is-current', isCurrent));
     });
     $('step-count').textContent = `${index + 1} / ${steps.length}`;
   };
@@ -416,51 +483,44 @@ body.is-recording, body.is-recording .stage { cursor: none; }
     caption(steps[index]);
     render();
   };
-
+  const finished = () => index === steps.length - 1 && elapsed >= duration(steps[index]);
   const setPlaying = (value) => {
     playing = value;
-    $('play-label').textContent = playing ? 'Pause' : (index === steps.length - 1 && elapsed >= duration(steps[index]) ? 'Replay' : 'Play');
-    $('btn-play').setAttribute('aria-label', $('play-label').textContent);
-    $('icon-play').innerHTML = playing ? '<path d="M4 2h3v12H4zM9 2h3v12H9z"/>' : '<path d="m4 2 10 6-10 6z"/>';
+    const label = playing ? 'Pause' : (finished() ? 'Replay' : 'Play');
+    $('play-label').textContent = label;
+    $('btn-play').setAttribute('aria-label', label);
+    $('icon-play').setAttribute('d', playing ? 'M4 2h3v12H4zM9 2h3v12H9z' : 'm4 2 10 6-10 6z');
     last = performance.now();
   };
-
   const tick = (now) => {
     if (playing) {
-      elapsed += Math.min(0.25, (now - last) / 1000);
+      elapsed += Math.min(1, (now - last) / 1000);
       last = now;
       if (elapsed >= duration(steps[index])) {
-        if (index < steps.length - 1) { go(index + 1, true); }
+        if (index < steps.length - 1) go(index + 1, true);
         else { elapsed = duration(steps[index]); render(); setPlaying(false); window.boardDone = true; }
       } else render();
     }
     requestAnimationFrame(tick);
   };
 
-  // ---------- Controls ----------
-  if (reduce) $('btn-play').hidden = true;
   $('btn-play').addEventListener('click', () => {
-    if (!playing && index === steps.length - 1 && elapsed >= duration(steps[index])) { go(0, !reduce); }
-    else if (!playing && free) { go(index, true); }
-    setPlaying(!playing && !reduce ? true : false);
-    if (reduce && !playing) go(index + 1, false);
+    if (playing) { setPlaying(false); return; }
+    if (finished()) go(0, true);
+    else if (free) go(index, true);
+    setPlaying(true);
   });
-  $('btn-next').addEventListener('click', () => { go(index + 1, playing && !reduce); });
-  $('btn-prev').addEventListener('click', () => { go(index - 1, playing && !reduce); });
-  $('btn-fit').addEventListener('click', () => { setPlaying(false); go(steps.length - 1, !reduce); if (!reduce) setPlaying(true); });
+  $('btn-next').addEventListener('click', () => go(index + 1, playing));
+  $('btn-prev').addEventListener('click', () => go(index - 1, playing));
   addEventListener('keydown', (event) => {
-    if (event.target.closest && event.target.closest('button') && (event.key === ' ' || event.key === 'Enter')) return;
-    if (event.key === ' ') { event.preventDefault(); $('btn-play').click(); }
-    if (event.key === 'ArrowRight') $('btn-next').click();
-    if (event.key === 'ArrowLeft') $('btn-prev').click();
+    if (event.altKey || event.ctrlKey || event.metaKey) return;
+    if (event.key === 'ArrowRight') { event.preventDefault(); $('btn-next').click(); }
+    if (event.key === 'ArrowLeft') { event.preventDefault(); $('btn-prev').click(); }
+    if (event.key === ' ' && !(event.target.closest && event.target.closest('button'))) { event.preventDefault(); $('btn-play').click(); }
   });
 
-  // Pan and zoom like a design canvas; touching the canvas pauses the tour.
   let drag = null;
-  stage.addEventListener('pointerdown', (event) => {
-    drag = { x: event.clientX, y: event.clientY, cx: cam.x, cy: cam.y };
-    stage.setPointerCapture(event.pointerId); stage.classList.add('is-dragging');
-  });
+  stage.addEventListener('pointerdown', (event) => { drag = { x: event.clientX, y: event.clientY, cx: cam.x, cy: cam.y }; stage.setPointerCapture(event.pointerId); stage.classList.add('is-dragging'); });
   stage.addEventListener('pointermove', (event) => {
     if (!drag) return;
     const dx = event.clientX - drag.x, dy = event.clientY - drag.y;
@@ -477,24 +537,21 @@ body.is-recording, body.is-recording .stage { cursor: none; }
     const box = stage.getBoundingClientRect();
     const px = event.clientX - box.left - box.width / 2, py = event.clientY - box.top - box.height / 2;
     const wx = cam.x + px / cam.s, wy = cam.y + py / cam.s;
-    const factor = Math.exp(-event.deltaY * (event.ctrlKey ? 0.01 : 0.0015));
-    cam.s = Math.max(0.02, Math.min(3, cam.s * factor));
+    cam.s = Math.max(0.03, Math.min(3, cam.s * Math.exp(-event.deltaY * (event.ctrlKey ? 0.01 : 0.0015))));
     cam.x = wx - px / cam.s; cam.y = wy - py / cam.s; apply();
   }, { passive: false });
-  addEventListener('resize', () => { if (!free) render(); else apply(); });
+  addEventListener('resize', () => { if (free) apply(); else render(); });
 
-  // ---------- Start ----------
   document.fonts.ready.then(() => {
-    layout();
-    const start = reduce ? steps.length - 1 : 0;
-    Object.assign(cam, fit(steps[start].rect));
-    go(start, false);
-    if (!reduce) { elapsed = 0; render(); }
+    Object.assign(cam, fit(coverRect()));
+    go(0, false);
+    elapsed = 0;
+    render();
     requestAnimationFrame((now) => { last = now; tick(now); });
-    window.boardPlay = () => { go(0, true); Object.assign(cam, fit(steps[0].rect)); from = { ...cam }; setPlaying(true); };
+    window.boardPlay = () => { Object.assign(cam, fit(coverRect())); go(0, true); setPlaying(true); };
+    window.boardLength = steps.reduce((sum, step) => sum + duration(step), 0);
     window.boardReady = true;
-    if (recording || reduce) setPlaying(false);
-    else setPlaying(true);
+    setPlaying(!recording);
   });
 })();
 </script>
