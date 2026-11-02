@@ -45,9 +45,17 @@
 .ethos__pillars { list-style: none; padding: 0; margin-top: clamp(40px, 5vw, 72px); display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); border-top: 1px solid var(--line); }
 .ethos__pillars li { display: grid; gap: 10px; align-content: start; padding: 20px 20px 4px 0; }
 .ethos__pillars li + li { padding-left: 20px; border-left: 1px solid var(--line); }
-.ethos__pillars b { font: 500 26px/1.05 var(--sans); letter-spacing: -.02em; }
+.ethos__pillars b { font: 600 clamp(22px, 1.8vw, 26px)/1.05 var(--display); letter-spacing: -.02em; }
 .ethos__pillars p { font: 400 16px/1.45 var(--sans); color: rgba(255, 255, 255, .72); }
 .ethos__pillars small { font: 400 11px var(--mono); text-transform: uppercase; opacity: .6; }
+/* Wide screens: the four pillars sit beside the statement, so the eye reads across in one sweep
+   (statement, then Encounter, Belong, Grow, Serve) instead of dropping past an empty half-screen. */
+@media (min-width: 1100px) {
+  .ethos .wrap { display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); column-gap: clamp(48px, 5vw, 96px); align-items: end; }
+  .ethos .label { grid-column: 1 / -1; }
+  .ethos__pillars { margin-top: 0; grid-template-columns: repeat(2, minmax(0, 1fr)); row-gap: 28px; }
+  .ethos__pillars li:nth-child(3) { padding-left: 0; border-left: 0; }
+}
 
 /* The pinned row of photos: white frame, the middle photo names the feeling, the rest fade. */
 .feel { position: relative; height: 320vh; }
