@@ -9,12 +9,10 @@ export const onRequestGet = async ({ request, env, params }) => {
   if (!ok) return new Response('This invite link is not valid. Ask Eva for a new one.', { status: 404, headers: { 'content-type': 'text/plain; charset=utf-8' } });
   const url = new URL(request.url);
   const secure = url.protocol === 'https:' ? '; Secure' : '';
-  return new Response(null, {
-    status: 302,
-    headers: {
-      location: '/?review=1',
-      'set-cookie': `${COOKIE}=${token}; Path=/; HttpOnly; SameSite=Lax; Max-Age=${60 * 60 * 24 * 90}${secure}`,
-      'cache-control': 'no-store',
-    },
-  });
+  const age = `Path=/; SameSite=Lax; Max-Age=${60 * 60 * 24 * 90}${secure}`;
+  const headers = new Headers({ location: '/?review=1', 'cache-control': 'no-store' });
+  headers.append('set-cookie', `${COOKIE}=${token}; HttpOnly; ${age}`);
+  // A readable flag with no secret in it, so the overlay only calls the API for invited browsers.
+  headers.append('set-cookie', `ymt_review_on=1; ${age}`);
+  return new Response(null, { status: 302, headers });
 };

@@ -88,8 +88,11 @@
     if (!res.ok) throw Object.assign(new Error(data.error || 'Something went wrong. Please try again.'), { status: res.status });
     return data;
   };
+  // Only invited browsers (they carry the ymt_review_on flag) talk to the API, so ordinary visitors
+  // make no requests and see nothing.
+  const invited = document.cookie.split(/;\s*/).includes('ymt_review_on=1');
   let me = null;
-  try { me = await call('/me'); } catch { me = null; }
+  if (invited) { try { me = await call('/me'); } catch { me = null; } }
   if (!me) {
     // Staging without an invite cookie: say how to get in, and nothing else.
     if (!new URLSearchParams(location.search).has('review')) return;
