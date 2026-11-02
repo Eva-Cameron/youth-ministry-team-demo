@@ -95,6 +95,12 @@
   --shadow-1: inset 0 1px 0 rgba(255, 255, 255, .07), 0 12px 32px -14px rgba(0, 0, 0, .6);
   --shadow-2: 0 34px 80px -28px rgba(0, 0, 0, .75), 0 10px 24px -10px rgba(0, 0, 0, .45);
   /* Texture: a fine grain (SVG noise, blended). */
+  /* Film grain for the page ground: light specks, drawn under content only. */
+  --grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.78' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .55 -.18'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E");
+  /* Accent light on the page ground: three pools, from the route's colours or the full mix. */
+  --glow-a: var(--pink);
+  --glow-b: var(--blue-light);
+  --glow-c: var(--purple-text);
   --noise: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='.33 .33 .33 0 0 .33 .33 .33 0 0 .33 .33 .33 0 0 0 0 0 0 .3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 
   /* Page accent; audience and programme pages override it. */
@@ -105,16 +111,25 @@
   --acc-on-dark: var(--acc);
   color-scheme: dark;
 }
-body[data-aud="primary"] { --duo-dark: var(--duo-primary-dark); --duo-light: var(--pink); --acc: var(--pink); --acc-ink: var(--ink); --acc-2: var(--butter); }
-body[data-aud="secondary"] { --duo-dark: var(--duo-secondary-dark); --duo-light: var(--blue-light); --acc: var(--blue); --acc-ink: var(--white); --acc-2: var(--red); --acc-on-dark: var(--blue-light); }
+body[data-aud="primary"] { --glow-a: var(--pink); --glow-b: var(--butter); --glow-c: var(--lilac); --duo-dark: var(--duo-primary-dark); --duo-light: var(--pink); --acc: var(--pink); --acc-ink: var(--ink); --acc-2: var(--butter); }
+body[data-aud="secondary"] { --glow-a: var(--blue-light); --glow-b: var(--red); --glow-c: var(--blue-light); --duo-dark: var(--duo-secondary-dark); --duo-light: var(--blue-light); --acc: var(--blue); --acc-ink: var(--white); --acc-2: var(--red); --acc-on-dark: var(--blue-light); }
 body[data-aud="secondary"][data-tone="red"] { --acc: var(--red); --acc-2: var(--butter); --acc-on-dark: var(--butter); }
-body[data-aud="volunteer"] { --duo-dark: var(--duo-volunteer-dark); --duo-light: var(--lilac); --acc: var(--purple-text); --acc-ink: var(--ink); --acc-2: var(--lilac); }
-body[data-aud="everyone"] { --duo-dark: var(--duo-everyone-dark); --duo-light: var(--mint); --acc: var(--mint); --acc-ink: var(--ink); --acc-2: var(--stone); }
+body[data-aud="volunteer"] { --glow-a: var(--purple-text); --glow-b: var(--lilac); --glow-c: var(--purple); --duo-dark: var(--duo-volunteer-dark); --duo-light: var(--lilac); --acc: var(--purple-text); --acc-ink: var(--ink); --acc-2: var(--lilac); }
+body[data-aud="everyone"] { --glow-a: var(--mint); --glow-b: var(--stone); --glow-c: var(--mint); --duo-dark: var(--duo-everyone-dark); --duo-light: var(--mint); --acc: var(--mint); --acc-ink: var(--ink); --acc-2: var(--stone); }
 
 /* 3 Base */
 *, *::before, *::after { box-sizing: border-box; }
 html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; background: var(--ink); }
-body { margin: 0; background: var(--ink); color: var(--white); font: 400 var(--fs-base)/var(--lh-body) var(--sans); -webkit-font-smoothing: antialiased; overflow-x: clip; }
+/* The page ground: grain plus pools of accent light, fixed behind the content so it costs nothing
+   to scroll and the colour stays with the reader. */
+body::before { content: ""; position: fixed; inset: 0; z-index: -1; pointer-events: none;
+  background:
+    var(--grain),
+    radial-gradient(55vmax 45vmax at 8% 6%, color-mix(in oklab, var(--glow-a) 38%, transparent), transparent 68%),
+    radial-gradient(50vmax 50vmax at 96% 48%, color-mix(in oklab, var(--glow-b) 32%, transparent), transparent 66%),
+    radial-gradient(60vmax 40vmax at 26% 104%, color-mix(in oklab, var(--glow-c) 32%, transparent), transparent 70%),
+    var(--ink); }
+body { margin: 0; background: transparent; color: var(--white); font: 400 var(--fs-base)/var(--lh-body) var(--sans); -webkit-font-smoothing: antialiased; overflow-x: clip; }
 img, video { display: block; max-width: 100%; height: auto; }
 a { color: inherit; text-underline-offset: .18em; }
 h1, h2, h3, h4, p, ul, ol, figure, blockquote, dl, dd { margin: 0; }
@@ -297,7 +312,9 @@ a.tag::after { content: ""; position: absolute; inset: -13px -4px; }
 
 /* Texture: a fine grain on heroes. (Eva asked for no curly contour lines; straight strata bands
    at section changes come from workstream C.) */
-.phero { background-image: var(--noise); background-blend-mode: overlay; }
+/* Heroes: the route colour with a bloom of its second accent and a visible grain. */
+.phero { background-image: var(--noise), radial-gradient(70vmax 60vmax at 88% 12%, color-mix(in oklab, var(--acc-2) 75%, transparent), transparent 62%), radial-gradient(60vmax 50vmax at 0% 100%, color-mix(in oklab, var(--acc) 55%, var(--acc-ink) 8%), transparent 70%); background-blend-mode: overlay, normal, normal; }
+.phero--photo { background-image: none; }
 .phero--photo .phero__bg::after { content: ""; position: absolute; inset: 0; background: var(--noise); mix-blend-mode: overlay; opacity: 1; pointer-events: none; }
 
 /* 11 Content blocks */
@@ -500,7 +517,7 @@ body[data-aud] .tl__item.is-next::before { background: var(--acc-on-dark); color
 @media (max-width: 960px) { .article__body { grid-template-columns: minmax(0, 1fr); } .aside { position: static; } }
 
 /* Programme registers. Lourdes is slow and still; The Source is quick and bright. */
-body[data-feel="grave"] { --acc: var(--gold); --acc-ink: var(--night); }
+body[data-feel="grave"] { --glow-a: var(--gold); --glow-b: var(--plum); --glow-c: var(--purple); --acc: var(--gold); --acc-ink: var(--night); }
 body[data-feel="grave"] .phero__bg img { filter: grayscale(1) brightness(.55) contrast(1.1); }
 /* Grave: the same face, light and open, so the page feels still. */
 body[data-feel="grave"] .phero h1 { font-weight: 400; letter-spacing: -.025em; line-height: 1; }

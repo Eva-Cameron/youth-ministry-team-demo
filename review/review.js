@@ -4,27 +4,6 @@
   const REVIEW_COPY_URL = 'https://claude.ai/artifact/6EH6MLrH7ecfBfVtt6vfw1';
   const STAGING_HOSTS = ['github.io', 'pages.dev', 'localhost', '127.0.0.1'];
 
-  if (!window.claude || typeof window.claude.use !== 'function') {
-    // Staging copy outside claude.ai: point reviewers at the commentable copy. Never shows on ymt.org.
-    if (!STAGING_HOSTS.some((host) => location.hostname === host || location.hostname.endsWith('.' + host))) return;
-    const link = document.createElement('a');
-    link.href = REVIEW_COPY_URL;
-    link.target = '_blank';
-    link.rel = 'noopener';
-    link.textContent = 'Preview site · Leave feedback';
-    link.setAttribute('style', 'position:fixed;z-index:2147483000;right:calc(16px + env(safe-area-inset-right,0px));bottom:calc(16px + env(safe-area-inset-bottom,0px));display:inline-flex;align-items:center;min-height:48px;padding:0 20px;border-radius:999px;background:#fff;color:#100c15;font:600 14px/1.2 "Inter Tight",system-ui,sans-serif;text-decoration:none;box-shadow:0 6px 24px rgba(16,12,21,.35),0 0 0 1px rgba(16,12,21,.12)');
-    document.body.appendChild(link);
-    // The home film's own controls (pause, Who it's for) sit in this corner, so the pill waits
-    // until the film has scrolled mostly out of view.
-    const film = document.querySelector('.hero');
-    if (film && 'IntersectionObserver' in window) {
-      new IntersectionObserver(([entry]) => { link.hidden = entry.intersectionRatio > 0.3; }, { threshold: [0, 0.3, 1] }).observe(film);
-    }
-    return;
-  }
-  const comments = await window.claude.use('comments');
-  if (!comments || typeof comments.openComposer !== 'function') return;
-
   const style = document.createElement('style');
   style.textContent = `
     .rv { position: fixed; z-index: 2147483000; right: calc(16px + env(safe-area-inset-right, 0px)); bottom: calc(16px + env(safe-area-inset-bottom, 0px)); display: grid; justify-items: end; gap: 10px; font: 500 14px/1.3 var(--sans, system-ui, sans-serif); }
@@ -34,11 +13,44 @@
     .rv__btn[aria-pressed="true"] { background: var(--gold, #f2c24a); }
     .rv__tip { max-width: min(300px, calc(100vw - 32px)); padding: 14px 16px; border-radius: 14px; background: var(--ink, #100c15); color: var(--white, #fff); box-shadow: 0 6px 24px rgba(16, 12, 21, .4), 0 0 0 1px rgba(255, 255, 255, .14); }
     .rv__tip b { display: block; margin-bottom: 4px; }
+    .rv__go { display: inline-flex; align-items: center; min-height: 44px; margin-top: 10px; padding: 0 16px; border-radius: 999px; background: var(--white, #fff); color: var(--ink, #100c15); font-weight: 600; text-decoration: none; }
     .rv__tip button { margin-top: 10px; padding: 6px 12px; border: 1px solid rgba(255, 255, 255, .5); border-radius: 999px; background: transparent; color: inherit; font: inherit; cursor: pointer; }
     html.rv-picking, html.rv-picking * { cursor: crosshair !important; }
     .rv-hover { outline: 3px solid var(--gold, #f2c24a) !important; outline-offset: 3px !important; }
   `;
   document.head.appendChild(style);
+
+  if (!window.claude || typeof window.claude.use !== 'function') {
+    // Staging copy outside claude.ai: the same Comment button, which sends reviewers to the
+    // commentable review copy (comments are saved there). Never shows on ymt.org.
+    if (!STAGING_HOSTS.some((host) => location.hostname === host || location.hostname.endsWith('.' + host))) return;
+    const stage = document.createElement('div');
+    stage.className = 'rv';
+    stage.innerHTML = `
+      <div class="rv__tip" role="status" hidden>
+        <b>Leave a comment</b>
+        <span>Comments are saved on the review copy of this site. Open it, tap <em>Comment</em>, then tap anything you'd like changed.</span>
+        <br><a class="rv__go" href="${REVIEW_COPY_URL}" target="_blank" rel="noopener">Open the review copy</a>
+      </div>
+      <button type="button" class="rv__btn" aria-expanded="false">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16v11H9l-5 4z"/></svg>
+        <span>Comment</span>
+      </button>`;
+    document.body.appendChild(stage);
+    const stageBtn = stage.querySelector('.rv__btn');
+    const stageTip = stage.querySelector('.rv__tip');
+    stageBtn.addEventListener('click', () => { stageTip.hidden = !stageTip.hidden; stageBtn.setAttribute('aria-expanded', String(!stageTip.hidden)); });
+    // The home film's own controls (pause, Who it's for) sit in this corner, so the button waits
+    // until the film has scrolled mostly out of view.
+    const film = document.querySelector('.hero');
+    if (film && 'IntersectionObserver' in window) {
+      new IntersectionObserver(([entry]) => { stage.hidden = entry.intersectionRatio > 0.3; }, { threshold: [0, 0.3, 1] }).observe(film);
+    }
+    return;
+  }
+  const comments = await window.claude.use('comments');
+  if (!comments || typeof comments.openComposer !== 'function') return;
+
 
   const box = document.createElement('div');
   box.className = 'rv';
