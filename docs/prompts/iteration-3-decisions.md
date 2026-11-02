@@ -48,3 +48,8 @@ Eva's answers on the v2 brief (`docs/prompts/iteration-3-round-2.md` and the v2 
   - This replaces today's duotone. The halftone **dots stay gone**: Eva doesn't like them.
 - **Contours:** bring back the brief's topographic **contour lines** behind page heroes (seeded noise, marching squares, slow drift). This reverses this morning's "no curls" note for contours only. Keep the strata bands as section transitions.
 - **Order:** build **G (the comment system)** first and run it locally (wrangler dev with a local D1) behind `PLACEHOLDER_*` values until Eva connects Cloudflare. Then do B (forms), then C, D, E and F as subagents.
+
+### Patterns (Eva, 2 November)
+- Primary: grainy Memphis confetti (circles, half-moons, triangles, pills) replaces the dot field.
+- Every other route, the shared pages and home's "Who is it for?": big contour lines drawn at the frame's size, with no tiling and no visible repeat. The near-straight strata lines are gone; the strata bands stay.
+- The halftone dot grid and the contours-with-dashes pattern were not used.

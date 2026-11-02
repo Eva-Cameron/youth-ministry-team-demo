@@ -1,7 +1,10 @@
 /* Terrain: the "layers of a journey" texture for the route and shared pages.
-   - Strata lines: fine, near-straight horizontal lines on a canvas behind each page hero (and faintly under
-     "Who is it for?" on home). Each line is y = base + a seeded noise wobble, so lines undulate gently and can
-     never close into contour loops. On the pages whose moment this is they drift very slowly.
+   - Contours: an OS-map style contour drawing (marching squares over a seeded noise field) on a canvas behind
+     each page hero, and faintly under "Who is it for?" on home. The land is drawn at the size of its frame from
+     very slow noise, so the hills are big and nothing tiles or repeats (Eva, 2 Nov). Where it drifts it slides
+     a few pixels a second.
+   - Memphis confetti (Primary only): grainy circles, half-moons, triangles and pills crowding the top and
+     bottom of the hero, bobbing and turning slowly.
    - Strata bands: wavy sediment bands in two or three tints of the route colour, drawn into the top padding of
      each section that follows another, with the grain showing through. Static SVG, no running cost.
    Off-screen canvases stop drawing (IntersectionObserver), the pixel ratio is capped at 2, and under
@@ -13,16 +16,18 @@
   const css = getComputedStyle(document.body);
   const tok = (name) => css.getPropertyValue(name).trim() || '#ffffff';
 
-  // Lines: gap between lines (px), wobble amplitude (px), colour token, alpha, drift (on/off).
+  // Lines (contours): scale is the width of one hill in px (bigger = broader land), step the height between
+  // contour lines, then colour token, alpha and drift (on/off).
+  // Memphis: one piece per `per` px² (at most `most`), edge bias, smallest and biggest radius, colours.
   // Bands: [colour token, alpha] from the top band down; depth is how far down the padding they reach (0–1).
-  const LIGHT = { lines: { gap: 40, amp: 16, color: '--acc-ink', alpha: .09 }, bands: { depth: .62, layers: [['--acc-on-dark', .1], ['--acc-on-dark', .05]] } };
+  const LIGHT = { lines: { scale: 1100, step: .034, color: '--acc-ink', alpha: .1 }, bands: { depth: .62, layers: [['--acc-on-dark', .1], ['--acc-on-dark', .05]] } };
   const ROUTES = {
-    index: { who: { gap: 44, amp: 16, color: '--white', alpha: .07 } },
-    // Primary has a confetti field instead of lines (Eva, 2 Nov): dots crowd the top and bottom edges.
-    primary: { dots: { per: 1500, most: 560, bias: 2.4, small: 2, big: 15, colours: ['#ef6f6c', '#1aa6a6', '#f6b93b', '#8fd0ee', '#ffffff', '#e8577a'] }, bands: { depth: .7, layers: [['--acc-on-dark', .22], ['--lilac', .2], ['--acc-on-dark', .08]] } },
-    secondary: { lines: { gap: 17, amp: 20, color: '--sky', alpha: .24, drift: true }, bands: { depth: .72, layers: [['--blue-light', .2], ['--blue', .32], ['--blue-light', .07]] } },
-    volunteer: { lines: { gap: 24, amp: 20, color: '--plum', alpha: .24, drift: true }, bands: { depth: .9, layers: [['--purple-text', .3], ['--purple', .42], ['--purple-text', .14], ['--plum', .9]] } },
-    everyone: { lines: { gap: 40, amp: 16, color: '--acc-ink', alpha: .1, drift: true }, bands: { depth: .6, layers: [['--acc-on-dark', .1], ['--stone', .05]] } },
+    index: { who: { scale: 1200, step: .036, color: '--white', alpha: .08 } },
+    // Primary has Memphis confetti instead of contours (Eva, 2 Nov): shapes crowd the top and bottom edges.
+    primary: { memphis: { per: 9000, most: 150, bias: 2, small: 7, big: 30, colours: ['#e0703a', '#3b4766', '#e0703a', '#3b4766', '#fff4e6'] }, bands: { depth: .7, layers: [['--acc-on-dark', .22], ['--lilac', .2], ['--acc-on-dark', .08]] } },
+    secondary: { lines: { scale: 900, step: .026, color: '--sky', alpha: .26, drift: true }, bands: { depth: .72, layers: [['--blue-light', .2], ['--blue', .32], ['--blue-light', .07]] } },
+    volunteer: { lines: { scale: 1000, step: .03, color: '--plum', alpha: .26, drift: true }, bands: { depth: .9, layers: [['--purple-text', .3], ['--purple', .42], ['--purple-text', .14], ['--plum', .9]] } },
+    everyone: { lines: { scale: 1100, step: .034, color: '--acc-ink', alpha: .12, drift: true }, bands: { depth: .6, layers: [['--acc-on-dark', .1], ['--stone', .05]] } },
   };
   const conf = ROUTES[page] || LIGHT;
 
@@ -45,7 +50,10 @@
   // A line's wobble: one slow swell and a smaller ripple, so it reads as sediment, not a sine wave.
   const wobble = (x, row, t) => noise(x / 520 + t, row * .37) + .35 * noise(x / 170 - t * .6, row * .37 + 40);
 
-  /* Strata lines: painted once on a canvas, shown as an image (cached like any photo, so scrolling stays cheap).
+  // The land: one broad swell and a smaller rise on top, so hills have shoulders rather than rings.
+  const land = (x, y, sc) => noise(x / sc + 3.7, y / sc + 1.3) + .38 * noise(x / (sc * .42) - 9.1, y / (sc * .42) + 4.2);
+
+  /* Contours: painted once on a canvas, shown as an image (cached like any photo, so scrolling stays cheap).
      Where they drift, the image is a little wider than its frame and slides sideways a few pixels a second, a
      transform the compositor handles without repainting. It stops off-screen, in a hidden tab, while the page is
      scrolling and under reduced motion. */
@@ -73,17 +81,29 @@
       cv.width = Math.round(w * dpr); cv.height = Math.round(h * dpr);
       g.setTransform(dpr, 0, 0, dpr, 0, 0);
       g.strokeStyle = color;
-      const rows = Math.ceil(h / o.gap) + 2;
-      for (let row = -1; row < rows; row++) {
-        // Every fifth line is a touch heavier, like the index lines on an OS map.
-        const index = (row + 100) % 5 === 0;
-        g.globalAlpha = o.alpha * (index ? 1.7 : 1);
-        g.lineWidth = index ? 1.2 : .7;
-        const base = row * o.gap + o.gap * .45 * noise(row * .61, 7.3);
-        g.beginPath();
-        for (let x = -12; x <= w + 12; x += 12) g[x < 0 ? 'moveTo' : 'lineTo'](x, base + o.amp * wobble(x, row, 0));
-        g.stroke();
+      g.lineJoin = g.lineCap = 'round';
+      // Marching squares on a 6px grid: sample the land at every corner, then for each contour level find where
+      // it crosses each cell's edges and join those points. Every fifth level is heavier, like an OS map.
+      const C = 6, cols = Math.ceil(w / C) + 1, rows = Math.ceil(h / C) + 1;
+      const v = new Float32Array(cols * rows);
+      let lo = Infinity, hi = -Infinity;
+      for (let j = 0; j < rows; j++) for (let i = 0; i < cols; i++) { const n = land(i * C, j * C, o.scale); v[j * cols + i] = n; if (n < lo) lo = n; if (n > hi) hi = n; }
+      const thin = new Path2D(), thick = new Path2D();
+      for (let k = Math.ceil(lo / o.step); k * o.step <= hi; k++) {
+        const L = k * o.step, path = ((k % 5) + 5) % 5 === 0 ? thick : thin;
+        for (let j = 0; j < rows - 1; j++) for (let i = 0; i < cols - 1; i++) {
+          const a = v[j * cols + i], b = v[j * cols + i + 1], c = v[(j + 1) * cols + i + 1], d = v[(j + 1) * cols + i];
+          const pts = [];
+          const x0 = i * C, y0 = j * C;
+          if ((a < L) !== (b < L)) pts.push(x0 + C * (L - a) / (b - a), y0);
+          if ((b < L) !== (c < L)) pts.push(x0 + C, y0 + C * (L - b) / (c - b));
+          if ((c < L) !== (d < L)) pts.push(x0 + C * (L - d) / (c - d), y0 + C);
+          if ((d < L) !== (a < L)) pts.push(x0, y0 + C * (L - a) / (d - a));
+          for (let q = 0; q + 3 < pts.length; q += 4) { path.moveTo(pts[q], pts[q + 1]); path.lineTo(pts[q + 2], pts[q + 3]); }
+        }
       }
+      g.globalAlpha = o.alpha; g.lineWidth = .8; g.stroke(thin);
+      g.globalAlpha = Math.min(1, o.alpha * 1.8); g.lineWidth = 1.3; g.stroke(thick);
       cv.toBlob((b) => { if (img.src) URL.revokeObjectURL(img.src); img.src = URL.createObjectURL(b); });
     };
     let lastW = 0;
@@ -139,38 +159,60 @@
     section.prepend(box);
   };
 
-  // Confetti field: dots crowd the top and bottom edges and thin out towards the middle, where the words
-  // are. They bob and twinkle slowly (30fps, only on screen); under reduced motion they are drawn once.
-  const dotfield = (host, o) => {
+  // Memphis confetti: grainy circles, half-moons, triangles and pills that crowd the top and bottom edges and
+  // thin out towards the middle, where the words are. Each piece is painted once (with its speckle) to a little
+  // sprite; frames only place and turn the sprites (30fps, only on screen). Under reduced motion: drawn once.
+  const SHAPES = ['circle', 'half', 'tri', 'pill'];
+  const sprite = (shape, r, colour, dpr) => {
+    const s = Math.ceil(r * 2 + 4), cv = document.createElement('canvas');
+    cv.width = cv.height = Math.ceil(s * dpr);
+    const g = cv.getContext('2d');
+    g.setTransform(dpr, 0, 0, dpr, s / 2 * dpr, s / 2 * dpr);
+    g.fillStyle = colour;
+    g.beginPath();
+    if (shape === 'circle') g.arc(0, 0, r, 0, 6.283);
+    else if (shape === 'half') g.arc(0, r * .3, r, Math.PI, 0);
+    else if (shape === 'tri') { g.moveTo(0, -r); g.lineTo(r * .9, r * .65); g.lineTo(-r * .9, r * .65); g.closePath(); }
+    else { const t = r * .36; g.moveTo(-r + t, -t); g.lineTo(r - t, -t); g.arc(r - t, 0, t, -1.571, 1.571); g.lineTo(-r + t, t); g.arc(-r + t, 0, t, 1.571, 4.712); }
+    g.fill();
+    // Speckle: light flecks inside the shape only, like risograph grain.
+    g.globalCompositeOperation = 'source-atop';
+    g.fillStyle = '#fff';
+    for (let n = Math.round(r * r * .5); n > 0; n--) { g.globalAlpha = .18 + rng() * .3; g.fillRect((rng() - .5) * s, (rng() - .5) * s, .9, .9); }
+    return cv;
+  };
+  const memphis = (host, o) => {
     const box = document.createElement('div');
-    box.className = 'terrain terrain--dots';
+    box.className = 'terrain terrain--memphis';
     box.setAttribute('aria-hidden', 'true');
     const cv = document.createElement('canvas');
     box.append(cv);
     host.prepend(box);
     const ctx = cv.getContext('2d');
     const dpr = Math.min(2, devicePixelRatio || 1);
-    let w = 0, h = 0, dots = [], raf = 0, visible = true, last = 0;
+    let w = 0, h = 0, bits = [], raf = 0, visible = true, last = 0;
     const seed = () => {
-      dots = [];
+      bits = [];
       const count = Math.min(o.most, Math.round((w * h) / o.per));
       for (let i = 0; i < count; i++) {
         const edge = Math.pow(rng(), o.bias); // 0 at the edge, 1 towards the middle
         const y = rng() < .5 ? edge * h * .5 : h - edge * h * .5;
-        const near = 1 - edge;
-        dots.push({ x: rng() * w, y, r: o.small + (o.big - o.small) * Math.pow(near, 2.2) * (.35 + rng() * .65), c: o.colours[(rng() * o.colours.length) | 0], a: .5 + rng() * .5, ph: rng() * 6.283, sp: .35 + rng() * .7, amp: 2 + rng() * 6 });
+        // On a phone the hero is short and the words sit near the top, so the pieces shrink with the width.
+        const big = Math.min(o.big, w / 32);
+        const r = o.small + (big - o.small) * Math.pow(1 - edge, 1.6) * (.4 + rng() * .6);
+        const img = sprite(SHAPES[(rng() * 4) | 0], r, o.colours[(rng() * o.colours.length) | 0], dpr);
+        bits.push({ img, s: img.width / dpr, x: rng() * w, y, rot: rng() * 6.283, spin: (rng() - .5) * .3, ph: rng() * 6.283, sp: .3 + rng() * .5, amp: 3 + rng() * 6 });
       }
     };
     const draw = (t) => {
-      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-      ctx.clearRect(0, 0, w, h);
-      for (const d of dots) {
-        const k = t / 1000 * d.sp + d.ph;
-        ctx.globalAlpha = d.a * (.82 + .18 * Math.sin(k * 1.7));
-        ctx.fillStyle = d.c;
-        ctx.beginPath();
-        ctx.arc(d.x + Math.cos(k * .6) * d.amp * .5, d.y + Math.sin(k) * d.amp, d.r, 0, 6.283);
-        ctx.fill();
+      ctx.setTransform(1, 0, 0, 1, 0, 0);
+      ctx.clearRect(0, 0, cv.width, cv.height);
+      const sec = t / 1000;
+      for (const b of bits) {
+        const k = sec * b.sp + b.ph;
+        ctx.setTransform(dpr, 0, 0, dpr, (b.x + Math.cos(k * .6) * b.amp * .6) * dpr, (b.y + Math.sin(k) * b.amp) * dpr);
+        ctx.rotate(b.rot + sec * b.spin);
+        ctx.drawImage(b.img, -b.s / 2, -b.s / 2, b.s, b.s);
       }
     };
     const tick = (now) => {
@@ -179,10 +221,12 @@
       if (visible && !document.hidden && !reduce) raf = requestAnimationFrame(tick);
     };
     const run = () => { if (!reduce && visible && !document.hidden && !raf) raf = requestAnimationFrame(tick); };
+    let lastW = 0;
     new ResizeObserver(([e]) => {
       w = Math.round(e.contentRect.width); h = Math.round(e.contentRect.height);
       cv.width = w * dpr; cv.height = h * dpr;
-      seed(); draw(performance.now()); run();
+      if (w !== lastW) { lastW = w; seed(); }
+      draw(performance.now()); run();
     }).observe(box);
     if ('IntersectionObserver' in window) new IntersectionObserver(([e]) => { visible = e.isIntersecting; run(); }).observe(host);
     document.addEventListener('visibilitychange', run);
@@ -190,8 +234,8 @@
 
   if (conf.who) { const who = document.querySelector('.who'); if (who) lines(who, conf.who); }
   const hero = document.querySelector('.phero');
-  if (hero && conf.dots) dotfield(hero, conf.dots);
-  // No texture over photographs (Eva): photo heroes get no lines.
+  if (hero && conf.memphis) memphis(hero, conf.memphis);
+  // No texture over photographs (Eva): photo heroes get no contours.
   if (hero && conf.lines && !hero.classList.contains('phero--photo')) lines(hero, conf.lines);
   if (conf.bands) {
     document.querySelectorAll('main > :is(.section, .tiktok, .globe-sec)').forEach((s) => {
