@@ -23,14 +23,14 @@
    gentle  Primary: soft pink, a soft ease-out, nothing sudden.
    open    Secondary retreats, Youth Council: blue, clean and steady.
    joy     The Source, Festival: red, quick and springy.
-   grave   Lourdes, adoration: candle-dark, gold, light type, slow fades, no bounce.
-   serve   Volunteers: dark, purple only as a thread, a steady wipe.
+   grave   Lourdes, adoration: plum and candle gold, light type, slow fades, no bounce.
+   serve   Volunteers: worship violet, a steady wipe.
    home    Everyone else, the Village: mint, slow drift. */
 [data-feel="gentle"] { --f-bg: var(--pink); --f-fg: var(--ink); --f-acc: var(--ink); --f-dur: .7s; --f-anim: f-gentle .8s cubic-bezier(.22, 1, .36, 1) both; --f-img: none; }
 [data-feel="open"] { --f-bg: var(--blue); --f-fg: var(--white); --f-acc: var(--white); --f-dur: .6s; --f-anim: word .7s var(--ease) both; --f-img: none; }
-[data-feel="joy"] { --f-bg: var(--red); --f-fg: var(--white); --f-acc: var(--butter); --f-dur: .3s; --f-anim: f-joy .55s cubic-bezier(.16, 1, .3, 1) both; --f-img: saturate(1.15); }
-[data-feel="grave"] { --f-bg: #120c1c; --f-fg: #efe6d2; --f-acc: var(--gold); --f-dur: 1.6s; --f-anim: f-grave 1.8s cubic-bezier(.22, 1, .36, 1) both; --f-img: grayscale(.55) sepia(.3) brightness(.85); }
-[data-feel="serve"] { --f-bg: #0d0a12; --f-fg: var(--white); --f-acc: var(--purple-text); --f-dur: .9s; --f-anim: f-given 1s var(--ease) both; --f-img: none; }
+[data-feel="joy"] { --f-bg: var(--red); --f-fg: var(--white); --f-acc: var(--white); --f-dur: .3s; --f-anim: f-joy .55s cubic-bezier(.16, 1, .3, 1) both; --f-img: saturate(1.15); }
+[data-feel="grave"] { --f-bg: var(--plum); --f-fg: #efe6d2; --f-acc: var(--gold); --f-dur: 1.6s; --f-anim: f-grave 1.8s cubic-bezier(.22, 1, .36, 1) both; --f-img: grayscale(.55) sepia(.3) brightness(.85); }
+[data-feel="serve"] { --f-bg: var(--purple); --f-fg: var(--white); --f-acc: var(--white); --f-dur: .9s; --f-anim: f-given 1s var(--ease) both; --f-img: none; }
 [data-feel="home"] { --f-bg: var(--mint); --f-fg: var(--ink); --f-acc: var(--ink); --f-dur: 1.3s; --f-anim: f-rest 1.5s cubic-bezier(.2, .7, .2, 1) both; --f-img: none; }
 @keyframes f-gentle { from { transform: translateY(100%); } }
 @keyframes f-joy { from { transform: translateY(80%) rotate(-9deg) scale(.6); } }
@@ -115,7 +115,6 @@
 .who__art { grid-column: 2; grid-row: 2; align-self: end; display: block; width: min(100%, 460px); max-height: 40vh; aspect-ratio: 4 / 3; background: var(--f-acc); -webkit-mask-position: center; mask-position: center; -webkit-mask-size: cover; mask-size: cover; -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat; }
 .who__card.in h3 { animation: var(--f-anim); }
 .who__card[data-feel="serve"] { box-shadow: inset 0 0 0 1px var(--purple-line), var(--shadow-2); }
-.who__card[data-feel="serve"] .who__tag { color: var(--purple-text); }
 .who__card[data-feel="home"].in .who__art { animation: f-rest 1.6s both; }
 .art--retreat-prayer { -webkit-mask-image: url("../assets/web/dots-retreat-prayer.webp"); mask-image: url("../assets/web/dots-retreat-prayer.webp"); }
 .art--youth-group { -webkit-mask-image: url("../assets/web/dots-youth-group.webp"); mask-image: url("../assets/web/dots-youth-group.webp"); }

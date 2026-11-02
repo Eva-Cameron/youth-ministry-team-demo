@@ -17,16 +17,21 @@
   --ink-3: #2a2232;
   --white: #ffffff;
 
-  --pink: #f8c8da;
-  --mint: #c4ead6;
-  --lilac: #d9cdf6;
-  --butter: #fde8a3;
+  /* Route colours, tuned to the shades in YMT's own photos (Eva, 2 Nov 2026): retreat-room rose,
+     stage-light blue, candle ember, worship violet, and the Village's sage and stone. */
+  --pink: #f4bfd0;
+  --mint: #cdd8c3;
+  --lilac: #ddb5fa;
+  --butter: #ffd3a8;
   --sky: #c3e2f7;
-  --blue: #2f5bff;
-  --red: #d42f28;
-  --purple: #642678;
-  --purple-line: #a35bc0;
-  --purple-text: #b77ad1;
+  --stone: #e7e2d6;
+  --blue: #2b3bd6;
+  --blue-light: #7c8cff;
+  --red: #c2412f;
+  --purple: #5b33b9;
+  --purple-line: #a561d5;
+  --purple-text: #a561d5;
+  --plum: #2a1530;
   --gold: #f2c24a;
   --night: #120c1c;
 
@@ -82,21 +87,22 @@
   --r-lg: 28px;
   --shadow-1: inset 0 1px 0 rgba(255, 255, 255, .07), 0 12px 32px -14px rgba(0, 0, 0, .6);
   --shadow-2: 0 34px 80px -28px rgba(0, 0, 0, .75), 0 10px 24px -10px rgba(0, 0, 0, .45);
-  /* Texture: contour lines from assets/deco/topo.svg, and a fine grain (SVG noise, blended). */
-  --topo: url("../assets/deco/topo.svg");
+  /* Texture: a fine grain (SVG noise, blended). */
   --noise: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='.33 .33 .33 0 0 .33 .33 .33 0 0 .33 .33 .33 0 0 0 0 0 0 .3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 
   /* Page accent; audience and programme pages override it. */
   --acc: var(--white);
   --acc-ink: var(--ink);
   --acc-2: var(--white);
+  /* The accent as it appears on the dark ground (dates, ticks, rules, underlines): 3:1 or better. */
+  --acc-on-dark: var(--acc);
   color-scheme: dark;
 }
 body[data-aud="primary"] { --acc: var(--pink); --acc-ink: var(--ink); --acc-2: var(--butter); }
-body[data-aud="secondary"] { --acc: var(--blue); --acc-ink: var(--white); --acc-2: var(--red); }
-body[data-aud="secondary"][data-tone="red"] { --acc: var(--red); --acc-2: var(--butter); }
-body[data-aud="volunteer"] { --acc: var(--purple-text); --acc-ink: var(--ink); --acc-2: var(--gold); }
-body[data-aud="everyone"] { --acc: var(--mint); --acc-ink: var(--ink); --acc-2: var(--sky); }
+body[data-aud="secondary"] { --acc: var(--blue); --acc-ink: var(--white); --acc-2: var(--red); --acc-on-dark: var(--blue-light); }
+body[data-aud="secondary"][data-tone="red"] { --acc: var(--red); --acc-2: var(--butter); --acc-on-dark: var(--butter); }
+body[data-aud="volunteer"] { --acc: var(--purple-text); --acc-ink: var(--ink); --acc-2: var(--lilac); }
+body[data-aud="everyone"] { --acc: var(--mint); --acc-ink: var(--ink); --acc-2: var(--stone); }
 
 /* 3 Base */
 *, *::before, *::after { box-sizing: border-box; }
@@ -176,7 +182,7 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .nav__links { display: flex; align-items: center; gap: var(--sp-1); }
 .nav__links > a, .nav__drop > button { display: inline-flex; align-items: center; gap: var(--sp-2); min-height: 44px; padding: 0 var(--sp-4); border: 0; background: transparent; font: 500 15px var(--sans); text-decoration: none; cursor: pointer; transition: background-color .2s ease; }
 .nav__links > a:hover, .nav__drop > button:hover, .nav__drop > button[aria-expanded="true"] { background: rgba(255, 255, 255, .12); }
-.nav__links > a[aria-current="page"], .nav__drop:has([aria-current="page"]) > button { box-shadow: inset 0 -2px 0 var(--acc); }
+.nav__links > a[aria-current="page"], .nav__drop:has([aria-current="page"]) > button { box-shadow: inset 0 -2px 0 var(--acc-on-dark); }
 .nav__drop { position: relative; }
 .nav__drop > button svg { width: 12px; height: 12px; stroke: currentColor; fill: none; stroke-width: 2; transition: transform .25s var(--ease); }
 .nav__drop > button[aria-expanded="true"] svg { transform: rotate(180deg); }
@@ -282,19 +288,11 @@ a.tag::after { content: ""; position: absolute; inset: -13px -4px; }
   .phero__photo { height: auto; width: min(100%, 420px); }
 }
 
-/* Texture: contour lines and grain live in heroes and at section breaks. Content always sits above:
-   the lines thin out in a clearing behind the hero words and fade within the first screen of a section. */
+/* Texture: a fine grain on heroes. (Eva asked for no curly contour lines; straight strata bands
+   at section changes come from workstream C.) */
 .phero { background-image: var(--noise); background-blend-mode: overlay; }
-.phero::after { content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none; background: currentColor; opacity: .17;
-  -webkit-mask: var(--topo) center / cover no-repeat, radial-gradient(ellipse 48% 55% at 20% 74%, transparent 25%, #000 78%); -webkit-mask-composite: source-in;
-  mask: var(--topo) center / cover no-repeat intersect, radial-gradient(ellipse 48% 55% at 20% 74%, transparent 25%, #000 78%); }
 .phero--photo .phero__bg::after, .hero__scrim::after { content: ""; position: absolute; inset: 0; background: var(--noise); mix-blend-mode: overlay; opacity: 1; pointer-events: none; }
 .hero__scrim::after { opacity: .6; }
-.section, .ethos, .who, .tiktok, .globe-sec, .foot { position: relative; isolation: isolate; }
-.section:not(.section--tight)::before, .ethos::before, .who::before, .tiktok::before, .globe-sec::before, .foot::before {
-  content: ""; position: absolute; left: 0; right: 0; top: 0; z-index: -1; height: clamp(200px, 24vw, 360px); pointer-events: none; background: var(--acc); opacity: .16;
-  -webkit-mask: var(--topo) center top / cover no-repeat, linear-gradient(#000, transparent); -webkit-mask-composite: source-in;
-  mask: var(--topo) center top / cover no-repeat intersect, linear-gradient(#000, transparent); }
 
 /* 11 Content blocks */
 /* Work grid: rows of mixed widths; each row shares one height. */
@@ -338,7 +336,7 @@ a.tag::after { content: ""; position: absolute; inset: -13px -4px; }
 .facts dd { font: 500 var(--fs-base)/1.35 var(--sans); }
 .ticks { display: grid; gap: 10px; }
 .ticks li { display: grid; grid-template-columns: 18px minmax(0, 1fr); gap: var(--sp-3); font: 400 var(--fs-base)/1.45 var(--sans); }
-.ticks li::before { content: ""; width: 10px; height: 10px; margin-top: .45em; background: var(--acc); }
+.ticks li::before { content: ""; width: 10px; height: 10px; margin-top: .45em; background: var(--acc-on-dark); }
 
 /* Ruled rows: roles, programmes, downloads */
 .rows { border-top: 1px solid var(--line); }
@@ -350,7 +348,7 @@ a.tag::after { content: ""; position: absolute; inset: -13px -4px; }
 /* Downloads, Bitesize style */
 .bite-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr)); gap: 14px; }
 .bite { --focus: var(--ink); display: grid; grid-template-rows: auto 1fr auto; overflow: hidden; border-radius: var(--r-md); background: var(--white); color: var(--ink); box-shadow: var(--shadow-1); transition: transform .25s var(--ease), box-shadow .25s var(--ease); }
-.bite:hover { transform: translateY(-6px); box-shadow: 0 0 0 2px var(--acc), var(--shadow-2); }
+.bite:hover { transform: translateY(-6px); box-shadow: 0 0 0 2px var(--acc-on-dark), var(--shadow-2); }
 .bite__top { display: flex; justify-content: space-between; align-items: center; gap: 10px; min-height: 84px; padding: 14px var(--sp-4); background: var(--c, var(--butter)); }
 .bite__type { display: inline-flex; align-items: center; gap: var(--sp-2); font: 700 15px var(--sans); }
 .bite__type svg { width: 30px; height: 30px; padding: 6px; border-radius: 50%; background: var(--ink); stroke: var(--white); fill: none; stroke-width: 2; }
@@ -386,9 +384,9 @@ a.tag::after { content: ""; position: absolute; inset: -13px -4px; }
 .tl__go { display: grid; gap: var(--sp-2); justify-items: end; text-align: right; }
 .tl__status { font: 400 11px var(--mono); text-transform: uppercase; }
 /* On route pages the accent runs down the page: section rules, the Next marker and the big dates (3:1 large text). */
-body[data-aud] .label { border-top-color: var(--acc); }
-body[data-aud] .tl__date { color: var(--acc); }
-body[data-aud] .tl__item.is-next::before { background: var(--acc); color: var(--acc-ink); }
+body[data-aud] .label { border-top-color: var(--acc-on-dark); }
+body[data-aud] .tl__date { color: var(--acc-on-dark); }
+body[data-aud] .tl__item.is-next::before { background: var(--acc-on-dark); color: var(--ink); }
 .tl__item.is-next::before { content: "Next"; position: absolute; top: 6px; left: 0; padding: 2px 6px; background: var(--white); color: var(--ink); font: 400 10px var(--mono); text-transform: uppercase; }
 .split .tl__item, .panel .tl__item { grid-template-columns: 84px minmax(0, 1fr); gap: 10px var(--sp-5); }
 .split .tl__who, .split .tl__go, .panel .tl__who, .panel .tl__go { grid-column: 2; justify-items: start; text-align: left; }
