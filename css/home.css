@@ -3,9 +3,9 @@
 /* Title card shown while the page loads */
 .intro, html.intro-seen .intro { display: none; }
 .js .intro { position: fixed; inset: 0; z-index: 280; display: flex; align-items: center; justify-content: center; overflow: hidden; background: var(--ink); color: var(--white); pointer-events: none; transition: transform .95s var(--ease), border-radius .95s var(--ease); animation: intro-failsafe 0s 5s forwards; }
-.intro.is-leaving { border-radius: 0 0 50% 50%; transform: translateY(-105%); }
-/* The mark draws itself like a sketch (wobbly outlines, then hatching), settles into the solid
-   logo, then the card lifts. Shapes are traced from assets/images/logo.png; --i staggers them. */
+.intro.is-leaving { transform: translateY(-101%); }
+/* The mark draws itself in clean outlines, hatches in, settles into the solid logo, then the
+   card lifts straight up. Shapes are traced from assets/images/logo.png; --i staggers them. */
 .intro__mark { width: clamp(170px, 24vw, 340px); overflow: visible; color: var(--white); }
 .intro__mark use { --d: calc(var(--i) * 85ms); }
 .intro__lines use { fill: none; stroke: currentColor; stroke-width: 5; stroke-linejoin: round; stroke-dasharray: 1; stroke-dashoffset: 1; animation: intro-draw .6s var(--ease) var(--d) forwards, intro-out .3s ease 1.35s forwards; }

@@ -32,6 +32,8 @@
 
   /* Three faces: Syne for display, Satoshi for reading, Space Mono for labels. */
   --display: "Syne", Arial, sans-serif;
+  /* assets/fonts/syne.woff2 is built with Syne's lining figures as the default digits (its stock
+     figures are old-style: a curled 1 and a dropped 9). */
   --sans: "Satoshi", "Helvetica Neue", Arial, sans-serif;
   --mono: "Space Mono", "Courier New", monospace;
 
