@@ -200,10 +200,12 @@ for (const pageFile of pageFiles) {
     const height = Math.min(fullHeight, CONFIG.maxPageHeight);
     const stem = `${pageFile.replace(/\.html$/, '')}-${viewport.name}`;
     const clip = { x: 0, y: 0, width: viewport.width, height };
+    // One capture only: a second full-page screenshot can see a re-laid-out page (vh units), so
+    // the JPEG the board embeds is converted from this PNG and always matches the pins.
     const png = await page.screenshot({ fullPage: true, clip, type: 'png' });
-    const jpg = await page.screenshot({ fullPage: true, clip, type: 'jpeg', quality: CONFIG.embedJpegQuality });
     await writeFile(join(OUT, `${stem}.png`), png);
-    await writeFile(join(OUT, `${stem}.jpg`), jpg);
+    const jpegQ = String(Math.round(2 + (100 - CONFIG.embedJpegQuality) / 10));
+    execFileSync(CONFIG.ffmpegPath, ['-y', '-loglevel', 'error', '-i', join(OUT, `${stem}.png`), '-q:v', jpegQ, join(OUT, `${stem}.jpg`)]);
     entry.frames[viewport.name] = { width: viewport.width, height, fullHeight, png: `${stem}.png`, jpg: `${stem}.jpg` };
     for (const spot of resolved) {
       const pin = entry.pins.find((item) => item.n === spot.n);

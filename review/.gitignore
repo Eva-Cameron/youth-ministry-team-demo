@@ -1,4 +1,4 @@
-node_modules/
+node_modules
 out/*.png
 out/*.jpg
 out/video-tmp/
