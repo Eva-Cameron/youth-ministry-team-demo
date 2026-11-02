@@ -93,6 +93,9 @@
   font: 500 clamp(16px, 1.25vw, 19px)/1.4 var(--sans);
   text-shadow: 0 1px 12px rgba(8, 5, 11, .6);
 }
+/* The film pauses when tapped (home.js). This button stays for keyboard users and appears when
+   focused, so the loop can always be paused (WCAG 2.2.2) without a pill on the film. */
+.hero__pause:not(:focus-visible) { position: absolute; width: 1px; height: 1px; min-height: 0; padding: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
 .hero__pause {
   --glass-fill: rgba(16, 12, 21, .72);
   grid-column: 3;
@@ -139,6 +142,10 @@
   stroke-width: 1.5;
   transition: transform .24s;
 }
+.js.page-ready .hero__open { animation: open-in .8s var(--ease-out) .4s both; }
+.js.page-ready .hero__open svg { animation: open-nudge 1.1s var(--ease-out) 1.4s 3; }
+@keyframes open-in { from { opacity: 0; transform: translateY(16px) scale(.92); } }
+@keyframes open-nudge { 0%, 100% { transform: none; } 40% { transform: translateX(6px); } }
 .hero__open:hover {
   background: var(--white);
   color: var(--ink);

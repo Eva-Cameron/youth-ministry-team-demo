@@ -43,6 +43,8 @@
     heroFilm.addEventListener('canplay', playFilm);
     document.addEventListener('visibilitychange', playFilm);
     ['pointerdown', 'touchstart', 'scroll', 'keydown'].forEach((t) => addEventListener(t, playFilm, { passive: true }));
+    // Tapping the film itself pauses or plays it.
+    hero?.addEventListener('click', (e) => { if (!e.target.closest('a, button')) filmBtn?.click(); });
     filmBtn?.addEventListener('click', () => {
       userPaused = !userPaused;
       if (userPaused) heroFilm.pause(); else heroFilm.play().catch(() => {});
