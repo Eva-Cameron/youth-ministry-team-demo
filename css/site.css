@@ -452,6 +452,11 @@ body[data-aud] .tl__item.is-next::before { background: var(--acc); color: var(--
 .note a { color: var(--white); }
 .rows__go { display: flex; flex-wrap: wrap; gap: var(--sp-2); }
 .rows--mail li { scroll-margin-block: 120px; }
+/* Addresses as selectable text with a copy button, for when a mailto link does not open. */
+.copy-email { display: grid; gap: var(--sp-2); }
+.copy-email li { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--sp-3); padding: var(--sp-3) 0; border-top: 1px solid var(--line); }
+.copy-email small { display: block; font: 400 var(--fs-xs)/1.3 var(--mono); text-transform: uppercase; color: var(--text-2); }
+.copy-email__addr { font: 500 var(--fs-md)/1.3 var(--sans); user-select: all; }
 .rows--mail li.is-picked { padding-inline: var(--sp-4); background: var(--glass-2); box-shadow: inset 0 0 0 1px var(--glass-line); border-radius: var(--r-sm); }
 
 /* 13 Articles: short reads for young people, with links to go further. */

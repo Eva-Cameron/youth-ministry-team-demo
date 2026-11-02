@@ -212,6 +212,14 @@
   };
   if (C.enquiryTo) $$('a[data-mail]').forEach((a) => { a.href = mailto(a.dataset.mail, a.dataset.mailAbout); });
 
+  // Copy buttons next to each address. The button says what happened; a status line reads it out.
+  $$('[data-copy]').forEach((btn) => btn.addEventListener('click', () => {
+    const label = btn.firstChild;
+    const status = $('[data-copy-status]');
+    const done = (text) => { label.textContent = text; if (status) status.textContent = text === 'Copied' ? `Copied ${btn.dataset.copy}` : text; setTimeout(() => { label.textContent = 'Copy'; }, 2200); };
+    navigator.clipboard?.writeText(btn.dataset.copy).then(() => done('Copied'), () => done('Select and copy')) ?? done('Select and copy');
+  }));
+
   // Old ?topic= links to the enquire page land on the matching email.
   const topic = new URLSearchParams(location.search).get('topic');
   const picked = topic && $(`[data-mail-row="${CSS.escape(topic)}"]`);
