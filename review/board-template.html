@@ -1,0 +1,560 @@
+<title>YMT Review Board</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<style>
+/* Layout: a calm design canvas. A slim tool bar, the board (pages laid out as frames with pins and glass callouts), and the current thread spelled out underneath. Under reduced motion the same content becomes a plain scrolling page. */
+@font-face { font-family: "Satoshi"; font-weight: 300 900; font-display: block; src: url("data:font/woff2;base64,/*FONT_SATOSHI*/") format("woff2"); }
+@font-face { font-family: "Space Mono"; font-weight: 400; font-display: block; src: url("data:font/woff2;base64,/*FONT_MONO*/") format("woff2"); }
+:root {
+  --canvas: #f6f4ef;
+  --dot: #d3cec5;
+  --chrome: #fdfcfa;
+  --ink: #1f1b24;
+  --muted: #5f5a66;
+  --line: #e2ded6;
+  --frame-label: #6a6570;
+  --glass-fill: rgb(255 255 255 / 0.86);
+  --glass-edge: rgb(255 255 255 / 0.9);
+  --glass-shadow: 0 18px 44px rgb(31 27 36 / 0.16), 0 2px 6px rgb(31 27 36 / 0.08);
+  --open: #f2b200;
+  --open-soft: #fff1bf;
+  --done: #77737d;
+  --done-soft: #e6e3de;
+  --gutter: rgb(31 27 36 / 0.04);
+  --focus: #1f1b24;
+  --ui: "Satoshi", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono: "Space Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --canvas: #18161b; --dot: #37323d; --chrome: #201d24; --ink: #f2eff5; --muted: #aba4b3; --line: #322e38;
+    --frame-label: #a39dab; --glass-fill: rgb(32 29 37 / 0.82); --glass-edge: rgb(255 255 255 / 0.18);
+    --glass-shadow: 0 18px 44px rgb(0 0 0 / 0.45), 0 2px 6px rgb(0 0 0 / 0.3);
+    --open-soft: #4a3d12; --done-soft: #34313a; --gutter: rgb(255 255 255 / 0.04); --focus: #f2b200; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --canvas: #18161b; --dot: #37323d; --chrome: #201d24; --ink: #f2eff5; --muted: #aba4b3; --line: #322e38;
+  --frame-label: #a39dab; --glass-fill: rgb(32 29 37 / 0.82); --glass-edge: rgb(255 255 255 / 0.18);
+  --glass-shadow: 0 18px 44px rgb(0 0 0 / 0.45), 0 2px 6px rgb(0 0 0 / 0.3);
+  --open-soft: #4a3d12; --done-soft: #34313a; --gutter: rgb(255 255 255 / 0.04); --focus: #f2b200; color-scheme: dark;
+}
+html, body { height: 100%; }
+body { background: var(--canvas); color: var(--ink); font-family: var(--ui); }
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--chrome); }
+.paper { position: fixed; inset: 0; pointer-events: none; z-index: 1; opacity: 0.35; mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.45 0 0 0 0 0.42 0 0 0 0 0.38 0 0 0 0.16 0'/%3E%3C/filter%3E%3Crect width='220' height='220' filter='url(%23n)'/%3E%3C/svg%3E"); }
+:root[data-theme="dark"] .paper { mix-blend-mode: screen; opacity: 0.12; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .paper { mix-blend-mode: screen; opacity: 0.12; } }
+
+.app { height: 100%; display: grid; grid-template-rows: auto 1fr auto; position: relative; }
+.bar, .caption {
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+  background: var(--chrome); color: var(--ink); position: relative; z-index: 3;
+}
+.bar { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 20px; justify-content: space-between; padding-block: 10px; border-bottom: 1px solid var(--line); }
+.bar__file { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; min-width: 0; }
+.bar__file b { font-weight: 700; font-size: 1rem; letter-spacing: -0.01em; }
+.bar__file span { font: 0.72rem var(--mono); color: var(--muted); }
+.ctrls { display: flex; align-items: center; gap: 6px; }
+.ctrls button {
+  font: 600 0.82rem/1 var(--ui); color: var(--ink); background: transparent; border: 1px solid var(--line);
+  border-radius: 10px; min-height: 40px; min-width: 40px; padding: 0 12px; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+}
+.ctrls button:hover { background: var(--canvas); }
+.ctrls button:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+.ctrls svg { width: 14px; height: 14px; fill: currentColor; }
+.ctrls .count { font: 0.75rem var(--mono); color: var(--muted); min-width: 6ch; text-align: center; font-variant-numeric: tabular-nums; }
+.caption { display: grid; grid-template-columns: auto 1fr; gap: 4px 16px; align-items: baseline; padding-block: 12px; border-top: 1px solid var(--line); min-height: 3.4em; }
+.caption__tag { font: 0.72rem var(--mono); letter-spacing: 0.05em; text-transform: uppercase; color: var(--muted); white-space: nowrap; }
+.caption__text { font-size: 0.98rem; line-height: 1.45; min-width: 0; max-width: 92ch; overflow-wrap: anywhere; }
+.caption__text small { display: block; color: var(--muted); font-size: 0.84rem; }
+
+/* ---------- Canvas ---------- */
+.stage { position: relative; overflow: hidden; cursor: grab; touch-action: none;
+  background-color: var(--canvas); background-image: radial-gradient(circle at center, var(--dot) 1.1px, transparent 1.5px); }
+.stage.is-dragging { cursor: grabbing; }
+.world { position: absolute; left: 0; top: 0; transform-origin: 0 0; will-change: transform; }
+.label { position: absolute; font: 26px/1 var(--mono); color: var(--frame-label); white-space: nowrap; }
+.label b { font: 700 34px/1 var(--ui); color: var(--ink); letter-spacing: -0.01em; margin-right: 16px; }
+.frame { position: absolute; background: #100c15; border-radius: 6px; overflow: hidden; box-shadow: 0 1px 0 rgb(0 0 0 / 0.04), 0 20px 50px rgb(31 27 36 / 0.14); }
+.frame img { display: block; max-width: none; }
+.gutter { position: absolute; border-radius: 14px; background: var(--gutter); border: 1.5px dashed var(--line); }
+.gutter__title { position: absolute; left: 0; right: 0; top: 18px; text-align: center; font: 18px var(--mono); color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; }
+
+.cover { position: absolute; width: 1000px; box-sizing: border-box; padding: 84px; border-radius: 28px; background: var(--chrome); color: var(--ink); box-shadow: 0 20px 50px rgb(31 27 36 / 0.1); }
+.kicker { font: 15px var(--mono); letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+.cover h1 { font-weight: 800; font-size: 76px; line-height: 1; letter-spacing: -0.025em; margin: 22px 0; text-wrap: balance; }
+.cover > p { font-size: 23px; line-height: 1.45; color: var(--muted); margin: 0 0 34px; max-width: 46ch; }
+.todo { list-style: none; margin: 0; padding: 0; }
+.todo li { display: grid; grid-template-columns: 32px auto 1fr; gap: 20px; align-items: start; padding: 22px 0; border-top: 1px solid var(--line); }
+.todo .box { width: 32px; height: 32px; box-sizing: border-box; border-radius: 9px; border: 2.5px solid var(--open); display: grid; place-items: center; }
+.todo .done .box { background: var(--done); border-color: var(--done); }
+.todo .box svg { width: 18px; height: 18px; fill: none; stroke: #fff; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+.todo .num { font: 700 16px/1 var(--mono); padding: 7px 11px; border-radius: 99px; background: var(--open-soft); color: var(--ink); }
+.todo .done .num { background: var(--done-soft); }
+.todo q { display: block; font-weight: 500; font-size: 23px; line-height: 1.3; overflow-wrap: anywhere; }
+.todo .done q { color: var(--muted); text-decoration: line-through; text-decoration-thickness: 1px; }
+.todo small { display: block; font: 14px/1.4 var(--mono); color: var(--muted); margin-top: 6px; }
+
+.pin { position: absolute; width: 52px; height: 52px; margin: -26px 0 0 -26px; border-radius: 50% 50% 50% 6px; box-sizing: border-box;
+  display: grid; place-items: center; background: var(--open); color: #1f1b24; border: 3px solid #fff;
+  box-shadow: 0 6px 16px rgb(0 0 0 / 0.3); font: 700 22px/1 var(--mono);
+  transform: scale(0); transform-origin: 0 100%; transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1); }
+.pin.is-done { background: var(--done); color: #fff; }
+.pin.is-small { width: 40px; height: 40px; margin: -20px 0 0 -20px; font-size: 17px; }
+.pin.on { transform: scale(1); }
+.pin.is-current { box-shadow: 0 0 0 6px rgb(242 178 0 / 0.35), 0 6px 16px rgb(0 0 0 / 0.3); }
+.pin.is-done.is-current { box-shadow: 0 0 0 6px rgb(119 115 125 / 0.35), 0 6px 16px rgb(0 0 0 / 0.3); }
+
+.callout { position: absolute; width: 420px; box-sizing: border-box; padding: 22px 24px; border-radius: 18px;
+  background: var(--glass-fill); color: var(--ink); border: 1px solid var(--glass-edge);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.5), var(--glass-shadow);
+  -webkit-backdrop-filter: blur(18px) saturate(1.4); backdrop-filter: blur(18px) saturate(1.4);
+  display: flex; flex-direction: column; gap: 10px;
+  opacity: 0; transform: translateX(var(--from, -24px)) scale(0.94); transform-origin: var(--origin, left) center;
+  transition: opacity 0.35s ease-out, transform 0.55s cubic-bezier(0.16, 1, 0.3, 1); }
+@supports not (backdrop-filter: blur(1px)) { .callout { background: var(--chrome); } }
+.callout.on { opacity: 1; transform: none; }
+.callout__head { display: flex; align-items: center; gap: 10px; font: 700 14px/1 var(--mono); letter-spacing: 0.05em; }
+.chip { padding: 5px 9px; border-radius: 99px; background: var(--open-soft); font-weight: 700; }
+.is-done .chip { background: var(--done-soft); }
+.callout__say { font-weight: 500; font-size: 23px; line-height: 1.3; overflow-wrap: anywhere; }
+.callout__say .rest { visibility: hidden; }
+.callout__say .caret { display: inline-block; width: 2px; height: 1em; background: currentColor; vertical-align: -0.12em; margin: 0 -1px; }
+.callout__say .caret[hidden] { display: none; }
+.callout__meta { font: 13px var(--mono); color: var(--muted); }
+.callout__more { display: none; flex-direction: column; gap: 8px; }
+.callout__more.on { display: flex; animation: more-in 0.4s ease-out; }
+@keyframes more-in { from { opacity: 0; } }
+.callout__reply { font-size: 15px; line-height: 1.45; color: var(--muted); }
+.callout__reply b { display: block; font: 12px var(--mono); margin-bottom: 2px; }
+.callout__moved { font-size: 14px; line-height: 1.4; font-style: italic; color: var(--muted); }
+
+/* ---------- Reduced motion: a plain scrolling page ---------- */
+.static { display: none; }
+.is-static .app { display: block; height: auto; }
+.is-static .stage, .is-static .ctrls, .is-static .caption { display: none; }
+.is-static .bar { position: sticky; top: env(safe-area-inset-top, 0px); }
+.is-static .static { display: block; position: relative; z-index: 2; padding-block: 32px 64px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+.static__inner { max-width: 1320px; margin: 0 auto; display: flex; flex-direction: column; gap: 48px; }
+.static .cover { position: static; width: auto; max-width: 900px; padding: clamp(24px, 5vw, 56px); }
+.static .cover h1 { font-size: clamp(34px, 6vw, 60px); }
+.static .cover > p, .static .todo q { font-size: clamp(17px, 2vw, 21px); }
+.spage h2 { font-weight: 700; font-size: clamp(24px, 3vw, 34px); margin: 0 0 6px; letter-spacing: -0.01em; }
+.spage > p { margin: 0 0 20px; color: var(--muted); font-family: var(--mono); font-size: 13px; }
+.sframes { display: grid; grid-template-columns: minmax(0, 3fr) minmax(0, 1fr); gap: 24px; align-items: start; }
+.sframe figcaption { font: 13px var(--mono); color: var(--frame-label); margin-bottom: 8px; }
+.sframe figure { margin: 0; }
+.sshot { position: relative; border-radius: 6px; overflow: hidden; box-shadow: 0 12px 32px rgb(31 27 36 / 0.12); }
+.sshot img { display: block; width: 100%; height: auto; }
+.sshot .pin { transform: none; width: 32px; height: 32px; margin: -16px 0 0 -16px; font-size: 14px; border-width: 2px; }
+.snotes { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 320px), 1fr)); gap: 16px; margin-bottom: 24px; }
+.snotes .callout { position: static; width: auto; opacity: 1; transform: none; }
+.snotes .callout__more { display: flex; }
+@media (max-width: 720px) { .sframes { grid-template-columns: 1fr; } .caption { grid-template-columns: 1fr; } .bar__file span { display: none; } }
+body.is-recording, body.is-recording .stage { cursor: none; }
+@media (prefers-reduced-motion: reduce) { .pin, .callout { transition: none; } .callout__more.on { animation: none; } }
+</style>
+
+<div class="paper" aria-hidden="true"></div>
+<div class="app">
+  <header class="bar">
+    <div class="bar__file"><b id="file-title">YMT review</b><span id="file-meta"></span></div>
+    <div class="ctrls" role="group" aria-label="Board playback">
+      <button type="button" id="btn-prev" aria-label="Previous"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M11 2 4 8l7 6z"/></svg></button>
+      <button type="button" id="btn-play" aria-label="Pause"><svg viewBox="0 0 16 16" aria-hidden="true"><path id="icon-play" d="M4 2h3v12H4zM9 2h3v12H9z"/></svg><span id="play-label">Pause</span></button>
+      <button type="button" id="btn-next" aria-label="Next"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="m5 2 7 6-7 6z"/></svg></button>
+      <span class="count" id="step-count">1 / 1</span>
+    </div>
+  </header>
+  <main class="stage" id="stage" aria-label="Review board. Drag to pan, scroll to zoom, arrow keys to step.">
+    <div class="world" id="world"></div>
+  </main>
+  <footer class="caption" aria-live="polite">
+    <span class="caption__tag" id="cap-tag"></span>
+    <div class="caption__text" id="cap-text"></div>
+  </footer>
+  <div class="static" id="static"><div class="static__inner" id="static-inner"></div></div>
+</div>
+
+<script id="board-data" type="application/json">/*BOARD_DATA*/null</script>
+<script>
+(() => {
+  // Comment text is viewer-written: it only ever reaches the page through textContent.
+  const board = JSON.parse(document.getElementById('board-data').textContent);
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const recording = location.hash === '#record';
+  if (recording) document.body.classList.add('is-recording');
+  const $ = (id) => document.getElementById(id);
+  const el = (tag, cls, text) => { const node = document.createElement(tag); if (cls) node.className = cls; if (text !== undefined) node.textContent = text; return node; };
+  const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  const when = (iso) => { const [day, time] = iso.split('T'); const [year, month, date] = day.split('-'); return `${Number(date)} ${months[Number(month) - 1]} ${year}${time ? ', ' + time : ''}`; };
+  const clip = (text, max) => text.length > max ? text.slice(0, max).replace(/\s+\S*$/, '') + '…' : text;
+  const ownerOf = (thread) => thread.comments.find((comment) => comment.role !== 'claude') || thread.comments[0];
+  const [MAIN_W, SIDE_W] = board.widths;
+  const openCount = board.threads.filter((thread) => thread.status === 'open').length;
+  $('file-title').textContent = board.title;
+  $('file-meta').textContent = `${board.threads.length} threads · ${openCount} open · ${board.counts.pinned} pinned`;
+
+  const makeCover = () => {
+    const cover = el('section', 'cover');
+    cover.setAttribute('aria-label', 'To-do list');
+    cover.append(el('div', 'kicker', `Review board · collected ${when(board.collected)}`), el('h1', '', board.title));
+    const scope = board.includeResolved ? 'Every thread is pinned on its page.' : 'Open threads are pinned on their pages; resolved ones are ticked off here.';
+    cover.append(el('p', '', `${board.threads.length} threads: ${openCount} open, ${board.threads.length - openCount} resolved. ${scope}`));
+    const list = el('ul', 'todo');
+    for (const thread of board.threads) {
+      const owner = ownerOf(thread);
+      const done = thread.status !== 'open';
+      const item = el('li', done ? 'done' : '');
+      const box = el('span', 'box');
+      if (done) box.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>';
+      box.setAttribute('role', 'img');
+      box.setAttribute('aria-label', done ? 'Resolved' : 'Open');
+      const body = el('div');
+      body.append(el('q', '', owner.text), el('small', '', `${thread.page} · ${owner.role} · ${when(owner.date)} · ${done ? 'resolved' : 'open'}`));
+      item.append(box, el('span', 'num', `#${thread.n}`), body);
+      list.append(item);
+    }
+    cover.append(list);
+    return cover;
+  };
+
+  const makeCallout = (pin, side) => {
+    const owner = ownerOf(pin);
+    const done = pin.status !== 'open';
+    const moved = pin.at[MAIN_W].x === null;
+    const box = el('article', `callout${done ? ' is-done' : ''}`);
+    const head = el('div', 'callout__head');
+    head.append(el('span', '', `#${pin.n}`), el('span', 'chip', done ? 'Resolved' : 'Open'));
+    if (moved) head.append(el('span', '', 'element moved'));
+    const say = el('div', 'callout__say');
+    const typed = el('span', 'typed', owner.text), caret = el('span', 'caret'), rest = el('span', 'rest');
+    caret.hidden = true;
+    say.append(typed, caret, rest);
+    const more = el('div', 'callout__more');
+    for (const reply of pin.comments.filter((comment) => comment !== owner)) {
+      const line = el('div', 'callout__reply');
+      line.append(el('b', '', `${reply.role} · ${when(reply.date)}`), document.createTextNode(clip(reply.text.replace(/\n+/g, ' '), 240)));
+      more.append(line);
+    }
+    if (pin.override) more.append(el('div', 'callout__moved', `${moved ? '' : 'Pin moved: '}${pin.override.reason}`));
+    else if (moved) more.append(el('div', 'callout__moved', 'Its element has changed since the comment was placed, so the pin waits here.'));
+    box.append(head, say, el('div', 'callout__meta', `${owner.role} · ${when(owner.date)}`), more);
+    if (side === 'left') { box.style.setProperty('--from', '24px'); box.style.setProperty('--origin', 'right'); }
+    return { box, typed, caret, rest, more, text: owner.text };
+  };
+
+  const makePin = (pin, small) => {
+    const dot = el('div', `pin${pin.status === 'open' ? '' : ' is-done'}${small ? ' is-small' : ''}`, String(pin.n));
+    dot.setAttribute('role', 'img');
+    dot.setAttribute('aria-label', `Comment ${pin.n}`);
+    return dot;
+  };
+
+  // ---------- Reduced motion: everything visible, one scrolling page ----------
+  if (reduce) {
+    document.documentElement.classList.add('is-static');
+    const inner = $('static-inner');
+    inner.append(makeCover());
+    for (const page of board.pages) {
+      const section = el('section', 'spage');
+      section.append(el('h2', '', page.page), el('p', '', `${page.title} · ${page.pins.length} pinned`));
+      const frames = el('div', 'sframes');
+      for (const width of board.widths) {
+        const frame = page.frames[width];
+        const wrap = el('div', 'sframe');
+        const figure = el('figure');
+        figure.append(el('figcaption', '', `${width === MAIN_W ? 'Desktop' : 'Mobile'} · ${width}px`));
+        const shot = el('div', 'sshot');
+        const img = el('img');
+        img.src = frame.src; img.alt = `${page.page} at ${width}px`; img.width = frame.width; img.height = frame.height; img.loading = 'lazy';
+        shot.append(img);
+        for (const pin of page.pins) {
+          const spot = pin.at[width];
+          if (!spot || spot.x === null) continue;
+          const dot = makePin(pin, true);
+          dot.style.left = (spot.x / frame.width * 100) + '%';
+          dot.style.top = (spot.y / frame.height * 100) + '%';
+          shot.append(dot);
+        }
+        figure.append(shot);
+        wrap.append(figure);
+        frames.append(wrap);
+      }
+      const notes = el('div', 'snotes');
+      for (const pin of page.pins) {
+        const view = makeCallout(pin, 'right');
+        notes.append(view.box);
+      }
+      section.append(notes, frames);
+      inner.append(section);
+    }
+    window.boardReady = true;
+    window.boardDone = true;
+    return;
+  }
+
+  // ---------- Canvas ----------
+  const stage = $('stage'), world = $('world');
+  const cover = makeCover();
+  cover.style.left = '0px'; cover.style.top = '0px';
+  world.append(cover);
+
+  const FRAME_Y = 140, GUTTER_W = 200, GAP = 120;
+  const steps = [{ kind: 'cover' }];
+  const views = [];
+  let sectionX = 1000 + 260;
+  for (const page of board.pages) {
+    const main = page.frames[MAIN_W], side = page.frames[SIDE_W];
+    const gutterX = sectionX + main.width + 40;
+    const sideX = gutterX + GUTTER_W + GAP;
+    const frameX = { [MAIN_W]: sectionX, [SIDE_W]: sideX };
+    const title = el('div', 'label');
+    title.append(el('b', '', page.page), document.createTextNode(page.title));
+    title.style.left = sectionX + 'px'; title.style.top = '0px';
+    world.append(title);
+    for (const width of board.widths) {
+      const frame = page.frames[width];
+      const label = el('div', 'label', `${width === MAIN_W ? 'Desktop' : 'Mobile'} · ${width}px`);
+      label.style.left = frameX[width] + 'px'; label.style.top = (FRAME_Y - 48) + 'px';
+      const shot = el('div', 'frame');
+      Object.assign(shot.style, { left: frameX[width] + 'px', top: FRAME_Y + 'px', width: frame.width + 'px', height: frame.height + 'px' });
+      const img = el('img');
+      img.src = frame.src; img.alt = `${page.page} at ${width}px`; img.width = frame.width; img.height = frame.height; img.decoding = 'async';
+      shot.append(img);
+      world.append(label, shot);
+    }
+    const movedPins = page.pins.filter((pin) => pin.at[MAIN_W].x === null);
+    const gutter = el('div', 'gutter');
+    Object.assign(gutter.style, { left: gutterX + 'px', top: FRAME_Y + 'px', width: GUTTER_W + 'px', height: Math.max(360, 140 + movedPins.length * 120) + 'px' });
+    gutter.append(el('div', 'gutter__title', 'element moved'));
+    if (movedPins.length) world.append(gutter);
+
+    const topH = 1400;
+    steps.push({ kind: 'page', page, rect: { x: sectionX - 40, y: -40, w: sideX + side.width - sectionX + 80, h: topH } });
+    let movedIndex = 0;
+    for (const pin of page.pins) {
+      const spot = pin.at[MAIN_W];
+      const moved = spot.x === null;
+      const pinX = moved ? gutterX + GUTTER_W / 2 : sectionX + spot.x;
+      const pinY = moved ? FRAME_Y + 110 + movedIndex++ * 120 : FRAME_Y + spot.y;
+      // Callouts sit clear of the element they comment on, not on top of it.
+      const edgeR = moved ? pinX : sectionX + spot.box.x + spot.box.w;
+      const edgeL = moved ? pinX : sectionX + spot.box.x;
+      const place = moved || spot.box.x + spot.box.w + 470 < main.width ? 'right' : 'left';
+      const view = makeCallout(pin, place);
+      view.box.style.left = (place === 'right' ? edgeR + 24 : edgeL - 24 - 420) + 'px';
+      view.box.style.top = (pinY - 36) + 'px';
+      const dot = makePin(pin, false);
+      dot.style.left = pinX + 'px'; dot.style.top = pinY + 'px';
+      const dots = [dot];
+      world.append(dot, view.box);
+      const sideSpot = pin.at[SIDE_W];
+      let sideRect = null;
+      if (sideSpot && sideSpot.x !== null) {
+        const small = makePin(pin, true);
+        small.style.left = (sideX + sideSpot.x) + 'px'; small.style.top = (FRAME_Y + sideSpot.y) + 'px';
+        world.append(small);
+        dots.push(small);
+        sideRect = { x: sideX - 60, y: FRAME_Y + sideSpot.y - 420, w: side.width + 120, h: 840 };
+      }
+      Object.assign(view, { dots, pin });
+      views.push(view);
+      const left = Math.min(pinX, place === 'right' ? pinX : pinX - 460) - 80;
+      steps.push({ kind: 'pin', page, view, rect: { x: left, y: pinY - 330, w: 460 + 160 + 40, h: 660 }, chars: view.text.length });
+      if (sideRect) steps.push({ kind: 'side', page, view, rect: sideRect });
+    }
+    steps.push({ kind: 'scan', page, x: sectionX - 40, w: sideX + side.width - sectionX + 80, top: FRAME_Y - 60, bottom: FRAME_Y + main.height });
+    sectionX = sideX + side.width + 360;
+  }
+  steps.push({ kind: 'end' });
+
+  // ---------- Camera ----------
+  const cam = { x: 0, y: 0, s: 1 };
+  const coverRect = () => ({ x: -60, y: -60, w: 1120, h: cover.offsetHeight + 120 });
+  const fit = (rect) => {
+    const w = stage.clientWidth, h = stage.clientHeight;
+    const s = Math.min((w * 0.9) / rect.w, (h * 0.9) / rect.h, 1.4);
+    return { x: rect.x + rect.w / 2, y: rect.y + rect.h / 2, s };
+  };
+  const apply = () => {
+    const w = stage.clientWidth, h = stage.clientHeight;
+    const tx = w / 2 - cam.x * cam.s, ty = h / 2 - cam.y * cam.s;
+    world.style.transform = `translate(${tx}px, ${ty}px) scale(${cam.s})`;
+    let gap = 24 * cam.s;
+    while (gap < 14) gap *= 2;
+    stage.style.backgroundSize = `${gap}px ${gap}px`;
+    stage.style.backgroundPosition = `${tx % gap}px ${ty % gap}px`;
+  };
+  const ease = (t) => t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+
+  // ---------- Timeline (seconds) ----------
+  const GLIDE = 1.6, POP = GLIDE + 0.05, SLIDE = GLIDE + 0.35, TYPE_AT = GLIDE + 0.75, CPS = 36, HOLD = 1.6;
+  const duration = (step) => {
+    switch (step.kind) {
+      case 'cover': return 3.4;
+      case 'page': return GLIDE + 3;
+      case 'pin': return TYPE_AT + step.chars / CPS + 0.4 + HOLD;
+      case 'side': return GLIDE + 1.8;
+      case 'scan': return step.length;
+      default: return GLIDE + 3.4;
+    }
+  };
+  // The whole-page scan stretches so a short round still makes a 30–45 s tour.
+  const scans = steps.filter((step) => step.kind === 'scan');
+  const others = steps.filter((step) => step.kind !== 'scan').reduce((sum, step) => sum + duration(step), 0);
+  scans.forEach((step) => { step.length = Math.max(5, Math.min(14, (34 - others) / scans.length)); });
+  const targetFor = (step, k) => {
+    if (step.kind === 'cover' || step.kind === 'end') return fit(coverRect());
+    if (step.kind === 'scan') {
+      const viewW = stage.clientWidth, viewH = stage.clientHeight;
+      const s = Math.min((viewW * 0.94) / step.w, 0.9);
+      const half = viewH / 2 / s;
+      return { x: step.x + step.w / 2, y: step.top + half + (Math.max(step.top + half, step.bottom - half) - step.top - half) * k, s };
+    }
+    return fit(step.rect);
+  };
+
+  let index = 0, elapsed = 0, playing = false, free = false, from = { ...cam }, last = 0;
+  const setView = (view, phase, chars) => {
+    const visible = phase > 0;
+    view.dots.forEach((dot) => dot.classList.toggle('on', visible));
+    view.box.classList.toggle('on', phase === 1 || (phase === 2 && chars >= 0));
+    const count = phase === 1 ? view.text.length : Math.max(0, Math.min(view.text.length, chars));
+    if (view.typed.textContent.length !== count) {
+      view.typed.textContent = view.text.slice(0, count);
+      view.rest.textContent = view.text.slice(count);
+    }
+    view.caret.hidden = !(phase === 2 && count < view.text.length);
+    view.more.classList.toggle('on', phase === 1 || (phase === 2 && count >= view.text.length));
+  };
+
+  const caption = (step) => {
+    const tag = $('cap-tag'), text = $('cap-text');
+    text.textContent = '';
+    if (step.kind === 'cover' || step.kind === 'end') { tag.textContent = 'To-do'; text.textContent = `${board.threads.length} threads, ${openCount} still open.`; return; }
+    if (step.kind === 'page') { tag.textContent = step.page.page; text.textContent = `${step.page.title}: ${step.page.pins.length} pinned at ${board.widths.join(' and ')} px.`; return; }
+    if (step.kind === 'scan') { tag.textContent = step.page.page; text.textContent = 'The whole page as captured, top to bottom.'; return; }
+    const pin = step.view.pin;
+    const owner = ownerOf(pin);
+    tag.textContent = `#${pin.n} · ${pin.status}${step.kind === 'side' ? ` · ${SIDE_W}px` : ''}`;
+    text.append(document.createTextNode(`“${owner.text}”`));
+    text.append(el('small', '', `${step.page.page} · ${pin.location || 'whole page'} · ${owner.role}, ${when(owner.date)}${pin.override ? ' · ' + pin.override.reason : ''}`));
+  };
+
+  const render = () => {
+    const step = steps[index];
+    if (!free) {
+      const glide = step.kind === 'scan' ? 0 : Math.min(1, elapsed / GLIDE);
+      const k = ease(glide);
+      const to = step.kind === 'scan' ? targetFor(step, ease(Math.min(1, elapsed / step.length))) : targetFor(step);
+      if (step.kind === 'scan') {
+        const blend = ease(Math.min(1, elapsed / 1.2));
+        cam.s = from.s + (to.s - from.s) * blend; cam.x = from.x + (to.x - from.x) * blend; cam.y = from.y + (to.y - from.y) * blend;
+      } else {
+        const distance = Math.hypot(to.x - from.x, to.y - from.y) * Math.min(from.s, to.s) / Math.hypot(stage.clientWidth, stage.clientHeight);
+        const dip = 1 / (1 + Math.min(2, distance * 0.5) * Math.sin(Math.PI * k));
+        cam.s = Math.exp(Math.log(from.s) + (Math.log(to.s) - Math.log(from.s)) * k) * dip;
+        cam.x = from.x + (to.x - from.x) * k;
+        cam.y = from.y + (to.y - from.y) * k;
+      }
+      apply();
+    }
+    const current = step.view ? views.indexOf(step.view) : (['scan', 'end'].includes(step.kind) ? views.length : -1);
+    views.forEach((view, order) => {
+      let phase = 0, chars = -1;
+      if (order < current || (order === current && step.kind === 'side')) phase = 1;
+      else if (order === current && step.kind === 'pin') {
+        if (elapsed >= duration(step) - HOLD) phase = 1;
+        else if (elapsed >= POP) { phase = 2; chars = elapsed >= SLIDE ? Math.floor((elapsed - TYPE_AT) * CPS) : -1; }
+      }
+      if (phase === 2 && chars < 0) { view.dots.forEach((dot) => dot.classList.add('on')); view.box.classList.remove('on'); }
+      else setView(view, phase, chars);
+      const isCurrent = order === current && step.view === view;
+      view.dots.forEach((dot) => dot.classList.toggle('is-current', isCurrent));
+    });
+    $('step-count').textContent = `${index + 1} / ${steps.length}`;
+  };
+
+  const go = (next, animate) => {
+    index = Math.max(0, Math.min(steps.length - 1, next));
+    from = { ...cam };
+    free = false;
+    elapsed = animate ? 0 : duration(steps[index]);
+    caption(steps[index]);
+    render();
+  };
+  const finished = () => index === steps.length - 1 && elapsed >= duration(steps[index]);
+  const setPlaying = (value) => {
+    playing = value;
+    const label = playing ? 'Pause' : (finished() ? 'Replay' : 'Play');
+    $('play-label').textContent = label;
+    $('btn-play').setAttribute('aria-label', label);
+    $('icon-play').setAttribute('d', playing ? 'M4 2h3v12H4zM9 2h3v12H9z' : 'm4 2 10 6-10 6z');
+    last = performance.now();
+  };
+  const tick = (now) => {
+    if (playing) {
+      elapsed += Math.min(1, (now - last) / 1000);
+      last = now;
+      if (elapsed >= duration(steps[index])) {
+        if (index < steps.length - 1) go(index + 1, true);
+        else { elapsed = duration(steps[index]); render(); setPlaying(false); window.boardDone = true; }
+      } else render();
+    }
+    requestAnimationFrame(tick);
+  };
+
+  $('btn-play').addEventListener('click', () => {
+    if (playing) { setPlaying(false); return; }
+    if (finished()) go(0, true);
+    else if (free) go(index, true);
+    setPlaying(true);
+  });
+  $('btn-next').addEventListener('click', () => go(index + 1, playing));
+  $('btn-prev').addEventListener('click', () => go(index - 1, playing));
+  addEventListener('keydown', (event) => {
+    if (event.altKey || event.ctrlKey || event.metaKey) return;
+    if (event.key === 'ArrowRight') { event.preventDefault(); $('btn-next').click(); }
+    if (event.key === 'ArrowLeft') { event.preventDefault(); $('btn-prev').click(); }
+    if (event.key === ' ' && !(event.target.closest && event.target.closest('button'))) { event.preventDefault(); $('btn-play').click(); }
+  });
+
+  let drag = null;
+  stage.addEventListener('pointerdown', (event) => { drag = { x: event.clientX, y: event.clientY, cx: cam.x, cy: cam.y }; stage.setPointerCapture(event.pointerId); stage.classList.add('is-dragging'); });
+  stage.addEventListener('pointermove', (event) => {
+    if (!drag) return;
+    const dx = event.clientX - drag.x, dy = event.clientY - drag.y;
+    if (!free && Math.hypot(dx, dy) < 4) return;
+    if (!free) { free = true; setPlaying(false); }
+    cam.x = drag.cx - dx / cam.s; cam.y = drag.cy - dy / cam.s; apply();
+  });
+  const endDrag = () => { drag = null; stage.classList.remove('is-dragging'); };
+  stage.addEventListener('pointerup', endDrag);
+  stage.addEventListener('pointercancel', endDrag);
+  stage.addEventListener('wheel', (event) => {
+    event.preventDefault();
+    free = true; setPlaying(false);
+    const box = stage.getBoundingClientRect();
+    const px = event.clientX - box.left - box.width / 2, py = event.clientY - box.top - box.height / 2;
+    const wx = cam.x + px / cam.s, wy = cam.y + py / cam.s;
+    cam.s = Math.max(0.03, Math.min(3, cam.s * Math.exp(-event.deltaY * (event.ctrlKey ? 0.01 : 0.0015))));
+    cam.x = wx - px / cam.s; cam.y = wy - py / cam.s; apply();
+  }, { passive: false });
+  addEventListener('resize', () => { if (free) apply(); else render(); });
+
+  document.fonts.ready.then(() => {
+    Object.assign(cam, fit(coverRect()));
+    go(0, false);
+    elapsed = 0;
+    render();
+    requestAnimationFrame((now) => { last = now; tick(now); });
+    window.boardPlay = () => { Object.assign(cam, fit(coverRect())); go(0, true); setPlaying(true); };
+    window.boardLength = steps.reduce((sum, step) => sum + duration(step), 0);
+    window.boardReady = true;
+    setPlaying(!recording);
+  });
+})();
+</script>
