@@ -43,6 +43,8 @@
   }
   showFields();
   form.addEventListener('change', (e) => { if (e.target.name === 'topic') showFields(); });
+  // An error clears as soon as the field is put right.
+  form.addEventListener('input', (e) => { if (MESSAGES[e.target.name] && e.target.closest('.field, .check')?.querySelector('.field__error, .check__error') && (e.target.type === 'checkbox' ? e.target.checked : e.target.value.trim())) errorFor(e.target.name, ''); });
   $('[data-started]').value = String(Date.now());
   if (radio || about) requestAnimationFrame(() => form.scrollIntoView({ block: 'start' }));
 
