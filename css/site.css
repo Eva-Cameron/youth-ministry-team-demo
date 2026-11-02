@@ -339,7 +339,7 @@ a.tag::after { content: ""; position: absolute; inset: -13px -4px; }
 }
 
 /* Texture: grain and accent light on the page ground (body::before), and strata. js/terrain.js draws big, non-repeating
-   contours on a canvas behind each route hero (a clearing stays behind the hero words), Memphis confetti on Primary,
+   contours on a canvas behind each route hero (a clearing stays behind the hero words), Memphis shapes on Primary,
    and wavy sediment bands into the top padding of each section that follows another, so they never sit under running text.
    Without script the heroes keep their grain and the sections their plain ground. */
 /* Heroes: the route colour with a bloom of its second accent and a visible grain. */
@@ -357,13 +357,6 @@ a.tag::after { content: ""; position: absolute; inset: -13px -4px; }
 .strata { position: absolute; left: 0; right: 0; top: 0; z-index: -1; height: calc(var(--section) * .74); pointer-events: none; }
 .strata svg { display: block; width: 100%; height: 100%; } /* translucent fills: the body grain shows through */
 @media (max-width: 900px) { .phero .terrain { -webkit-mask: linear-gradient(#000 18%, transparent 52%); mask: linear-gradient(#000 18%, transparent 52%); } }
-
-/* Confetti (js/confetti.js, primary only): never takes a tap. Still pieces sit in the downloads' texture,
-   behind the cards. The burst layer flies over the nav (so the nav's blur never has to resample it) but under the
-   Latest panel and other dialogs; it never takes a tap. */
-.confetti { position: absolute; left: 0; top: 0; z-index: -1; width: 100%; height: 100%; pointer-events: none; }
-/* The burst stays under the nav and its menu, so it never crosses text you are reading. */
-body > .confetti { position: fixed; z-index: 115; }
 
 /* 11 Content blocks */
 /* Work grid: rows of mixed widths; each row shares one height. */
@@ -583,20 +576,22 @@ body[data-feel="joy"] .shot:hover .shot__media img { transform: scale(1.05) rota
   .btn--glass { background: #2e2636; }
 }
 
-/* Duotone: photos render in their route's two tones (dark shadows, light highlights) under a fine
-   grain-free (Eva: no texture over images), so imagery and colour read as one system. The image is greyscale and multiplied onto the
-   light tone; a lighten layer lifts the shadows to the dark tone. */
-.shot__media, .phero__photo, .read__img, .article__img, .who__art, .story__frame { position: relative; isolation: isolate; overflow: hidden; background: var(--duo-light); }
-.shot__media img, .phero__photo img, .read__img img, .article__img img, .who__art img, .story__frame img { filter: grayscale(1) contrast(1.08); mix-blend-mode: multiply; }
-.shot__media::after, .phero__photo::after, .read__img::after, .article__img::after, .who__art::after, .story__frame::after { content: ""; position: absolute; inset: 0; z-index: 1; background: var(--duo-dark); mix-blend-mode: lighten; pointer-events: none; }
+/* Colour-pop photos (js/photos.js): greyscale with one colour family left in, pre-rendered by tools/colour_pop.py.
+   Hovering the photo or its card eases it to full colour; a tap holds it. No texture over images (Eva). */
+.shot__media, .phero__photo, .read__img, .article__img, .who__art, .story__frame { position: relative; isolation: isolate; overflow: hidden; background: var(--ink-2); }
 .phero__photo figcaption, .story__count { z-index: 3; }
+.pop { display: block; position: relative; height: 100%; }
+.pop__full { position: absolute; inset: 0; z-index: 1; width: 100%; height: 100%; object-fit: cover; opacity: 0; pointer-events: none; transition: opacity .7s cubic-bezier(.22, 1, .36, 1); }
+.pop.is-hover .pop__full, .pop.is-held .pop__full { opacity: 1; }
+.pop[role="button"] { cursor: pointer; transition: transform .45s cubic-bezier(.22, 1, .36, 1); }
+.pop[role="button"]:focus-visible { outline: 2px solid var(--focus, currentColor); outline-offset: 3px; }
+.pop.is-held { transform: translateY(-4px); }
+@media (prefers-reduced-motion: reduce) { .pop.is-held { transform: none; } }
 /* Posters carry their own type and colour, so they stay as made. */
 .phero__photo.is-poster, .work__row--posters .shot__media { background: none; }
-.phero__photo.is-poster img, .work__row--posters .shot__media img { filter: none; mix-blend-mode: normal; }
-.phero__photo.is-poster::after, .phero__photo.is-poster::before, .work__row--posters .shot__media::after, .work__row--posters .shot__media::before { content: none; }
 
 /* 14 Motion: content is visible at rest; it moves only once on screen. */
-/* One moment per page lives elsewhere (confetti, drifting strata, the home feel strip); reveals stay quiet:
+/* One moment per page lives elsewhere (the Memphis field, drifting contours, the home feel strip); reveals stay quiet:
    a short ease-out rise for lists as they arrive, page h1s that opt in, and nothing on every h2. */
 .js .rise.in { animation: rise .5s var(--ease) both; animation-delay: var(--delay, 0ms); }
 @keyframes rise { from { opacity: 0; transform: translateY(14px); } }

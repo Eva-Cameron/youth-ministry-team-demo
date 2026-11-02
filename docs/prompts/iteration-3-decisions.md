@@ -53,3 +53,8 @@ Eva's answers on the v2 brief (`docs/prompts/iteration-3-round-2.md` and the v2 
 - Primary: grainy Memphis confetti (circles, half-moons, triangles, pills) replaces the dot field.
 - Every other route, the shared pages and home's "Who is it for?": big contour lines drawn at the frame's size, with no tiling and no visible repeat. The near-straight strata lines are gone; the strata bands stay.
 - The halftone dot grid and the contours-with-dashes pattern were not used.
+
+### Round 3 (Eva, 2 November)
+- The pop-up confetti bursts on Primary are removed (`js/confetti.js` deleted). The Memphis shapes are now quieter: tints of the hero pink at partial opacity, fewer and smaller.
+- The contour lines are thicker.
+- Photos: colour-pop is live. Every photo except posters and TikTok frames loads in greyscale with one colour kept, from `assets/web/pop/` (made by `tools/colour_pop.py`). Hovering it, or the card it's in, turns it full colour; a tap holds it in colour. The route duotone is gone.

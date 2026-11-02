@@ -31,7 +31,8 @@
     ? `${fmt(e.date, { day: 'numeric', month: 'short' })}–${fmt(e.end, { day: 'numeric', month: 'short' })}`
     : fmt(e.date, { weekday: 'short', day: 'numeric', month: 'short' }) + (e.time ? ' · ' + e.time : '');
   const upcoming = () => D.events.filter((e) => day(e.end || e.date) >= today).sort((a, b) => day(a.date) - day(b.date));
-  const img = (name) => `assets/web/${name}${name.startsWith('tt-') ? '' : '-800'}.webp`;
+  // Photos load as their colour-pop version (assets/web/pop, made by tools/colour_pop.py); posters and TikTok frames stay as made.
+  const img = (name) => name.startsWith('tt-') ? `assets/web/${name}.webp` : `assets/web/${name.startsWith('ph-poster') ? '' : 'pop/'}${name}-800.webp`;
   const staggered = (els, step = 50) => els.forEach((el, i) => el.style.setProperty('--delay', i * step + 'ms'));
 
   /* ---------- Nav ---------- */

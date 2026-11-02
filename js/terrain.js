@@ -23,8 +23,9 @@
   const LIGHT = { lines: { scale: 1100, step: .034, color: '--acc-ink', alpha: .1 }, bands: { depth: .62, layers: [['--acc-on-dark', .1], ['--acc-on-dark', .05]] } };
   const ROUTES = {
     index: { who: { scale: 1200, step: .036, color: '--white', alpha: .08 } },
-    // Primary has Memphis confetti instead of contours (Eva, 2 Nov): shapes crowd the top and bottom edges.
-    primary: { memphis: { per: 9000, most: 150, bias: 2, small: 7, big: 30, colours: ['#e0703a', '#3b4766', '#e0703a', '#3b4766', '#fff4e6'] }, bands: { depth: .7, layers: [['--acc-on-dark', .22], ['--lilac', .2], ['--acc-on-dark', .08]] } },
+    // Primary has Memphis shapes instead of contours (Eva, 2 Nov): tints of the hero pink, so they sit in the ground
+    // rather than on it, crowding the top and bottom edges.
+    primary: { memphis: { per: 15000, most: 90, bias: 2.2, small: 6, big: 22, alpha: .55, colours: ['#e48aa6', '#d9768f', '#ffd3a8', '#ddb5fa', '#fff1f4'] }, bands: { depth: .7, layers: [['--acc-on-dark', .22], ['--lilac', .2], ['--acc-on-dark', .08]] } },
     secondary: { lines: { scale: 900, step: .026, color: '--sky', alpha: .26, drift: true }, bands: { depth: .72, layers: [['--blue-light', .2], ['--blue', .32], ['--blue-light', .07]] } },
     volunteer: { lines: { scale: 1000, step: .03, color: '--plum', alpha: .26, drift: true }, bands: { depth: .9, layers: [['--purple-text', .3], ['--purple', .42], ['--purple-text', .14], ['--plum', .9]] } },
     everyone: { lines: { scale: 1100, step: .034, color: '--acc-ink', alpha: .12, drift: true }, bands: { depth: .6, layers: [['--acc-on-dark', .1], ['--stone', .05]] } },
@@ -102,8 +103,8 @@
           for (let q = 0; q + 3 < pts.length; q += 4) { path.moveTo(pts[q], pts[q + 1]); path.lineTo(pts[q + 2], pts[q + 3]); }
         }
       }
-      g.globalAlpha = o.alpha; g.lineWidth = .8; g.stroke(thin);
-      g.globalAlpha = Math.min(1, o.alpha * 1.8); g.lineWidth = 1.3; g.stroke(thick);
+      g.globalAlpha = o.alpha; g.lineWidth = 1.5; g.stroke(thin);
+      g.globalAlpha = Math.min(1, o.alpha * 1.6); g.lineWidth = 2.4; g.stroke(thick);
       cv.toBlob((b) => { if (img.src) URL.revokeObjectURL(img.src); img.src = URL.createObjectURL(b); });
     };
     let lastW = 0;
@@ -207,6 +208,7 @@
     const draw = (t) => {
       ctx.setTransform(1, 0, 0, 1, 0, 0);
       ctx.clearRect(0, 0, cv.width, cv.height);
+      ctx.globalAlpha = o.alpha;
       const sec = t / 1000;
       for (const b of bits) {
         const k = sec * b.sp + b.ph;
