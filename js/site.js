@@ -143,7 +143,7 @@
       month = m;
       const href = e.link || D.audiences[e.aud[0]]?.page || './';
       return `${head}<li class="tl__item rise${i === 0 ? ' is-next' : ''}">
-        <p class="tl__date">${fmt(e.date, { day: 'numeric' })}<small>${fmt(e.date, { weekday: 'short', month: 'short' })}${e.end ? ' – ' + fmt(e.end, { day: 'numeric', month: 'short' }) : ''}</small></p>
+        <p class="tl__date">${fmt(e.date, { day: 'numeric' })}<small>${fmt(e.date, { month: 'short' })}${e.end ? ' – ' + fmt(e.end, { day: 'numeric', month: 'short' }) : ' · ' + fmt(e.date, { weekday: 'short' })}</small></p>
         <p class="tl__title"><b>${esc(e.title)}</b><span>${esc(e.place)}${e.time ? ' · ' + esc(e.time) : ''}</span></p>
         <div class="tl__who"><div>${(e.who || []).map((w) => `<span class="chip">${esc(w)}</span>`).join('')}</div><p>${esc(e.how || '')}</p></div>
         <div class="tl__go"><span class="tl__status">${e.sample ? 'Date to be confirmed' : esc(e.status || '')}</span><a class="btn btn--glass" href="${esc(href)}"${extLink(href)}>Details</a></div>

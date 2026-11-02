@@ -135,6 +135,12 @@
 .hero__bottom > .hero__open {
   grid-column: 2;
 }
+.hero__lede {
+  grid-column: 1;
+  max-width: 36ch;
+  font: 500 clamp(16px, 1.25vw, 19px)/1.4 var(--sans);
+  text-shadow: 0 1px 12px rgba(8, 5, 11, .6);
+}
 .hero__pause {
   grid-column: 3;
   justify-self: end;
@@ -253,6 +259,9 @@
     width: fit-content;
     min-width: 128px;
     margin-top: 8px;
+  }
+  .hero__lede {
+    grid-column: 1 / -1;
   }
   .hero__bottom > .hero__open {
     grid-column: 1;
