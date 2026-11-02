@@ -204,7 +204,8 @@ button, input, select, textarea { font: inherit; color: inherit; }
 /* Never glass on glass: a glass button inside a glass surface keeps its tint and loses its blur. */
 :is(.glass, .glass--light, .nav, .latest__panel, .sheet) .btn--glass { -webkit-backdrop-filter: none; backdrop-filter: none; box-shadow: inset 0 0 0 1px var(--glass-line); }
 .panel { padding: clamp(var(--sp-5), 3vw, var(--sp-7)); }
-.dot { width: 12px; height: 12px; border-radius: 50%; flex: none; background: var(--white); }
+/* Route marks: a small squiggle in the route's colour (Eva: no dots). */
+.dot { width: 24px; height: 10px; flex: none; background: var(--white); -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 10'%3E%3Cpath d='M1 5c2.5-5 5-5 7.5 0s5 5 7.5 0 5-5 7 0' fill='none' stroke='%23000' stroke-width='2.6' stroke-linecap='round'/%3E%3C/svg%3E") center / contain no-repeat; mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 10'%3E%3Cpath d='M1 5c2.5-5 5-5 7.5 0s5 5 7.5 0 5-5 7 0' fill='none' stroke='%23000' stroke-width='2.6' stroke-linecap='round'/%3E%3C/svg%3E") center / contain no-repeat; }
 .dot--primary { background: var(--pink); }
 .dot--secondary { background: var(--blue); }
 .dot--volunteer { background: var(--purple-line); }
@@ -239,7 +240,10 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .nav__end { justify-self: end; display: flex; align-items: center; gap: 6px; }
 .nav__latest, .nav__donate, .nav__burger { position: relative; display: inline-flex; align-items: center; gap: var(--sp-2); min-height: 44px; padding: 0 var(--sp-4); border: 0; border-radius: 999px; font: 600 var(--fs-sm) var(--sans); text-decoration: none; cursor: pointer; transition: transform .2s var(--ease); }
 .nav__latest { background: var(--white); color: var(--ink); }
-.nav__latest i { position: absolute; top: 7px; right: 8px; width: 7px; height: 7px; border-radius: 50%; background: var(--red); }
+/* Latest: a ring in the route colour while there is something you have not opened yet. */
+.nav__latest.has-new { box-shadow: 0 0 0 2px var(--ink), 0 0 0 4px var(--acc-on-dark, var(--gold)); }
+.nav__latest.has-new::after { content: ""; position: absolute; inset: -4px; border-radius: inherit; box-shadow: 0 0 0 2px var(--acc-on-dark, var(--gold)); animation: latest-ring 1.6s var(--ease) 3; pointer-events: none; }
+@keyframes latest-ring { from { opacity: .9; transform: scale(1); } to { opacity: 0; transform: scale(1.35); } }
 .nav__donate { background: rgba(16, 12, 21, .8); color: var(--white); box-shadow: inset 0 0 0 1px var(--glass-line); }
 .nav__latest:hover, .nav__donate:hover { transform: translateY(-1px); }
 .nav__burger { display: none; justify-content: center; min-width: 44px; background: transparent; color: var(--white); box-shadow: inset 0 0 0 1px var(--glass-line); }
@@ -322,7 +326,7 @@ a.tag::after { content: ""; position: absolute; inset: -13px -4px; }
 .phero__photo img { width: 100%; height: 100%; object-fit: cover; }
 .phero__photo figcaption { position: absolute; left: var(--sp-3); right: var(--sp-3); bottom: var(--sp-3); padding: 14px var(--sp-4); border-radius: var(--r-sm); }
 .phero__photo figcaption small { display: block; margin-bottom: 4px; font: 400 var(--fs-xs)/1.3 var(--mono); text-transform: uppercase; }
-.phero__photo figcaption b { display: block; font: 600 15px/1.3 var(--sans); }
+.phero__photo figcaption b { display: block; font: 600 clamp(18px, 1.4vw, 22px)/1.2 var(--display); letter-spacing: -.01em; }
 .phero__photo figcaption span { font: 400 var(--fs-sm)/1.35 var(--sans); }
 .phero--photo { --focus: var(--white); background: var(--night); color: var(--white); }
 .phero--photo .phero__bg { position: absolute; inset: 0; z-index: -2; }
@@ -341,8 +345,6 @@ a.tag::after { content: ""; position: absolute; inset: -13px -4px; }
 /* Heroes: the route colour with a bloom of its second accent and a visible grain. */
 .phero { background-image: var(--noise), radial-gradient(70vmax 60vmax at 88% 12%, color-mix(in oklab, var(--acc-2) 75%, transparent), transparent 62%), radial-gradient(60vmax 50vmax at 0% 100%, color-mix(in oklab, var(--acc) 55%, var(--acc-ink) 8%), transparent 70%); background-blend-mode: overlay, normal, normal; }
 .phero--photo { background-image: none; }
-/* Plain alpha, no blend mode: the photo heroes scroll. */
-.phero--photo .phero__bg::after { content: ""; position: absolute; inset: 0; background: var(--noise); opacity: .35; pointer-events: none; }
 .section, .ethos, .who, .tiktok, .globe-sec, .foot { position: relative; isolation: isolate; }
 .terrain { position: absolute; left: 0; top: 0; z-index: -1; width: 100%; height: 100%; overflow: hidden; pointer-events: none; }
 .terrain canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
@@ -360,7 +362,8 @@ a.tag::after { content: ""; position: absolute; inset: -13px -4px; }
    behind the cards. The burst layer flies over the nav (so the nav's blur never has to resample it) but under the
    Latest panel and other dialogs; it never takes a tap. */
 .confetti { position: absolute; left: 0; top: 0; z-index: -1; width: 100%; height: 100%; pointer-events: none; }
-body > .confetti { position: fixed; z-index: 125; }
+/* The burst stays under the nav and its menu, so it never crosses text you are reading. */
+body > .confetti { position: fixed; z-index: 115; }
 
 /* 11 Content blocks */
 /* Work grid: rows of mixed widths; each row shares one height. */
@@ -419,6 +422,8 @@ body > .confetti { position: fixed; z-index: 125; }
 .bite { --focus: var(--ink); display: grid; grid-template-rows: auto 1fr auto; overflow: hidden; border-radius: var(--r-md); background: var(--white); color: var(--ink); box-shadow: var(--shadow-1); transition: transform .25s var(--ease), box-shadow .25s var(--ease); }
 .bite:hover { transform: translateY(-6px); box-shadow: 0 0 0 2px var(--acc-on-dark), var(--shadow-2); }
 .bite__top { display: flex; justify-content: space-between; align-items: center; gap: 10px; min-height: 84px; padding: 14px var(--sp-4); background: var(--c, var(--butter)); }
+/* With a photo: the image is multiplied into the card colour, and a solid band keeps the label legible. */
+.bite__top--photo { min-height: 128px; align-items: flex-start; background-color: var(--c, var(--butter)); background-image: linear-gradient(90deg, var(--c, var(--butter)) 0 34%, color-mix(in oklab, var(--c, var(--butter)) 30%, transparent) 72%, transparent), var(--photo); background-size: cover; background-position: center; background-blend-mode: normal, multiply; }
 .bite__type { display: inline-flex; align-items: center; gap: var(--sp-2); font: 700 15px var(--sans); }
 .bite__type svg { width: 30px; height: 30px; padding: 6px; border-radius: 50%; background: var(--ink); stroke: var(--white); fill: none; stroke-width: 2; }
 .bite__level { padding: 5px 10px; border-radius: 999px; background: var(--ink); color: var(--white); font: 600 var(--fs-xs) var(--sans); }
@@ -579,12 +584,11 @@ body[data-feel="joy"] .shot:hover .shot__media img { transform: scale(1.05) rota
 }
 
 /* Duotone: photos render in their route's two tones (dark shadows, light highlights) under a fine
-   grain, so imagery and colour read as one system. The image is greyscale and multiplied onto the
+   grain-free (Eva: no texture over images), so imagery and colour read as one system. The image is greyscale and multiplied onto the
    light tone; a lighten layer lifts the shadows to the dark tone. */
 .shot__media, .phero__photo, .read__img, .article__img, .who__art, .story__frame { position: relative; isolation: isolate; overflow: hidden; background: var(--duo-light); }
 .shot__media img, .phero__photo img, .read__img img, .article__img img, .who__art img, .story__frame img { filter: grayscale(1) contrast(1.08); mix-blend-mode: multiply; }
 .shot__media::after, .phero__photo::after, .read__img::after, .article__img::after, .who__art::after, .story__frame::after { content: ""; position: absolute; inset: 0; z-index: 1; background: var(--duo-dark); mix-blend-mode: lighten; pointer-events: none; }
-.shot__media::before, .phero__photo::before, .read__img::before, .article__img::before, .who__art::before, .story__frame::before { content: ""; position: absolute; inset: 0; z-index: 2; background: var(--noise); opacity: .7; mix-blend-mode: overlay; pointer-events: none; }
 .phero__photo figcaption, .story__count { z-index: 3; }
 /* Posters carry their own type and colour, so they stay as made. */
 .phero__photo.is-poster, .work__row--posters .shot__media { background: none; }

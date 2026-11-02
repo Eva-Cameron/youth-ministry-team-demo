@@ -191,7 +191,8 @@
   if (conf.who) { const who = document.querySelector('.who'); if (who) lines(who, conf.who); }
   const hero = document.querySelector('.phero');
   if (hero && conf.dots) dotfield(hero, conf.dots);
-  if (hero && conf.lines) lines(hero, hero.classList.contains('phero--photo') ? { ...conf.lines, color: '--white', alpha: .12, drift: false } : conf.lines);
+  // No texture over photographs (Eva): photo heroes get no lines.
+  if (hero && conf.lines && !hero.classList.contains('phero--photo')) lines(hero, conf.lines);
   if (conf.bands) {
     document.querySelectorAll('main > :is(.section, .tiktok, .globe-sec)').forEach((s) => {
       const prev = s.previousElementSibling;

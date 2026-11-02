@@ -101,13 +101,22 @@
   const latestBtn = $('[data-latest-open]');
   if (latest && latestBtn) {
     const list = $('.latest__list', latest);
-    list.innerHTML = upcoming().slice(0, 8).map((e) => `<li>${newsCard(e)}</li>`).join('');
+    const shown = upcoming().slice(0, 8);
+    list.innerHTML = shown.map((e) => `<li>${newsCard(e)}</li>`).join('');
+    // A ring shows until you have opened Latest with these events in it.
+    let seen = [];
+    try { seen = JSON.parse(localStorage.getItem('ymt-latest-seen') || '[]'); } catch { seen = []; }
+    const fresh = shown.some((e) => !seen.includes(e.id));
+    latestBtn.classList.toggle('has-new', fresh);
+    if (fresh) latestBtn.setAttribute('aria-label', 'Latest, new events');
+    const markSeen = () => { latestBtn.classList.remove('has-new'); latestBtn.removeAttribute('aria-label'); try { localStorage.setItem('ymt-latest-seen', JSON.stringify(shown.map((e) => e.id))); } catch {} };
     staggered($$('li', list), 55);
     let back = null;
     const setLatest = (open) => {
       latestBtn.setAttribute('aria-expanded', String(open));
       if (open) {
         back = document.activeElement;
+        markSeen();
         latest.hidden = false;
         isolate(true, latest);
         document.body.style.overflow = 'hidden';
@@ -162,11 +171,26 @@
     Formation: '<path d="M4 19V6a2 2 0 0 1 2-2h12v15H6a2 2 0 0 0-2 2"/>', Lesson: '<path d="M3 8l9-4 9 4-9 4z"/><path d="M7 10v5c3 2 7 2 10 0v-5"/>', Session: '<path d="M8 5v14l11-7z"/>',
   };
   const eventById = (id) => D.events.find((e) => e.id === id);
+  // Each download's banner photo: its own, else its event's, else one for its audience.
+  // Each download's banner photo: its own, else its event's, else one picked steadily from wide,
+  // unidentifiable shots by the download's id, so neighbouring cards differ.
+  const POOL = ['ph-retreat-prayer', 'ph-worship-uplight', 'ph-festival-worship', 'ph-village-chalet', 'ph-hope-letters', 'ph-village-grotto', 'ph-adoration-altar', 'ph-youth-council-field', 'ph-village-sunset', 'ph-festival-stage', 'ph-valley', 'ph-event-night'];
+  const used = new Set();
+  const photoFor = (r) => {
+    if (r.img) return r.img;
+    const ev = r.event && eventById(r.event);
+    if (ev?.img?.startsWith('ph-') && !ev.img.startsWith('ph-poster') && !used.has(ev.img)) { used.add(ev.img); return ev.img; }
+    let k = [...r.id].reduce((h, c) => (h * 31 + c.charCodeAt(0)) >>> 0, 7) % POOL.length;
+    for (let i = 0; i < POOL.length && used.has(POOL[k]); i++) k = (k + 1) % POOL.length;
+    used.add(POOL[k]);
+    return POOL[k];
+  };
   const bite = (r) => {
+    const photo = photoFor(r);
     const from = r.event && eventById(r.event);
     const read = r.article ? `<a class="bite__dl" href="${esc(r.article)}">Read</a>` : '';
     return `<article class="bite rise" data-type="${esc(r.type)}" data-aud="${esc(r.aud)}">
-      <div class="bite__top"><span class="bite__type"><svg viewBox="0 0 24 24" aria-hidden="true">${icons[r.type] || ''}</svg>${esc(r.type)}</span><span class="bite__level">${esc(r.level)}</span></div>
+      <div class="bite__top bite__top--photo" style="--photo: url('${esc(new URL(img(photo), location.href).href)}')"><span class="bite__type"><svg viewBox="0 0 24 24" aria-hidden="true">${icons[r.type] || ''}</svg>${esc(r.type)}</span><span class="bite__level">${esc(r.level)}</span></div>
       <div class="bite__body">${from ? `<span class="bite__from">From ${esc(from.title)}</span>` : ''}<h3>${esc(r.title)}</h3><p>${esc(r.summary)}</p></div>
       <div class="bite__foot"><span class="bite__time">${esc(r.time)}</span>${read || `<a class="bite__dl" href="resources/${esc(r.id)}.pdf" download><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg>PDF</a>`}</div>
     </article>`;
@@ -175,9 +199,11 @@
   $$('[data-next]').forEach((fig) => {
     const e = pick(fig.dataset.next, upcoming())[0];
     if (!e) return;
-    const image = $('img', fig);
-    image.src = img(e.img);
-    fig.classList.toggle('is-poster', e.img.startsWith('ph-poster'));
+    // Programme pages keep their own photo; only the caption follows the next event.
+    if (fig.dataset.nextPhoto !== 'keep') {
+      $('img', fig).src = img(e.img);
+      fig.classList.toggle('is-poster', e.img.startsWith('ph-poster'));
+    }
     $('figcaption', fig).innerHTML = `<small>Next${e.sample ? ' · to be confirmed' : ''}</small><b>${esc(e.title)}</b><span>${esc(when(e))} · ${esc(e.place)}</span>`;
   });
 
