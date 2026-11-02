@@ -4,7 +4,7 @@ Branch `review/iteration-3`, 2 November 2026. This list merges:
 
 - the design critiques of `index.html` and the four route pages;
 - the detector run with in-browser evidence (`impeccable detect` over every `*.html` and `css/*.css`, plus the overlay on home and the routes);
-- the site-wide technical audit.
+- the site-wide technical audit (12/20, "Acceptable": 0 P0, 9 P1, 13 P2, 7 P3; 1,021 local references checked, 0 broken).
 
 **Decisions applied:**
 
@@ -56,7 +56,22 @@ Heuristics 7 (flexibility) and 10 (help) are n/a on these Persuade pages, so eac
 6. **Add Safeguarding to the mobile menu sheet.** Parents can't reach it from the menu today.
 7. **Fix the Latest cards' audience tags.** They show only the first audience (`aud[0]`), so Lent retreats reads as Primary only. Show every audience.
 8. **Fix timeline "Details" buttons that go nowhere.** When an event has no link, the button points at `#`. Fall back to the route page or drop the button.
-9. *(Audit items are added below when the audit returns.)*
+9. **Trap focus in the Latest dialog.** The close button sits outside `role=dialog`, the first Tab lands behind the veil, and `main` isn't inert. Move the close button inside the panel and make the rest of the page `inert` while the dialog is open.
+10. **Trap focus in the mobile nav sheet** the same way. After the last link, Tab currently goes into hidden page content.
+11. **Let visitors pause the home hero film** (WCAG 2.2.2). It autoplays a 37 s loop with no controls, and `home.js` restarts it within 800 ms of any pause. Add a visible pause/play button and stop the forced replay.
+12. **Add one "Pause clips" toggle for the TikTok clips** on `volunteer.html` (WCAG 2.2.2).
+13. **Make the focus ring visible on light surfaces.** The 3px white ring is 1.47:1 on Blossom Pink, 1.31:1 on Mint and about 1:1 on white cards. Add an ink outer ring.
+14. **Fix the other failing text pairs:**
+    - the feel-strip caption word: 3.63:1;
+    - the globe tally number: 4.41:1;
+    - the Latest panel's "Coming up" heading over the page: down to 2.94:1;
+    - the home hero sub-links: down to 1.98:1;
+    - the outlined "Most recent" kicker: 3.89:1.
+15. **Return focus properly when Escape closes a menu.** Today focus goes to a nav button that is hidden off-screen. Bring the nav back first.
+16. **Close the dropdown when focus leaves it.**
+17. **Fix poster alt text.** Hero posters that carry dates and text have `alt=""`. On `festival.html`, two posters are both `alt="Behold"`.
+18. **Remove `aria-label` from elements that have no role** (`div.hero__subnav`, `.filters`), or give them a role.
+19. **Make the remaining tap targets at least 44px:** the burger (40px wide at 520px and below), the resource filters (40px), the globe chips (38px) and the learn-page aside links (19px).
 
 ## 3. Typography (`/impeccable typeset`)
 
@@ -108,6 +123,14 @@ Heuristics 7 (flexibility) and 10 (help) are n/a on these Persuade pages, so eac
    - the positional `phone--1…6` classes, which are noted but left alone.
 5. **Fix the date format** "1 DEC TUE – 18 DEC" (site.js:149) so it reads in one order.
 
+## 6b. Performance (`/impeccable optimize`, Phase 4 bonus unless noted)
+
+1. **Stop the hero film loading before anyone asks for it** (Phase 3). It is 1.69 MB with `preload="auto"` on every device, including under reduced motion. Change it to `preload="metadata"` and skip it entirely under reduced motion.
+2. **Make the hero video lighter.** Use a shorter loop, separate mobile and desktop sources, and add a WebM/AV1 version. At 1440 the 854×480 video is upscaled 1.7×.
+3. **Add `srcset`/`sizes` to all 110 images**, using the existing `-800`/`-1600` pairs. Add `width`/`height` to the 76 images that lack them.
+4. **Load only the visible story frame up front.** The other three load on scroll.
+5. **Note the intro card's cost.** It covers the home page for about 2 s on every visit, which belongs with the client recommendations in section 7.
+
 ## 7. Recommendations for the client (not changing without a yes)
 
 - **Home:**
@@ -120,6 +143,7 @@ Heuristics 7 (flexibility) and 10 (help) are n/a on these Persuade pages, so eac
 - **Downloads:** 7 of Secondary's 9 downloads repeat Primary's, and the Primary set uses secondary-school words ("form time", "chaplaincy").
 - **Volunteers:** shorten the 200vh TikTok stage on desktop. Volunteering's purple is used very little; the client could consider a stronger purple presence within the current palette.
 - **Everyone else:** lead with Village stays rather than the festival, and lay out the Village facts with the existing `.facts` component.
+- **Intro card:** show it once per visit, or remove it. It delays every home visit by about 2 s.
 - **Endings and reassurance:** end each route with a closing email action, and put the client's "trained, DBS-checked" line near the decision points, not only in the footer.
 
 ## Open client questions
