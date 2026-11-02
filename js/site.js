@@ -225,6 +225,30 @@
   const picked = topic && $(`[data-mail-row="${CSS.escape(topic)}"]`);
   if (picked) { picked.classList.add('is-picked'); picked.scrollIntoView({ block: 'center' }); }
 
+  // Donate: choose how often and how much; the gift itself is made on the external giving page.
+  const give = $('[data-give]');
+  if (give) {
+    const impact = { 10: '£10 provides classroom resources for a retreat.', 50: '£50 helps send a youth helper to Lourdes.' };
+    const money = (n) => '£' + (Number.isInteger(n) ? n : n.toFixed(2));
+    const state = { freq: 'once', amount: 25 };
+    const show = () => {
+      const every = state.freq === 'monthly' ? ' a month' : ' one-off';
+      $('[data-give-total]', give).textContent = `${money(state.amount)}${every} · ${money(state.amount * 1.25)} with Gift Aid`;
+      const line = $('[data-give-impact]', give);
+      line.textContent = impact[state.amount] || '';
+      line.hidden = !impact[state.amount];
+    };
+    give.addEventListener('click', (e) => {
+      const b = e.target.closest('[data-freq], [data-amount]');
+      if (!b) return;
+      const key = b.dataset.freq ? 'freq' : 'amount';
+      $$(`[data-${key}]`, give).forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
+      state[key] = key === 'amount' ? Number(b.dataset.amount) : b.dataset.freq;
+      show();
+    });
+    show();
+  }
+
   // Giving happens off the site. The Give button appears once config.js has a real giving URL;
   // until then the page shows the email note instead.
   const givingUrl = C.givingUrl && safeUrl(C.givingUrl);

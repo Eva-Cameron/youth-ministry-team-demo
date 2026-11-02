@@ -454,6 +454,10 @@ body[data-aud] .tl__item.is-next::before { background: var(--acc-on-dark); color
 .rows--mail li { scroll-margin-block: 120px; }
 /* Addresses as selectable text with a copy button, for when a mailto link does not open. */
 .copy-email { display: grid; gap: var(--sp-2); }
+/* Donate picker: choices only; the gift is made on the external giving page. */
+.give__choices { margin-bottom: 0; }
+.give__total { font: 600 var(--fs-lg)/1.2 var(--display); letter-spacing: -.01em; }
+.give__impact { color: var(--text-2); }
 .copy-email li { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--sp-3); padding: var(--sp-3) 0; border-top: 1px solid var(--line); }
 .copy-email small { display: block; font: 400 var(--fs-xs)/1.3 var(--mono); text-transform: uppercase; color: var(--text-2); }
 .copy-email__addr { font: 500 var(--fs-md)/1.3 var(--sans); user-select: all; }
