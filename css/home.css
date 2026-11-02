@@ -95,7 +95,8 @@
 .story__frame img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transform: scale(1.06); transition: opacity .9s ease, transform 1.6s var(--ease); }
 .story__frame img.is-on { opacity: 1; transform: scale(1); }
 .story__frame figcaption { position: absolute; left: 12px; bottom: 12px; padding: 10px 14px; font: 400 11px var(--mono); text-transform: uppercase; }
-.story__count { position: absolute; right: 12px; top: 12px; padding: 8px 12px; font: 400 11px var(--mono); }
+/* On the photo, so it takes the dark glass fill, not the light wash panels use on the ground. */
+.story__count { --glass-fill: rgba(16, 12, 21, .62); --glass-solid: #1d1724; position: absolute; right: 12px; top: 12px; padding: 8px 12px; font: 400 11px var(--mono); border-radius: var(--r-sm); }
 
 /* 03 Ways in: four cards that stack as you scroll, each in its audience's register. */
 .who { padding-block: clamp(88px, 10vw, 160px) clamp(48px, 6vw, 96px); }
