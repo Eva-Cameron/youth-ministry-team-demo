@@ -35,18 +35,26 @@
     setTimeout(finishIntro, 2200);
   }
 
-  /* The original hero: the film always plays, retries if autoplay is blocked, drifts with the mouse. */
+  /* The hero film plays unless motion is reduced or the visitor pauses it (WCAG 2.2.2); it retries
+     if autoplay is blocked, and drifts with the mouse. */
   const hero = $('.hero');
   const heroFilm = $('.hero video');
-  if (heroFilm && reduce) { heroFilm.removeAttribute('autoplay'); heroFilm.pause(); }
-  else if (heroFilm) {
+  const filmBtn = $('[data-film-toggle]');
+  let userPaused = reduce;
+  const setFilmBtn = () => { if (!filmBtn) return; filmBtn.setAttribute('aria-pressed', String(userPaused)); filmBtn.textContent = userPaused ? 'Play film' : 'Pause film'; };
+  if (heroFilm) {
     heroFilm.muted = true; heroFilm.defaultMuted = true; heroFilm.controls = false;
-    const playFilm = () => { if (!heroFilm.paused || document.hidden) return; heroFilm.play().catch(() => {}); };
+    const playFilm = () => { if (userPaused || !heroFilm.paused || document.hidden) return; heroFilm.play().catch(() => {}); };
     playFilm();
     heroFilm.addEventListener('canplay', playFilm);
-    heroFilm.addEventListener('pause', () => setTimeout(playFilm, 250));
     document.addEventListener('visibilitychange', playFilm);
     ['pointerdown', 'touchstart', 'scroll', 'keydown'].forEach((t) => addEventListener(t, playFilm, { passive: true }));
+    filmBtn?.addEventListener('click', () => {
+      userPaused = !userPaused;
+      if (userPaused) heroFilm.pause(); else heroFilm.play().catch(() => {});
+      setFilmBtn();
+    });
+    setFilmBtn();
   }
   if (hero && matchMedia('(hover: hover) and (pointer: fine)').matches && !reduce) {
     let f = 0;

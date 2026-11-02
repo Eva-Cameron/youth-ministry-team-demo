@@ -62,7 +62,7 @@
   <main id="main">
     <section class="hero" id="top" aria-labelledby="hero-title">
       <div class="hero__media" aria-hidden="true" data-hero-media>
-        <video class="hero__scene is-active" autoplay muted loop playsinline disablepictureinpicture disableremoteplayback preload="auto" poster="assets/web/hero-poster.webp">
+        <video class="hero__scene is-active" muted loop playsinline disablepictureinpicture disableremoteplayback preload="metadata" poster="assets/web/hero-poster.webp">
           <source src="assets/web/hero-960.mp4" type="video/mp4">
         </video>
       </div>
@@ -84,6 +84,7 @@
           <span>Explore</span>
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6"/></svg>
         </a>
+        <button class="hero__pause" type="button" aria-pressed="false" data-film-toggle>Pause film</button>
       </div>
     </section>
 

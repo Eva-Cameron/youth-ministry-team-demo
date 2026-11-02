@@ -238,15 +238,29 @@
     parts.forEach((el) => { if (!el.matches('.words, .shot')) el.classList.add('rise'); io.observe(el); });
   } else parts.forEach((el) => el.classList.add('in'));
 
-  // Videos load and play only while on screen.
+  // Videos load and play only while on screen. Under reduced motion they show their posters and
+  // load nothing; one toggle pauses every clip (WCAG 2.2.2).
   const vids = $$('video[data-src]');
-  if (vids.length && 'IntersectionObserver' in window) {
+  const clipsBtn = $('[data-clips-toggle]');
+  let clipsPaused = reduce;
+  const onScreen = new Set();
+  if (vids.length && !reduce && 'IntersectionObserver' in window) {
     const vio = new IntersectionObserver((es) => es.forEach((x) => {
       const v = x.target;
-      if (x.isIntersecting) { if (!v.src) { v.src = v.dataset.src; v.load(); } if (!reduce) v.play().catch(() => {}); }
-      else if (!v.paused) v.pause();
+      if (x.isIntersecting) { onScreen.add(v); if (!v.src) { v.src = v.dataset.src; v.load(); } if (!clipsPaused) v.play().catch(() => {}); }
+      else { onScreen.delete(v); if (!v.paused) v.pause(); }
     }), { rootMargin: '200px 0px' });
     vids.forEach((v) => vio.observe(v));
+  }
+  if (clipsBtn) {
+    const setClips = () => { clipsBtn.setAttribute('aria-pressed', String(clipsPaused)); clipsBtn.textContent = clipsPaused ? 'Play clips' : 'Pause clips'; };
+    clipsBtn.hidden = reduce;
+    clipsBtn.addEventListener('click', () => {
+      clipsPaused = !clipsPaused;
+      vids.forEach((v) => { if (clipsPaused) v.pause(); else if (onScreen.has(v)) v.play().catch(() => {}); });
+      setClips();
+    });
+    setClips();
   }
 
   // TikTok stage (wide screens): the side windows scroll past the pinned one at their own speeds.
