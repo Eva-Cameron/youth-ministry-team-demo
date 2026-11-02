@@ -69,7 +69,7 @@ const MIME = {
 if (EXPORT_URL) {
   const token = process.env.YMT_REVIEW_TOKEN || '';
   if (!token) throw new Error('Set YMT_REVIEW_TOKEN to the owner invite token to pull the export.');
-  const res = await fetch(EXPORT_URL, { headers: { cookie: `ymt_review=${encodeURIComponent(token)}` } });
+  const res = await fetch(EXPORT_URL, { headers: { cookie: `ymt_review=${token}` } });
   if (!res.ok) throw new Error(`Export failed: ${res.status} ${await res.text()}`);
   await writeFile(join(ROOT, 'review/comments.json'), JSON.stringify(await res.json(), null, 2) + '\n');
   console.log('pulled the latest threads from', EXPORT_URL);

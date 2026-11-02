@@ -13,7 +13,7 @@ export const onRequestGet = async ({ request, env, params }) => {
     status: 302,
     headers: {
       location: '/?review=1',
-      'set-cookie': `${COOKIE}=${encodeURIComponent(token)}; Path=/; HttpOnly; SameSite=Lax; Max-Age=${60 * 60 * 24 * 90}${secure}`,
+      'set-cookie': `${COOKIE}=${token}; Path=/; HttpOnly; SameSite=Lax; Max-Age=${60 * 60 * 24 * 90}${secure}`,
       'cache-control': 'no-store',
     },
   });

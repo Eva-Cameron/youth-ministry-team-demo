@@ -1,6 +1,6 @@
 // GET  /api/review/threads?page=primary.html  · threads on a page, with replies
 // POST /api/review/threads                     · start a thread on an element
-import { json, clean, threadsWhere, turnstileOk, notify, MAX_TEXT } from '../../../../lib/review.js';
+import { json, clean, threadsWhere, turnstileOk, turnstileOn, notify, MAX_TEXT } from '../../../../lib/review.js';
 
 const PAGE = /^[\w-]+\.html$/;
 
@@ -19,7 +19,7 @@ export const onRequestPost = async ({ request, env, data, waitUntil }) => {
   if (!PAGE.test(page) || !anchor) return json({ error: 'Pick an element on a site page first.' }, 400);
   if (!text) return json({ error: 'Write a comment first.' }, 400);
   const reviewer = data.reviewer;
-  if (!reviewer.verified) {
+  if (!reviewer.verified && turnstileOn(env)) {
     if (!(await turnstileOk(env, body.turnstile, request.headers.get('cf-connecting-ip')))) return json({ error: 'Please complete the check, then post again.' }, 403);
     await env.REVIEW_DB.prepare('UPDATE reviewers SET verified = 1 WHERE id = ?').bind(reviewer.id).run();
   }

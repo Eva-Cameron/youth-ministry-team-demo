@@ -5,3 +5,5 @@
 .dev.vars
 .wrangler/
 node_modules/
+review/comments.json
+review/out/board.json

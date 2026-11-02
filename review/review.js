@@ -244,7 +244,7 @@
     if (!window.turnstile) {
       await new Promise((resolve, reject) => { const s = document.createElement('script'); s.src = 'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit'; s.onload = resolve; s.onerror = reject; document.head.appendChild(s); });
     }
-    return new Promise((resolve) => { const slot = make('div'); into.append(slot); window.turnstile.render(slot, { sitekey: me.turnstile, callback: resolve }); });
+    return new Promise((resolve) => { const slot = make('div'); into.append(slot); window.turnstile.render(slot, { sitekey: me.turnstile, callback: resolve, 'error-callback': () => resolve(null), 'expired-callback': () => resolve(null) }); });
   };
 
   const compose = async (el) => {
@@ -266,6 +266,7 @@
       try {
         const body = { page: here, anchor: cssPath(el), location: where, quote: labelOf(el), viewport: innerWidth, text, turnstile: await check };
         await call('/threads', { method: 'POST', body: JSON.stringify(body) });
+        me.turnstile = null; // checked once
         await refresh();
         finish();
       } catch (err) { post.disabled = false; card.append(error(err)); }
