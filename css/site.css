@@ -345,6 +345,9 @@ a.tag::after { content: ""; position: absolute; inset: -13px -4px; }
 .phero--photo .phero__bg::after { content: ""; position: absolute; inset: 0; background: var(--noise); opacity: .35; pointer-events: none; }
 .section, .ethos, .who, .tiktok, .globe-sec, .foot { position: relative; isolation: isolate; }
 .terrain { position: absolute; left: 0; top: 0; z-index: -1; width: 100%; height: 100%; overflow: hidden; pointer-events: none; }
+.terrain canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
+/* The confetti field fills the whole hero, words included; the dots thin out there on their own. */
+.phero .terrain--dots { top: 0; height: 100%; -webkit-mask: none; mask: none; }
 .terrain img { position: absolute; left: 0; top: 0; max-width: none; height: 100%; }
 /* The frame starts below the glass nav, so a drifting layer never sits under the nav's backdrop blur. */
 .phero .terrain { top: 84px; height: calc(100% - 84px); -webkit-mask: radial-gradient(ellipse 50% 56% at 20% 74%, transparent 22%, #000 76%); mask: radial-gradient(ellipse 50% 56% at 20% 74%, transparent 22%, #000 76%); }

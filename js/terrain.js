@@ -18,7 +18,8 @@
   const LIGHT = { lines: { gap: 40, amp: 16, color: '--acc-ink', alpha: .09 }, bands: { depth: .62, layers: [['--acc-on-dark', .1], ['--acc-on-dark', .05]] } };
   const ROUTES = {
     index: { who: { gap: 44, amp: 16, color: '--white', alpha: .07 } },
-    primary: { lines: { gap: 36, amp: 16, color: '--acc-ink', alpha: .1 }, bands: { depth: .7, layers: [['--acc-on-dark', .22], ['--lilac', .2], ['--acc-on-dark', .08]] } },
+    // Primary has a confetti field instead of lines (Eva, 2 Nov): dots crowd the top and bottom edges.
+    primary: { dots: { per: 1500, most: 560, bias: 2.4, small: 2, big: 15, colours: ['#ef6f6c', '#1aa6a6', '#f6b93b', '#8fd0ee', '#ffffff', '#e8577a'] }, bands: { depth: .7, layers: [['--acc-on-dark', .22], ['--lilac', .2], ['--acc-on-dark', .08]] } },
     secondary: { lines: { gap: 17, amp: 20, color: '--sky', alpha: .24, drift: true }, bands: { depth: .72, layers: [['--blue-light', .2], ['--blue', .32], ['--blue-light', .07]] } },
     volunteer: { lines: { gap: 24, amp: 20, color: '--plum', alpha: .24, drift: true }, bands: { depth: .9, layers: [['--purple-text', .3], ['--purple', .42], ['--purple-text', .14], ['--plum', .9]] } },
     everyone: { lines: { gap: 40, amp: 16, color: '--acc-ink', alpha: .1, drift: true }, bands: { depth: .6, layers: [['--acc-on-dark', .1], ['--stone', .05]] } },
@@ -138,8 +139,58 @@
     section.prepend(box);
   };
 
+  // Confetti field: dots crowd the top and bottom edges and thin out towards the middle, where the words
+  // are. They bob and twinkle slowly (30fps, only on screen); under reduced motion they are drawn once.
+  const dotfield = (host, o) => {
+    const box = document.createElement('div');
+    box.className = 'terrain terrain--dots';
+    box.setAttribute('aria-hidden', 'true');
+    const cv = document.createElement('canvas');
+    box.append(cv);
+    host.prepend(box);
+    const ctx = cv.getContext('2d');
+    const dpr = Math.min(2, devicePixelRatio || 1);
+    let w = 0, h = 0, dots = [], raf = 0, visible = true, last = 0;
+    const seed = () => {
+      dots = [];
+      const count = Math.min(o.most, Math.round((w * h) / o.per));
+      for (let i = 0; i < count; i++) {
+        const edge = Math.pow(rng(), o.bias); // 0 at the edge, 1 towards the middle
+        const y = rng() < .5 ? edge * h * .5 : h - edge * h * .5;
+        const near = 1 - edge;
+        dots.push({ x: rng() * w, y, r: o.small + (o.big - o.small) * Math.pow(near, 2.2) * (.35 + rng() * .65), c: o.colours[(rng() * o.colours.length) | 0], a: .5 + rng() * .5, ph: rng() * 6.283, sp: .35 + rng() * .7, amp: 2 + rng() * 6 });
+      }
+    };
+    const draw = (t) => {
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      ctx.clearRect(0, 0, w, h);
+      for (const d of dots) {
+        const k = t / 1000 * d.sp + d.ph;
+        ctx.globalAlpha = d.a * (.82 + .18 * Math.sin(k * 1.7));
+        ctx.fillStyle = d.c;
+        ctx.beginPath();
+        ctx.arc(d.x + Math.cos(k * .6) * d.amp * .5, d.y + Math.sin(k) * d.amp, d.r, 0, 6.283);
+        ctx.fill();
+      }
+    };
+    const tick = (now) => {
+      raf = 0;
+      if (now - last > 33) { last = now; draw(now); }
+      if (visible && !document.hidden && !reduce) raf = requestAnimationFrame(tick);
+    };
+    const run = () => { if (!reduce && visible && !document.hidden && !raf) raf = requestAnimationFrame(tick); };
+    new ResizeObserver(([e]) => {
+      w = Math.round(e.contentRect.width); h = Math.round(e.contentRect.height);
+      cv.width = w * dpr; cv.height = h * dpr;
+      seed(); draw(performance.now()); run();
+    }).observe(box);
+    if ('IntersectionObserver' in window) new IntersectionObserver(([e]) => { visible = e.isIntersecting; run(); }).observe(host);
+    document.addEventListener('visibilitychange', run);
+  };
+
   if (conf.who) { const who = document.querySelector('.who'); if (who) lines(who, conf.who); }
   const hero = document.querySelector('.phero');
+  if (hero && conf.dots) dotfield(hero, conf.dots);
   if (hero && conf.lines) lines(hero, hero.classList.contains('phero--photo') ? { ...conf.lines, color: '--white', alpha: .12, drift: false } : conf.lines);
   if (conf.bands) {
     document.querySelectorAll('main > :is(.section, .tiktok, .globe-sec)').forEach((s) => {
