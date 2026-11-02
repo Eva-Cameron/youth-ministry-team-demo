@@ -1,0 +1,2 @@
+# impeccable engine binary is per-platform; the wrapper fetches the right one on first run
+.claude/skills/impeccable/scripts/bin/
