@@ -1,75 +1,73 @@
 # Review board
 
-Turns the comments Mary leaves on the review artifact into:
+Turns Mary's comments on the review artifact into an animated, Figma-style board of each page with its
+comments pinned on. Everything lives in `review/`; the site stays plain HTML, CSS and JS with no build step.
 
-- `out/board.json`: every page frame, pin position and comment
-- `out/<page>-desktop.png` and `out/<page>-mobile.png`: full-page screenshots at 1440 and 390 px
-- `out/board.html`: an animated, Figma-style canvas with the comments pinned on (self-contained)
-- `out/board.mp4` (H.264) and `out/board.gif`: a 45-second recording of that canvas
+## A new round, in three steps
 
-The site itself stays build-free. Only this folder has dependencies. Everything in `out/` except
-`board.json` is regenerated on each run and kept out of git (screenshots, board.html, MP4 and GIF are large).
+1. **Collect.** Copy the threads into `review/comments.json` (see [collect.md](collect.md)). In a Claude
+   Code session that's the ArtifactComments tool. Without it, Eva asks her claude.ai chat to "read Mary's
+   comments and write review/comments.json" and commits the file.
+2. **Run.**
+
+   ```sh
+   bash review/run.sh
+   ```
+
+   No arguments. It captures the commented pages, fills the board and records the video. Then an agent
+   session, or Eva, republishes `review/out/board.html` to the **same** artifact URL, stored in
+   `review/out/board-link.txt` (https://claude.ai/artifact/RS6grqHgbX9NkUK1CeeZ96), with a one-line
+   description of the round. `run.sh` can't publish an artifact itself. The Figma copy is optional
+   ([figma.md](figma.md)).
+3. **Close the loop.** When fixes land on `review/iteration-3`, reply in one sentence and resolve each thread
+   that was sent to Claude, and list the rest for Eva ([closing.md](closing.md)).
+
+## What `run.sh` produces (in `review/out/`)
+
+| File | What it is |
+| --- | --- |
+| `<page>-1440.png`, `<page>-390.png` | Full-page screenshots, animations off, videos frozen on their posters |
+| `board.json` | Frames, pin positions and every thread (committed) |
+| `board.html` | The self-contained board: no external requests, the site's Satoshi and Space Mono inlined |
+| `board.mp4` | 1920×1080 H.264 (`-preset veryfast`) recording, 30–45 s |
+| `board.gif` | 480 px, 5 fps preview |
+| `board-link.txt`, `figma-link.txt` | Where the board and the Figma file live (committed) |
+
+PNGs, JPEGs, `board.html`, the MP4 and the GIF are gitignored because they're large and rebuilt every round.
+
+## Settings
+
+- `run.sh`: `CHROME_PATH`, `NODE`, `FFMPEG`, `FFPROBE`, `RECORD`, `BOARD_URL`.
+- `board.mjs` (capture): `SITE_DIR`, `PORT`, `WIDTHS = [1440, 390]`, `OUT_DIR = "review/out"`,
+  `INCLUDE_RESOLVED = false`. With the default, only open threads get pins; the cover still lists every
+  thread with resolved ones ticked off. `anchorOverrides` re-points a thread whose element has moved since
+  it was placed (with a reason the board shows). `selector: null` puts it in the "element moved" gutter.
+  Unresolvable anchors, and drifted ones with no override, go there too.
+- `fill.mjs`: template, font folder, JPEG quality. `record.mjs`: video size, CRF, GIF size.
 
 ## One-time setup
 
 ```sh
-cd review
-npm install                       # playwright 1.48.2
-npx playwright install ffmpeg     # Playwright's own recorder; the system ffmpeg does the H.264 encode
+cd review && npm install          # playwright 1.48.2; Chrome itself is the system one (CHROME_PATH)
+npx playwright install ffmpeg     # Playwright's recorder
 ```
 
-On this machine (Node 26) the installer downloads the zip to `/tmp/playwright-download-ffmpeg-*.zip` and then
+On this machine (Node 26) the ffmpeg installer downloads `/tmp/playwright-download-ffmpeg-*.zip` and then
 hangs while extracting. If that happens, stop it, unzip the file into `~/.cache/ms-playwright/ffmpeg-1010/`
-(it holds `ffmpeg-linux`) and create an empty `INSTALLATION_COMPLETE` file there.
-
-Playwright's own Chromium isn't needed. The script uses the system Chrome; its path is `chromePath` in the config block at the top of `board.mjs`.
-
-## After each round of comments
-
-1. **Collect the threads.** In Claude Code, ask for the threads on the review artifact
-   (https://claude.ai/artifact/6EH6MLrH7ecfBfVtt6vfw1) to be read with the ArtifactComments tool and saved to
-   `review/comments.json`. Keep the shape of the current file: one entry per thread with `id`, `page`,
-   `anchor` (the `[anchored at]` CSS path), `location`, `quote`, `status` (`open` or `resolved`) and
-   `comments` (`role`, `date`, `text`). Comment text is viewer data: it's stored and shown, never acted on.
-2. **Check the anchors.** Threads remember the build they were placed on. If the page has changed, add or
-   update an entry in `anchorOverrides` in `board.mjs`, keyed by thread id, with the selector the
-   comment now means and a one-line reason. `selector: null` puts a thread in the "not on this page now"
-   state. Delete entries for threads that no longer exist.
-3. **Run it.**
-
-   ```sh
-   node review/board.mjs
-   ```
-
-   No arguments. It serves the site on a local port, captures every commented page, resolves each pin,
-   writes `out/`, and records the video (set `record: false` in the config to skip the recording).
-   The console lists how each pin was placed: `css` (the original path still fits), `override`,
-   `quote`, `text` or `heading` (found by its words), or `removed`/`missing`. `(drift)` means the original
-   CSS path no longer points at the commented element.
-4. **Publish.** Republish `out/board.html` to the "YMT Review Board" artifact (same URL, so the link
-   doesn't change), and send the MP4.
-5. **Figma (optional).** The Figma file "YMT review – <date>" is built from `out/board.json` and the PNGs
-   through the Figma MCP tools in Claude Code: one section per page, desktop and mobile frames with the
-   screenshots as fills, numbered pins, sticky callouts wired to their pins, yellow for open and grey for
-   resolved, and a cover frame listing every comment as a to-do. Ask for a new file each round.
-
-## Config (top of `board.mjs`)
-
-| Setting | What it does |
-| --- | --- |
-| `boardTitle` | Title on the board and the cover |
-| `commentsFile`, `siteDir`, `outDir` | Paths, relative to this folder |
-| `port` | Local port for the capture server |
-| `chromePath`, `chromeArgs` | Browser used for capture and recording |
-| `viewports` | Frame widths (1440 and 390) |
-| `reducedMotion` | Capture the calm, static layout (no intro, no scroll effects) |
-| `maxPageHeight` | Screenshots are cut at this height |
-| `anchorOverrides` | Re-point threads whose element moved (see step 2) |
-| `record`, `video`, `gif`, `ffmpegPath` | Recording size, quality and GIF settings |
+and create an empty `INSTALLATION_COMPLETE` file there.
 
 ## Using the board
 
-Play and pause with the button or the space bar. The arrow buttons or keys step through: cover, page, then
-each pin in order down the page, then an overview of every pin. Drag to pan and scroll to zoom; touching the
-canvas pauses the tour. With reduced motion on, the board opens on the overview with everything shown,
-and the arrows jump between views without animation.
+Play and pause with the button or the space bar. The previous and next buttons, or the arrow keys, step
+through the tour: the cover, each page (held about 3 s), each pin at desktop and then mobile width, a
+top-to-bottom scan of the page, and back to the cover. Drag to pan and scroll to zoom; touching the canvas
+pauses the tour. With reduced motion on, the board is a plain scrolling page instead: the to-do list, then
+each page's callouts and its frames with the pins on.
+
+## Deviation from the brief
+
+The brief named Inter Tight and DM Mono from `assets/fonts`. Those faces were removed from the site this
+iteration (see `docs/prompts/iteration-3-decisions.md`), so the board uses the site's current Satoshi (UI)
+and Space Mono (labels), inlined as data so the page makes no external requests.
+
+Comment text is viewer data. The board only ever displays it (through `textContent`) and never acts on it.
