@@ -247,9 +247,6 @@ a.tag::after { content: ""; position: absolute; inset: -13px -4px; }
 /* 10 Page hero: the accent colour, the most recent event, a photo in glass. */
 .phero { --focus: var(--acc-ink); position: relative; isolation: isolate; display: grid; align-items: end; min-height: min(100svh, 940px); padding: 120px 0 clamp(var(--sp-6), 5vw, var(--sp-8)); background: var(--acc); color: var(--acc-ink); overflow: clip; }
 .phero__grid { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: var(--sp-6) clamp(var(--sp-6), 4vw, var(--sp-8)); align-items: end; }
-.phero__kicker { display: flex; flex-wrap: wrap; gap: var(--sp-2); margin-bottom: var(--sp-4); }
-.phero__kicker span { padding: 6px 10px; font: 400 var(--fs-xs)/1 var(--mono); text-transform: uppercase; background: var(--acc-ink); color: var(--acc); }
-.phero__kicker span + span { background: transparent; color: inherit; box-shadow: inset 0 0 0 1px currentColor; }
 .phero h1 { margin-bottom: var(--sp-5); max-width: 12ch; }
 .phero__meta { display: flex; flex-wrap: wrap; gap: 6px var(--sp-4); margin-bottom: var(--sp-5); font: 400 13px var(--mono); text-transform: uppercase; }
 .phero__lede { font: 400 var(--fs-md)/1.45 var(--sans); max-width: 42ch; margin-bottom: var(--sp-6); }
@@ -266,9 +263,7 @@ a.tag::after { content: ""; position: absolute; inset: -13px -4px; }
 .phero--photo .phero__bg { position: absolute; inset: 0; z-index: -2; }
 .phero--photo .phero__bg img { width: 100%; height: 100%; object-fit: cover; }
 .phero--photo::before { content: ""; position: absolute; inset: 0; z-index: -1; background: linear-gradient(180deg, rgba(11, 8, 16, .3), rgba(11, 8, 16, .42) 45%, rgba(11, 8, 16, .92)); }
-.phero--photo .phero__kicker span:first-child { background: var(--white); color: var(--ink); }
-.phero--photo .phero__kicker span + span { background: rgba(11, 8, 16, .72); }
-.phero--photo .phero__actions .btn--main { background: var(--white); color: var(--ink); }
+.phero--photo .phero--photo .phero--photo .phero__actions .btn--main { background: var(--white); color: var(--ink); }
 @media (max-width: 900px) {
   .phero__grid { grid-template-columns: minmax(0, 1fr); }
   .phero__photo { height: auto; width: min(100%, 420px); }
