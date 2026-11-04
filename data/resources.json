@@ -1,0 +1,156 @@
+{
+  "resources": [
+    {
+      "id": "prepare-your-class",
+      "prog": "retreats",
+      "title": "Prepare your class",
+      "type": "Guide",
+      "level": "Before",
+      "aud": "school",
+      "time": "Teachers",
+      "summary": "What to expect, the kit list and ground rules.",
+      "file": "/resources/prepare-your-class.pdf"
+    },
+    {
+      "id": "themes-scripture",
+      "prog": "retreats",
+      "title": "Themes and scripture pack",
+      "type": "Pack",
+      "level": "Before",
+      "aud": "school",
+      "time": "Teachers",
+      "summary": "Prayers and passages to introduce before the retreat.",
+      "file": "/resources/themes-scripture.pdf"
+    },
+    {
+      "id": "staff-briefing",
+      "prog": "retreats",
+      "title": "Staff briefing sheet",
+      "type": "Guide",
+      "level": "Before",
+      "aud": "school",
+      "time": "Staff",
+      "summary": "Roles, ratios and the timetable.",
+      "file": "/resources/staff-briefing.pdf"
+    },
+    {
+      "id": "parent-letter",
+      "prog": "retreats",
+      "title": "Parent and carer letter",
+      "type": "Form",
+      "level": "Before",
+      "aud": "school",
+      "time": "Editable",
+      "summary": "Letter home with a consent slip.",
+      "file": "/resources/parent-letter.pdf"
+    },
+    {
+      "id": "follow-up-assembly",
+      "prog": "retreats",
+      "title": "Follow-up assembly",
+      "type": "Session",
+      "level": "After",
+      "aud": "school",
+      "time": "Assembly",
+      "summary": "Bring the retreat back to the whole year group.",
+      "file": "/resources/follow-up-assembly.pdf"
+    },
+    {
+      "id": "reflection-worksheets",
+      "prog": "retreats",
+      "title": "Reflection worksheets",
+      "type": "Activity",
+      "level": "After",
+      "aud": "school",
+      "time": "RE lesson",
+      "summary": "Keep the conversation going in RE.",
+      "file": "/resources/reflection-worksheets.pdf"
+    },
+    {
+      "id": "prayer-liturgy",
+      "prog": "retreats",
+      "title": "Prayer and liturgy ideas",
+      "type": "Prayer",
+      "level": "After",
+      "aud": "school",
+      "time": "Form time",
+      "summary": "For chaplaincy and form time.",
+      "file": "/resources/prayer-liturgy.pdf"
+    },
+    {
+      "id": "behold-y6-pack",
+      "prog": "festival",
+      "title": "Behold: Year 6 Festival pack",
+      "type": "Pack",
+      "level": "KS2",
+      "aud": "primary",
+      "time": "Teachers",
+      "event": "behold-y6-2026",
+      "summary": "Sessions for before and after the festival day.",
+      "sample": true,
+      "file": "/resources/behold-y6-pack.pdf"
+    },
+    {
+      "id": "what-is-adoration",
+      "prog": "the-source",
+      "title": "What is Adoration?",
+      "type": "Formation",
+      "level": "Year 9+",
+      "aud": "secondary",
+      "time": "5 min read",
+      "event": "source-hartlepool",
+      "summary": "A short explainer to read before your first night at The Source.",
+      "article": "learn-adoration.html"
+    },
+    {
+      "id": "flame-prep",
+      "prog": "flame",
+      "title": "Getting ready for Flame",
+      "type": "Session",
+      "level": "KS4–KS5",
+      "aud": "secondary",
+      "time": "40 min",
+      "event": "flame-2027",
+      "summary": "A session for your group in the weeks before Wembley.",
+      "sample": true,
+      "file": "/resources/flame-prep.pdf"
+    },
+    {
+      "id": "safeguarding-helpers",
+      "prog": "volunteer",
+      "title": "Safeguarding basics for helpers",
+      "type": "Formation",
+      "level": "16+",
+      "aud": "volunteer",
+      "time": "15 min read",
+      "summary": "What every volunteer needs to know before an event.",
+      "sample": true,
+      "file": "/resources/safeguarding-helpers.pdf"
+    },
+    {
+      "id": "serving-lourdes",
+      "prog": "lourdes",
+      "title": "Serving in Lourdes",
+      "type": "Formation",
+      "level": "16+",
+      "aud": "volunteer",
+      "time": "10 min read",
+      "event": "lourdes-2027",
+      "summary": "What youth helpers do and how to prepare.",
+      "article": "learn-lourdes.html"
+    },
+    {
+      "id": "village-pack",
+      "prog": "youth-village",
+      "title": "Bringing your group to the Village",
+      "type": "Guide",
+      "level": "Groups",
+      "aud": "everyone",
+      "time": "Group leaders",
+      "event": "village-weekends",
+      "summary": "Lodges, meals, spaces and a sample weekend.",
+      "sample": true,
+      "file": "/resources/village-pack.pdf"
+    }
+  ]
+}

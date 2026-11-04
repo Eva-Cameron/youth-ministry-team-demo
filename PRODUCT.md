@@ -31,7 +31,7 @@ The diocesan youth service since 1994, with its own residential base, the Emmaus
 
 - Many visitors open the site on school networks that block YouTube and Vimeo, and often on phones.
 - Bookings and enquiries are handled by email: `admin@ymt.org` for enquiries and `bookings@ymt.org` for bookings. Subjects follow a `[YMT] …` pattern so the team can file them.
-- Events and downloads are entered once in `js/data.js`. Entries marked `sample: true` are not yet confirmed by the client.
+- Events and downloads are entered once, in the editor at `/admin` (Sveltia CMS), which saves `data/events.json` and `data/resources.json`. Entries marked `sample: true` ("Not confirmed yet") are not yet confirmed by the client. See `docs/editing.md`.
 - Hosting: Cloudflare Pages, with video on Cloudflare R2.
 
 ## Capabilities and Constraints
@@ -57,7 +57,7 @@ The diocesan youth service since 1994, with its own residential base, the Emmaus
 
 - Real YMT photography in `assets/web` (worship nights, retreats, festival, the Village, Lourdes, crew) and self-hosted clips (`assets/web/*.mp4`).
 - Resource PDFs in `resources/`.
-- Events and downloads in `js/data.js`. Some are `sample: true` and unconfirmed.
+- Events and downloads in `data/events.json` and `data/resources.json`. Some are `sample: true` and unconfirmed.
 - No testimonials, statistics or quotes beyond those already in the content. Don't invent events, dates, quotes or claims.
 
 ## Product Principles

@@ -1,0 +1,231 @@
+{
+  "events": [
+    {
+      "id": "behold-y6-2026",
+      "prog": "festival",
+      "title": "Behold: Year 6 Festival 2026",
+      "date": "2026-06-22",
+      "end": "2026-06-29",
+      "place": "Emmaus Youth Village",
+      "aud": [
+        "primary"
+      ],
+      "img": "/assets/web/ph-festival-crowd-800.webp"
+    },
+    {
+      "id": "behold-sec-2026",
+      "prog": "festival",
+      "title": "Behold: Secondary Festival 2026",
+      "date": "2026-07-01",
+      "end": "2026-07-03",
+      "place": "Emmaus Youth Village",
+      "aud": [
+        "secondary"
+      ],
+      "img": "/assets/web/ph-festival-worship-800.webp"
+    },
+    {
+      "id": "significance-2026",
+      "prog": "youth-village",
+      "title": "Significance Festival",
+      "date": "2026-06-27",
+      "place": "Emmaus Youth Village",
+      "aud": [
+        "everyone"
+      ],
+      "img": "/assets/web/ph-village-event-800.webp"
+    },
+    {
+      "id": "source-hartlepool",
+      "prog": "the-source",
+      "title": "The Source on tour: Hartlepool",
+      "date": "2026-11-10",
+      "time": "Doors 6.30pm",
+      "place": "Hartlepool",
+      "aud": [
+        "secondary"
+      ],
+      "who": [
+        "Year 9+",
+        "Students"
+      ],
+      "how": "Free. Come on your own, with friends or with your parish group.",
+      "status": "Free",
+      "img": "/assets/web/ph-poster-source-hartlepool-800.webp",
+      "link": "the-source.html"
+    },
+    {
+      "id": "youth-council-nov",
+      "prog": "youth-council",
+      "title": "Youth Council gathering",
+      "date": "2026-11-21",
+      "place": "Emmaus Youth Village",
+      "aud": [
+        "secondary"
+      ],
+      "who": [
+        "Year 9+"
+      ],
+      "how": "A parent or carer reserves your place.",
+      "status": "Reserve a place",
+      "img": "/assets/web/ph-youth-group-800.webp",
+      "link": "youth-council.html",
+      "sample": true
+    },
+    {
+      "id": "advent-retreats",
+      "prog": "retreats",
+      "title": "Advent retreats",
+      "date": "2026-12-01",
+      "end": "2026-12-18",
+      "place": "Emmaus Youth Village",
+      "aud": [
+        "primary",
+        "secondary"
+      ],
+      "who": [
+        "Year groups"
+      ],
+      "how": "Booked by your school.",
+      "status": "Booking open",
+      "img": "/assets/web/ph-retreat-prayer-800.webp",
+      "link": "retreats.html",
+      "sample": true
+    },
+    {
+      "id": "lent-retreats",
+      "prog": "retreats",
+      "title": "Lent retreats",
+      "date": "2027-02-15",
+      "end": "2027-03-26",
+      "place": "Emmaus Youth Village",
+      "aud": [
+        "primary",
+        "secondary"
+      ],
+      "who": [
+        "Year groups"
+      ],
+      "how": "Booked by your school.",
+      "status": "Booking open",
+      "img": "/assets/web/ph-candid-1-800.webp",
+      "link": "retreats.html",
+      "sample": true
+    },
+    {
+      "id": "flame-2027",
+      "prog": "flame",
+      "title": "Flame 2027 at Wembley",
+      "date": "2027-03-06",
+      "place": "OVO Arena Wembley",
+      "aud": [
+        "secondary",
+        "volunteer"
+      ],
+      "who": [
+        "Secondary",
+        "Sixth form"
+      ],
+      "how": "Hexham & Newcastle travels as a group. Ask your school or parish about places.",
+      "status": "Sold out nationally",
+      "img": "/assets/web/tt-7690975318466710806.webp",
+      "link": "learn-flame.html"
+    },
+    {
+      "id": "internship-apps",
+      "prog": "internship",
+      "title": "Internship 2027–28 applications",
+      "date": "2027-03-01",
+      "place": "Emmaus Youth Village",
+      "aud": [
+        "volunteer"
+      ],
+      "who": [
+        "Ages 18–30"
+      ],
+      "how": "Apply with the brochure and application form.",
+      "status": "Opens in spring",
+      "img": "/assets/web/ph-interns-800.webp",
+      "link": "internship.html",
+      "sample": true
+    },
+    {
+      "id": "village-weekends",
+      "prog": "youth-village",
+      "title": "Group weekends at the Village",
+      "date": "2027-01-15",
+      "place": "Emmaus Youth Village",
+      "aud": [
+        "everyone"
+      ],
+      "who": [
+        "Parishes",
+        "Groups",
+        "Families"
+      ],
+      "how": "Book the lodges for your group.",
+      "status": "Booking open",
+      "img": "/assets/web/ph-village-chalet-800.webp",
+      "link": "youth-village.html",
+      "sample": true
+    },
+    {
+      "id": "behold-y6-2027",
+      "prog": "festival",
+      "title": "Year 6 Festival 2027",
+      "date": "2027-06-21",
+      "place": "Emmaus Youth Village",
+      "aud": [
+        "primary"
+      ],
+      "who": [
+        "Year 6"
+      ],
+      "how": "Booked by your school.",
+      "status": "Dates to be confirmed",
+      "img": "/assets/web/ph-festival-crowd-800.webp",
+      "link": "festival.html",
+      "sample": true
+    },
+    {
+      "id": "sec-festival-2027",
+      "prog": "festival",
+      "title": "Secondary Festival 2027",
+      "date": "2027-06-30",
+      "end": "2027-07-02",
+      "place": "Emmaus Youth Village",
+      "aud": [
+        "secondary",
+        "volunteer"
+      ],
+      "who": [
+        "Secondary",
+        "Crew 16+"
+      ],
+      "how": "With your school, or sign up as crew.",
+      "status": "Dates to be confirmed",
+      "img": "/assets/web/ph-festival-stage-800.webp",
+      "link": "festival.html",
+      "sample": true
+    },
+    {
+      "id": "lourdes-2027",
+      "prog": "lourdes",
+      "title": "Lourdes 2027: youth helpers",
+      "date": "2027-07-24",
+      "end": "2027-07-31",
+      "place": "Lourdes, France",
+      "aud": [
+        "volunteer"
+      ],
+      "who": [
+        "Young people"
+      ],
+      "how": "Apply as a youth helper.",
+      "status": "Applications open",
+      "img": "/assets/web/ph-poster-lourdes-2027-800.webp",
+      "link": "lourdes.html",
+      "sample": true
+    }
+  ]
+}

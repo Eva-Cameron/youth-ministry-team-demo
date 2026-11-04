@@ -1,0 +1,162 @@
+# The YMT editor at /admin (Sveltia CMS). Each save is a commit to main, and the site redeploys from it.
+# Field names match what js/site.js reads from data/events.json and data/resources.json.
+# Sign-in: a GitHub access token for now (see docs/editing.md). OAuth sign-in needs a small auth worker later.
+
+backend:
+  name: github
+  repo: eva-cameron/youth-ministry-team-demo
+  branch: main
+  auth_methods: [token]
+  commit_messages:
+    update: "content: update {{collection}} {{slug}}"
+    uploadMedia: "content: upload {{path}}"
+    deleteMedia: "content: delete {{path}}"
+
+app_title: YMT editor
+site_url: https://eva-cameron.github.io/youth-ministry-team-demo/
+logo:
+  src: ../assets/images/logo.png
+
+# Photos live in assets/web. New uploads are turned into WebP, at most 1600px wide, with tidy file names.
+media_folder: /assets/web
+public_folder: /assets/web
+media_libraries:
+  default:
+    config:
+      slugify_filename: true
+      max_file_size: 15000000
+      transformations:
+        raster_image:
+          format: webp
+          quality: 82
+          width: 1600
+
+collections:
+  - name: content
+    label: Events and downloads
+    files:
+      - name: events
+        label: Events
+        file: data/events.json
+        format: json
+        fields:
+          - name: events
+            label: Events
+            label_singular: event
+            widget: list
+            collapsed: true
+            add_to_top: true
+            summary: "{{fields.date}} · {{fields.title}}"
+            hint: Events show in Latest, on the timelines and in the route heroes until their last day has passed. Past events can stay; they hide themselves.
+            fields:
+              - { name: title, label: Title, widget: string }
+              - name: id
+                label: Short code
+                widget: string
+                pattern: ['^[a-z0-9]+(-[a-z0-9]+)*$', 'Lower-case letters, numbers and dashes only, like lent-retreats-2027']
+                hint: A unique code, like lent-retreats-2027. Downloads use it to link to this event. Don't change it once downloads point here.
+              - name: sample
+                label: Not confirmed yet
+                widget: boolean
+                default: true
+                hint: While this is on, the event says "To be confirmed" everywhere it shows. Turn it off once the team has confirmed it.
+              - { name: date, label: Date (or first day), widget: datetime, type: date, format: YYYY-MM-DD }
+              - { name: end, label: Last day, widget: datetime, type: date, format: YYYY-MM-DD, required: false, hint: Only for events that run over several days. }
+              - { name: time, label: Time, widget: string, required: false, hint: 'For example "Doors 6.30pm".' }
+              - { name: place, label: Place, widget: string, default: Emmaus Youth Village }
+              - name: aud
+                label: Who it's for
+                widget: select
+                multiple: true
+                hint: Decides which route pages show it.
+                options:
+                  - { label: Primary, value: primary }
+                  - { label: Secondary, value: secondary }
+                  - { label: 16+ and volunteers, value: volunteer }
+                  - { label: Everyone else, value: everyone }
+              - &prog
+                name: prog
+                label: Programme
+                widget: select
+                hint: Decides which programme page shows it.
+                options:
+                  - { label: Festival, value: festival }
+                  - { label: Emmaus Youth Village, value: youth-village }
+                  - { label: The Source, value: the-source }
+                  - { label: Youth Council, value: youth-council }
+                  - { label: Retreats, value: retreats }
+                  - { label: Flame, value: flame }
+                  - { label: Internship, value: internship }
+                  - { label: Lourdes, value: lourdes }
+                  - { label: Volunteering, value: volunteer }
+              - { name: img, label: Photo or poster, widget: image, hint: Pick one of the site's photos or upload a new one. No full names next to children's faces. }
+              - name: who
+                label: Who can go
+                widget: list
+                required: false
+                hint: Short chips, separated by commas, like "Year 9+, Students".
+              - { name: how, label: How to take part, widget: text, required: false }
+              - { name: status, label: Status, widget: string, required: false, hint: 'For example "Booking open", "Free" or "Sold out".' }
+              - { name: link, label: Details page, widget: string, required: false, hint: 'The page the Details button opens, like festival.html. Leave empty to use the route page.' }
+
+      - name: resources
+        label: Downloads
+        file: data/resources.json
+        format: json
+        fields:
+          - name: resources
+            label: Downloads
+            label_singular: download
+            widget: list
+            collapsed: true
+            add_to_top: true
+            summary: "{{fields.title}} · {{fields.type}}"
+            fields:
+              - { name: title, label: Title, widget: string }
+              - name: id
+                label: Short code
+                widget: string
+                pattern: ['^[a-z0-9]+(-[a-z0-9]+)*$', 'Lower-case letters, numbers and dashes only']
+                hint: A unique code, like prepare-your-class.
+              - name: sample
+                label: Not confirmed yet
+                widget: boolean
+                default: true
+                required: false
+              - { name: summary, label: One-line summary, widget: text }
+              - name: file
+                label: PDF
+                widget: file
+                required: false
+                media_folder: /resources
+                public_folder: /resources
+                accept: application/pdf
+                hint: Upload the PDF. Leave empty if this download is a page on the site instead (fill in "Article page" below).
+              - { name: article, label: Article page, widget: string, required: false, hint: 'A page on the site to read instead of a PDF, like learn-adoration.html.' }
+              - name: type
+                label: Type
+                widget: select
+                options: [Guide, Pack, Form, Session, Activity, Prayer, Formation, Lesson]
+              - name: aud
+                label: Who it's for
+                widget: select
+                options:
+                  - { label: Schools (retreats), value: school }
+                  - { label: Primary, value: primary }
+                  - { label: Secondary, value: secondary }
+                  - { label: 16+ and volunteers, value: volunteer }
+                  - { label: Everyone else, value: everyone }
+              - *prog
+              - { name: level, label: Level, widget: string, hint: 'For example "Before", "KS2" or "16+".' }
+              - { name: time, label: Who uses it / how long, widget: string, hint: 'For example "Teachers" or "15 min read".' }
+              - name: event
+                label: Linked event
+                widget: relation
+                collection: content
+                file: events
+                value_field: events.*.id
+                display_fields: [events.*.title]
+                search_fields: [events.*.title]
+                required: false
+                hint: Optional. The card says "From <event>" and borrows its photo.
+              - { name: img, label: Banner photo, widget: image, required: false, hint: "Optional. Without one, the card uses its event's photo or one from the site's own set." }

@@ -1,6 +1,6 @@
 /* Shared behaviour: nav, Latest panel, data-driven lists, email links, giving and motion.
-   Reads window.YMT (js/data.js) and window.YMT_CONFIG (js/config.js). */
-(() => {
+   Reads window.YMT (js/data.js) and window.YMT_CONFIG (js/config.js). Waits for the data files first. */
+(window.YMT_READY || Promise.resolve()).then(() => {
   'use strict';
   const $ = (s, r = document) => r.querySelector(s);
   const $$ = (s, r = document) => [...r.querySelectorAll(s)];
@@ -31,7 +31,9 @@
     ? `${fmt(e.date, { day: 'numeric', month: 'short' })}–${fmt(e.end, { day: 'numeric', month: 'short' })}`
     : fmt(e.date, { weekday: 'short', day: 'numeric', month: 'short' }) + (e.time ? ' · ' + e.time : '');
   const upcoming = () => D.events.filter((e) => day(e.end || e.date) >= today).sort((a, b) => day(a.date) - day(b.date));
-  const img = (name) => `assets/web/${name}${name.startsWith('tt-') ? '' : '-800'}.webp`;
+  // Photos are paths from the editor ("assets/web/….webp"); a bare name is one of the site's own -800 photos.
+  const img = (name) => (name.includes('/') ? name.replace(/^\//, '') : `assets/web/${name}${name.startsWith('tt-') ? '' : '-800'}.webp`);
+  const isPoster = (name) => /(^|\/)ph-poster/.test(name || '');
   const staggered = (els, step = 50) => els.forEach((el, i) => el.style.setProperty('--delay', i * step + 'ms'));
 
   /* ---------- Nav ---------- */
@@ -179,10 +181,11 @@
   const photoFor = (r) => {
     if (r.img) return r.img;
     const ev = r.event && eventById(r.event);
-    if (ev?.img?.startsWith('ph-') && !ev.img.startsWith('ph-poster') && !used.has(ev.img)) { used.add(ev.img); return ev.img; }
+    // Compared by file, since the editor stores paths and the pool holds names.
+    if (ev?.img && !/(^|\/)tt-/.test(ev.img) && !isPoster(ev.img) && !used.has(img(ev.img))) { used.add(img(ev.img)); return ev.img; }
     let k = [...r.id].reduce((h, c) => (h * 31 + c.charCodeAt(0)) >>> 0, 7) % POOL.length;
-    for (let i = 0; i < POOL.length && used.has(POOL[k]); i++) k = (k + 1) % POOL.length;
-    used.add(POOL[k]);
+    for (let i = 0; i < POOL.length && used.has(img(POOL[k])); i++) k = (k + 1) % POOL.length;
+    used.add(img(POOL[k]));
     return POOL[k];
   };
   const bite = (r) => {
@@ -192,7 +195,7 @@
     return `<article class="bite rise" data-type="${esc(r.type)}" data-aud="${esc(r.aud)}">
       <div class="bite__top bite__top--photo" style="--photo: url('${esc(new URL(img(photo), location.href).href)}')"><span class="bite__type"><svg viewBox="0 0 24 24" aria-hidden="true">${icons[r.type] || ''}</svg>${esc(r.type)}</span><span class="bite__level">${esc(r.level)}</span></div>
       <div class="bite__body">${from ? `<span class="bite__from">From ${esc(from.title)}</span>` : ''}<h3>${esc(r.title)}</h3><p>${esc(r.summary)}</p></div>
-      <div class="bite__foot"><span class="bite__time">${esc(r.time)}</span>${read || `<a class="bite__dl" href="resources/${esc(r.id)}.pdf" download><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg>PDF</a>`}</div>
+      <div class="bite__foot"><span class="bite__time">${esc(r.time)}</span>${read || `<a class="bite__dl" href="${esc((r.file || `resources/${r.id}.pdf`).replace(/^\//, ''))}" download><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg>PDF</a>`}</div>
     </article>`;
   };
   // Route heroes show the next event for their audience, so they never advertise one that has passed.
@@ -202,7 +205,7 @@
     // Programme pages keep their own photo; only the caption follows the next event.
     if (fig.dataset.nextPhoto !== 'keep') {
       $('img', fig).src = img(e.img);
-      fig.classList.toggle('is-poster', e.img.startsWith('ph-poster'));
+      fig.classList.toggle('is-poster', isPoster(e.img));
     }
     $('figcaption', fig).innerHTML = `<small>Next${e.sample ? ' · to be confirmed' : ''}</small><b>${esc(e.title)}</b><span>${esc(when(e))} · ${esc(e.place)}</span>`;
   });
@@ -367,4 +370,4 @@
   }
 
   $$('[data-year]').forEach((el) => { el.textContent = String(new Date().getFullYear()); });
-})();
+});
