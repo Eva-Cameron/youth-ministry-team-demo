@@ -1,5 +1,7 @@
 /* Shared behaviour: nav, Latest panel, data-driven lists, email links, giving and motion.
-   Reads window.YMT (js/data.js) and window.YMT_CONFIG (js/config.js). */
+   Reads window.YMT (js/data.js) and window.YMT_CONFIG (js/config.js).
+   The events and downloads are read from content/*.json by data.js, so everything built from them is
+   drawn in a draw() step that runs once window.YMT.ready settles. Everything else runs straight away. */
 (() => {
   'use strict';
   const $ = (s, r = document) => r.querySelector(s);
@@ -7,6 +9,8 @@
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
   const D = window.YMT || { events: [], resources: [], audiences: {} };
   const C = window.YMT_CONFIG || {};
+  // Each part of the page that is built from the events and downloads adds its own draw step here.
+  const draws = [];
 
   /* ---------- Safety helpers ---------- */
   // Escape text before it goes into markup built from data.
@@ -101,21 +105,28 @@
   const latestBtn = $('[data-latest-open]');
   if (latest && latestBtn) {
     const list = $('.latest__list', latest);
-    const shown = upcoming().slice(0, 8);
-    list.innerHTML = shown.map((e) => `<li>${newsCard(e)}</li>`).join('');
-    // A ring shows until you have opened Latest with these events in it.
-    let seen = [];
-    try { seen = JSON.parse(localStorage.getItem('ymt-latest-seen') || '[]'); } catch { seen = []; }
-    const fresh = shown.some((e) => !seen.includes(e.id));
-    latestBtn.classList.toggle('has-new', fresh);
-    if (fresh) latestBtn.setAttribute('aria-label', 'Latest, new events');
-    const markSeen = () => { latestBtn.classList.remove('has-new'); latestBtn.removeAttribute('aria-label'); try { localStorage.setItem('ymt-latest-seen', JSON.stringify(shown.map((e) => e.id))); } catch {} };
-    staggered($$('li', list), 55);
+    // The panel opens and closes whatever happens; the list fills in once the events are read.
+    let markSeen = () => {};
+    let seenAlready = false;
+    draws.push(() => {
+      const shown = upcoming().slice(0, 8);
+      list.innerHTML = shown.map((e) => `<li>${newsCard(e)}</li>`).join('');
+      // A ring shows until you have opened Latest with these events in it.
+      let seen = [];
+      try { seen = JSON.parse(localStorage.getItem('ymt-latest-seen') || '[]'); } catch { seen = []; }
+      markSeen = () => { latestBtn.classList.remove('has-new'); latestBtn.removeAttribute('aria-label'); try { localStorage.setItem('ymt-latest-seen', JSON.stringify(shown.map((e) => e.id))); } catch {} };
+      const fresh = !seenAlready && shown.some((e) => !seen.includes(e.id));
+      latestBtn.classList.toggle('has-new', fresh);
+      if (fresh) latestBtn.setAttribute('aria-label', 'Latest, new events');
+      if (seenAlready) markSeen(); // opened before the list arrived: these count as seen
+      staggered($$('li', list), 55);
+    });
     let back = null;
     const setLatest = (open) => {
       latestBtn.setAttribute('aria-expanded', String(open));
       if (open) {
         back = document.activeElement;
+        seenAlready = true;
         markSeen();
         latest.hidden = false;
         isolate(true, latest);
@@ -145,7 +156,7 @@
   };
 
   // Timelines show only what is still to come, grouped by month; who can go comes first.
-  $$('[data-timeline]').forEach((box) => {
+  draws.push(() => $$('[data-timeline]').forEach((box) => {
     const items = pick(box.dataset.timeline, upcoming());
     let month = '';
     box.innerHTML = items.map((e, i) => {
@@ -160,8 +171,8 @@
         <div class="tl__who"><div>${(e.who || []).map((w) => `<span class="chip">${esc(w)}</span>`).join('')}</div><p>${esc(e.how || '')}</p></div>
         <div class="tl__go"><span class="tl__status">${e.sample ? 'Date to be confirmed' : esc(e.status || '')}</span>${href === here ? '' : `<a class="btn btn--glass" href="${esc(href)}"${extLink(href)}>Details<span class="sr"> about ${esc(e.title)}</span></a>`}</div>
       </li>`;
-    }).join('') || '<li class="tl__month">Nothing is booked yet. New dates appear here first.</li>';
-  });
+    }).join('') || `<li class="tl__month">${D.loaded ? 'Nothing is booked yet. New dates appear here first.' : 'We couldn’t load the dates just now. Try again in a moment.'}</li>`;
+  }));
 
 
   // Downloads, Bitesize style.
@@ -196,7 +207,7 @@
     </article>`;
   };
   // Route heroes show the next event for their audience, so they never advertise one that has passed.
-  $$('[data-next]').forEach((fig) => {
+  draws.push(() => $$('[data-next]').forEach((fig) => {
     const e = pick(fig.dataset.next, upcoming())[0];
     if (!e) return;
     // Programme pages keep their own photo; only the caption follows the next event.
@@ -205,9 +216,9 @@
       fig.classList.toggle('is-poster', e.img.startsWith('ph-poster'));
     }
     $('figcaption', fig).innerHTML = `<small>Next${e.sample ? ' · to be confirmed' : ''}</small><b>${esc(e.title)}</b><span>${esc(when(e))} · ${esc(e.place)}</span>`;
-  });
+  }));
 
-  $$('[data-resources]').forEach((box) => { box.innerHTML = pick(box.dataset.resources, D.resources).map(bite).join(''); });
+  draws.push(() => $$('[data-resources]').forEach((box) => { box.innerHTML = pick(box.dataset.resources, D.resources).map(bite).join(''); }));
   // Download filter on the resources page.
   $$('[data-filter]').forEach((bar) => {
     const grid = bar.parentElement.querySelector('[data-filtered]');
@@ -302,7 +313,8 @@
     staggered($$('.w > span', h), 28);
     h.classList.add('words');
   });
-  const parts = $$('.rise, .words, .shot, [data-rise] > *');
+  // Parts drawn from the events and downloads arrive a moment later, so they are brought in the same way.
+  let watchRise = (els) => els.forEach((el) => el.classList.add('in'));
   if (!reduce && 'IntersectionObserver' in window) {
     const io = new IntersectionObserver((entries) => {
       entries.filter((x) => x.isIntersecting).forEach((x, i) => {
@@ -311,8 +323,9 @@
         io.unobserve(x.target);
       });
     }, { rootMargin: '0px 0px -8% 0px' });
-    parts.forEach((el) => { if (!el.matches('.words, .shot')) el.classList.add('rise'); io.observe(el); });
-  } else parts.forEach((el) => el.classList.add('in'));
+    watchRise = (els) => els.forEach((el) => { if (!el.matches('.words, .shot')) el.classList.add('rise'); io.observe(el); });
+  }
+  watchRise($$('.rise, .words, .shot, [data-rise] > *'));
 
   // Videos load and play only while on screen, every clip at once (Eva, 2 Nov). Under reduced motion they show their posters and
   // load nothing; one toggle pauses every clip (WCAG 2.2.2).
@@ -367,4 +380,11 @@
   }
 
   $$('[data-year]').forEach((el) => { el.textContent = String(new Date().getFullYear()); });
+
+  /* ---------- Draw the parts that come from content/events.json and content/resources.json ---------- */
+  const draw = () => {
+    draws.forEach((step) => step());
+    watchRise($$('[data-timeline] .rise, [data-resources] .rise'));
+  };
+  if (D.ready && typeof D.ready.then === 'function') D.ready.then(draw, draw); else draw();
 })();
