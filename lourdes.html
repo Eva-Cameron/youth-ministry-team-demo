@@ -55,12 +55,12 @@
 
   <main id="main">
     <section class="phero phero--photo" aria-labelledby="page-title">
-      <div class="phero__bg"><img src="assets/web/ph-sacraments-1600.webp" alt="" fetchpriority="high"></div>
+      <div class="phero__bg"><img data-slot="hero-photo" src="assets/web/ph-sacraments-1600.webp" alt="" fetchpriority="high"></div>
       <div class="wrap phero__grid">
         <div>
-          <h1 class="h1" id="page-title">Lourdes</h1>
-          <p class="phero__meta">Diocesan pilgrimage · One week · Every summer · Youth helpers</p>
-          <p class="phero__lede">Each year young people from across the diocese travel to Lourdes to serve assisted pilgrims, and share a week of prayer and community.</p>
+          <h1 data-slot="hero-heading" class="h1" id="page-title">Lourdes</h1>
+          <p data-slot="hero-meta" class="phero__meta">Diocesan pilgrimage · One week · Every summer · Youth helpers</p>
+          <p data-slot="hero-lede" class="phero__lede">Each year young people from across the diocese travel to Lourdes to serve assisted pilgrims, and share a week of prayer and community.</p>
           <p class="phero__actions"><a class="btn btn--main" data-mail="volunteer" data-mail-about="Lourdes youth helpers" href="enquire.html?topic=volunteer&amp;about=Lourdes%20youth%20helpers#enquiry">Apply as a helper <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6"/></svg></a><a class="btn btn--glass" href="learn-lourdes.html">Why Lourdes?</a></p>
         </div>
         
@@ -69,30 +69,30 @@
     <section class="section" id="about" aria-labelledby="about-title">
       <div class="wrap">
         <div class="label" aria-hidden="true"><span>01</span><span>Youth helpers</span><span>At a glance</span></div>
-        <div class="section-head"><h2 class="h2" id="about-title">Part of something larger than yourself</h2><p class="lede muted">First-timers and returning helpers are both welcome. No experience is needed.</p></div>
+        <div class="section-head"><h2 data-slot="about-heading" class="h2" id="about-title">Part of something larger than yourself</h2><p data-slot="about-lede-1" class="lede muted">First-timers and returning helpers are both welcome. No experience is needed.</p></div>
         <div class="split">
-          <div class="stack stack--lg"><p class="lede">Youth helpers support assisted pilgrims alongside young people from across the diocese, take part in the liturgies, and share meals and downtime. A trained, DBS-checked team supports you throughout.</p><ul class="ticks" role="list"><li>Serve assisted pilgrims</li><li>A week of liturgies, prayer and socials</li><li>Community life with other young people</li><li>Costs, travel and dates are in the info booklet</li><li>Fundraising support and bursaries may be available</li></ul></div>
+          <div class="stack stack--lg"><p data-slot="about-lede-2" class="lede">Youth helpers support assisted pilgrims alongside young people from across the diocese, take part in the liturgies, and share meals and downtime. A trained, DBS-checked team supports you throughout.</p><ul class="ticks" role="list"><li>Serve assisted pilgrims</li><li>A week of liturgies, prayer and socials</li><li>Community life with other young people</li><li>Costs, travel and dates are in the info booklet</li><li>Fundraising support and bursaries may be available</li></ul></div>
           <dl class="facts"><div><dt>What</dt><dd>Diocesan pilgrimage</dd></div><div><dt>Role</dt><dd>Youth helper</dd></div><div><dt>Length</dt><dd>One week</dd></div><div><dt>When</dt><dd>Summer</dd></div></dl>
         </div></div>
     </section>
     <section class="section" id="downloads" aria-labelledby="downloads-title">
       <div class="wrap">
         <div class="label" aria-hidden="true"><span>02</span><span>Downloads</span><span>Free to print and use</span></div>
-        <div class="section-head"><h2 class="h2" id="downloads-title">Before you go</h2><p class="lede muted">Read this before your first pilgrimage.</p></div>
+        <div class="section-head"><h2 data-slot="downloads-heading" class="h2" id="downloads-title">Before you go</h2><p data-slot="downloads-lede" class="lede muted">Read this before your first pilgrimage.</p></div>
         <div class="bite-grid" data-resources="prog:lourdes"></div></div>
     </section>
     <section class="section section--tight" id="coming-up" aria-labelledby="coming-up-title">
       <div class="wrap">
         <div class="label" aria-hidden="true"><span>03</span><span>Coming up</span><span>Upcoming dates only</span></div>
-        <div class="section-head"><h2 class="h2" id="coming-up-title">Next pilgrimage</h2><p class="lede muted">Dates are confirmed with the diocese each year.</p></div>
+        <div class="section-head"><h2 data-slot="coming-up-heading" class="h2" id="coming-up-title">Next pilgrimage</h2><p data-slot="coming-up-lede" class="lede muted">Dates are confirmed with the diocese each year.</p></div>
         <ul class="tl" role="list" data-timeline="prog:lourdes"></ul></div>
     </section>
     <section class="section section--tight" id="cta" aria-labelledby="cta-title">
       <div class="wrap">
         <div class="label" aria-hidden="true"><span>04</span><span>Apply</span><span>One form, one contact</span></div>
         <div class="split panel glass">
-          <h2 class="h2" id="cta-title">Apply as a youth helper</h2>
-          <div class="stack"><p class="lede">Register your interest and we will send the info booklet and next steps. Under-18s need consent from a parent or carer.</p><p><a class="btn btn--acc" data-mail="volunteer" data-mail-about="Lourdes youth helpers" href="enquire.html?topic=volunteer&amp;about=Lourdes%20youth%20helpers#enquiry">Register interest <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6"/></svg></a></p></div>
+          <h2 data-slot="panel-heading" class="h2" id="cta-title">Apply as a youth helper</h2>
+          <div class="stack"><p data-slot="panel-lede" class="lede">Register your interest and we will send the info booklet and next steps. Under-18s need consent from a parent or carer.</p><p><a class="btn btn--acc" data-mail="volunteer" data-mail-about="Lourdes youth helpers" href="enquire.html?topic=volunteer&amp;about=Lourdes%20youth%20helpers#enquiry">Register interest <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6"/></svg></a></p></div>
         </div></div>
     </section>
   </main>
@@ -111,8 +111,8 @@
     </div>
   </footer>
   <script src="js/config.js?v=26" defer></script>
-  <script src="js/data.js?v=26" defer></script>
-  <script src="js/site.js?v=31" defer></script>
+  <script src="js/data.js?v=27" defer></script>
+  <script src="js/site.js?v=32" defer></script>
   <script src="js/photos.js?v=6" defer></script>
   <script src="js/terrain.js?v=31" defer></script>
   <script src="review/review.js?v=11" defer></script><!-- staging only: remove at launch -->
