@@ -1,0 +1,210 @@
+# The three bots that read every change before it can go live. Each one is its own job, so each can be
+# made a required check on main: a change merges only when all three pass and Eva has approved it.
+# They live in bots/ and can be run by hand on a branch: python3 bots/run_bots.py
+name: Content bots
+
+on:
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: content-bots-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  statuses: write
+
+jobs:
+  security:
+    name: Security bot
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          fetch-depth: 0
+
+      - name: Get the branch this change is measured against
+        env:
+          BASE: ${{ github.event.pull_request.base.ref || 'main' }}
+        run: git fetch --no-tags origin "+refs/heads/$BASE:refs/remotes/origin/$BASE"
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Read the change
+        id: run
+        env:
+          BOT_BASE_REF: origin/${{ github.event.pull_request.base.ref || 'main' }}
+          BOT_HEAD_REF: HEAD
+          BOT_HEAD_BRANCH: ${{ github.event.pull_request.head.ref }}
+          BOT_PR_LABELS: ${{ join(github.event.pull_request.labels.*.name, ',') }}
+        run: python3 bots/security_bot.py
+
+      - name: Tell the studio how it went
+        if: ${{ always() && github.event_name == 'pull_request' }}
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+          STATE: ${{ steps.run.outcome == 'success' && 'success' || 'failure' }}
+          SUMMARY: ${{ steps.run.outputs.summary || 'The check stopped before it could finish' }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          gh api -X POST "repos/$GITHUB_REPOSITORY/statuses/$HEAD_SHA" \
+            -f state="$STATE" -f context="Security bot" -f description="$SUMMARY" -f target_url="$RUN_URL"
+
+  legal:
+    name: Legal and compliance bot
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          fetch-depth: 0
+
+      - name: Get the branch this change is measured against
+        env:
+          BASE: ${{ github.event.pull_request.base.ref || 'main' }}
+        run: git fetch --no-tags origin "+refs/heads/$BASE:refs/remotes/origin/$BASE"
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: bots/package-lock.json
+
+      - name: Install the accessibility checker and its browser
+        working-directory: bots
+        run: |
+          npm ci --no-audit --no-fund
+          npx playwright install --with-deps chromium
+
+      - name: Read the change
+        id: run
+        env:
+          BOT_BASE_REF: origin/${{ github.event.pull_request.base.ref || 'main' }}
+          BOT_HEAD_REF: HEAD
+          BOT_AXE_REQUIRED: "1"
+        run: python3 bots/legal_bot.py
+
+      - name: Tell the studio how it went
+        if: ${{ always() && github.event_name == 'pull_request' }}
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+          STATE: ${{ steps.run.outcome == 'success' && 'success' || 'failure' }}
+          SUMMARY: ${{ steps.run.outputs.summary || 'The check stopped before it could finish' }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          gh api -X POST "repos/$GITHUB_REPOSITORY/statuses/$HEAD_SHA" \
+            -f state="$STATE" -f context="Legal and compliance bot" -f description="$SUMMARY" -f target_url="$RUN_URL"
+
+  cyber:
+    name: Cyber and ops bot
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          fetch-depth: 0
+
+      - name: Get the branch this change is measured against
+        env:
+          BASE: ${{ github.event.pull_request.base.ref || 'main' }}
+        run: git fetch --no-tags origin "+refs/heads/$BASE:refs/remotes/origin/$BASE"
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Read the change
+        id: run
+        env:
+          BOT_BASE_REF: origin/${{ github.event.pull_request.base.ref || 'main' }}
+          BOT_HEAD_REF: HEAD
+        run: python3 bots/cyber_bot.py
+
+      - name: Tell the studio how it went
+        if: ${{ always() && github.event_name == 'pull_request' }}
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+          STATE: ${{ steps.run.outcome == 'success' && 'success' || 'failure' }}
+          SUMMARY: ${{ steps.run.outputs.summary || 'The check stopped before it could finish' }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          gh api -X POST "repos/$GITHUB_REPOSITORY/statuses/$HEAD_SHA" \
+            -f state="$STATE" -f context="Cyber and ops bot" -f description="$SUMMARY" -f target_url="$RUN_URL"
+
+  # The bots' own tests: each one is handed a sample change that's fine and one that isn't, and has to
+  # reach the right verdict on both. If this fails, nothing the three bots said above can be trusted.
+  selftest:
+    name: The bots' own tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: bots/package-lock.json
+
+      - name: Install the accessibility checker and its browser
+        working-directory: bots
+        run: |
+          npm ci --no-audit --no-fund
+          npx playwright install --with-deps chromium
+
+      - name: Test the bots
+        env:
+          BOT_SELFTEST_AXE: "1"
+          BOT_AXE_REQUIRED: "1"
+        run: python3 bots/selftest.py
+
+  # One line for the studio to read: all three bots and their own tests passed, or they didn't.
+  # The studio's approval gate looks for this as well as for each bot on its own.
+  verdict:
+    name: Site checks
+    runs-on: ubuntu-latest
+    needs: [security, legal, cyber, selftest]
+    if: ${{ always() && github.event_name == 'pull_request' }}
+    timeout-minutes: 5
+    steps:
+      - name: Tell the studio whether this change can go live
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+          PASSED: ${{ !contains(needs.*.result, 'failure') && !contains(needs.*.result, 'cancelled') }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          if [ "$PASSED" = "true" ]; then
+            state=success; description="All three bots are happy with this change"
+          else
+            state=failure; description="One of the three bots stopped this change; its own check says what to fix"
+          fi
+          gh api -X POST "repos/$GITHUB_REPOSITORY/statuses/$HEAD_SHA" \
+            -f state="$state" -f context="Site checks" -f description="$description" -f target_url="$RUN_URL"
+          [ "$state" = "success" ]

@@ -1,0 +1,12 @@
+{
+  "name": "ymt-content-bots",
+  "private": true,
+  "description": "What the legal and compliance bot needs to run axe over the changed pages: a headless browser and the checker itself. The other two bots need nothing but Python.",
+  "scripts": {
+    "axe": "node axe_pages.mjs"
+  },
+  "dependencies": {
+    "axe-core": "4.10.2",
+    "playwright": "1.63.0"
+  }
+}

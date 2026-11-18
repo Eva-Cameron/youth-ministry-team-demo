@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sample page with everything wrong in it</title>
+</head>
+<body>
+  <main id="main">
+    <h1>Sample page with everything wrong in it</h1>
+    <p>Every mistake the three bots look for, on purpose, so their self-test can see them being
+      caught. Nothing here is real and nothing here is ever served.</p>
+    <figure>
+      <img src="bots/fixtures/sample-photo.svg" width="120" height="80" data-consent="needed" data-young-people>
+      <figcaption>Sample caption: Jordan Fairweather, aged 12.</figcaption>
+    </figure>
+    <p><img src="bots/fixtures/not-here.svg" alt="A photo that isn't in the site"></p>
+    <p><a href="#nowhere-at-all">A link to a part of the page that isn't there</a></p>
+    <p><a href="bots/fixtures/missing-page.html">A link to a page that isn't there</a></p>
+    <p>Your message has been sent and your place is booked.</p>
+    <p><button type="button" onclick="alert('no')">A button that runs something</button></p>
+    <p><a href="javascript:alert('no')">A link that runs something</a></p>
+    <p><img src="data:image/svg+xml;base64,PHN2Zy8+" alt="A picture smuggled into the page"></p>
+    <script>console.log('a script in the page content');</script>
+    <div>
+  </main>
+</body>
+</html>

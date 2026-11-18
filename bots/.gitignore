@@ -1,0 +1,2 @@
+# Python's own cache for the bots, and the accessibility checker's browser packages.
+__pycache__/
